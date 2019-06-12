@@ -4022,6 +4022,11 @@ mpvue-calendar@^2.2.2:
   resolved "https://registry.yarnpkg.com/mpvue-calendar/-/mpvue-calendar-2.2.2.tgz#4db59a0106e39b5d2a352419f2a5e9daa2437084"
   integrity sha512-yYEXUObAOiTiePC6DLiSiJm/paW+4UAmILwT6p3VvJ54yubjGtnWZP+oAOo0gGBGmHLEeEYLVasruO2YJoIgLg==
 
+mpvue-echarts@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/mpvue-echarts/-/mpvue-echarts-0.3.1.tgz#4c5baee4c9e89260ab2944ba504527598da7211e"
+  integrity sha512-O7IIyvi9TxcaXJDQuJsiDy6UefTTXF//VFgi3GCCyZ0WSBoPcyU0MpvfeMCPPafl8JxTDIgmlr4cZIxmyozSrA==
+
 mpvue-loader@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/mpvue-loader/-/mpvue-loader-2.0.1.tgz#6220e70ef1fecb9d29d5e44f46e107b9081be8e3"
