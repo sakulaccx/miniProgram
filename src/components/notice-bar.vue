@@ -1,0 +1,60 @@
+<template>
+  <div class="notice-bar">
+    <div class="inner-text">您可点击筛选，按照起飞时段选择航班</div>
+    <div class="notice-btn" @click="popupFilter">筛选></div>
+    <div class="clearfix"></div>
+  </div>
+</template>
+
+<script>
+
+export default {
+  data () {
+    return {
+      aa: ''
+    }
+  },
+
+  components: {},
+
+  methods: {
+    popupFilter () {
+      console.log('sssssssssss')
+    }
+  },
+
+  created () {
+    // let app = getApp()
+  }
+}
+</script>
+
+<style scoped>
+.notice-bar{
+  width: 100%;
+  height: 60rpx;
+  background: #d8e5ff;
+  line-height: 60rpx;
+}
+.inner-text{
+  float: left;
+  height: 100%;
+  color: #4680f6;
+  font-size: 28rpx;
+  padding-left: 30rpx;
+}
+.notice-btn{
+  float: right;
+  margin-right: 30rpx;
+  margin-top: 7rpx;
+  color: #fff;
+  width: 120rpx;
+  height: 48rpx;
+  border-radius: 48rpx;
+  line-height: 48rpx;
+  background: #4680f6;
+  font-size: 26rpx;
+  text-align: center;
+  
+}
+</style>

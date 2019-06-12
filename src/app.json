@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/search/main",
+    "pages/index/main",
+    "pages/flightList/main",
+    "pages/calendar/main"
+  ],
+  "window":
+  {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  }
+}

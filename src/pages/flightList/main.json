@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "航班列表",
+  "usingComponents": {
+    "van-loading": "../../static/vant/loading/index"
+  }
+}
