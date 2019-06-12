@@ -1,9 +1,9 @@
 {
   "pages": [
+    "pages/calendar/main",
     "pages/search/main",
     "pages/index/main",
-    "pages/flightList/main",
-    "pages/calendar/main"
+    "pages/flightList/main"
   ],
   "window":
   {

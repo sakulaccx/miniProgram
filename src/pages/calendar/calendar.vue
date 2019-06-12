@@ -24,12 +24,29 @@ export default {
   data () {
     return {
       weekarr: ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-      monthRange: ['2019-5', '2020-4'],
+      monthRange: [],
       rangeMonthFormat: 'yyyy年MM月',
       events: {'2019-5-1': '¥600', '2019-5-8': '¥300', '2020-4-5': '¥1400'},
       almanacs: {
-        '1-1': '元旦'
-      }
+        '1-1': '休',
+        '4-4': '休',
+        '5-1': '休',
+        '6-7': '休',
+        '10-1': '休',
+        '10-2': '休',
+        '10-3': '休',
+        '10-4': '休',
+        '10-5': '休',
+        '10-6': '休',
+        '10-7': '休'
+      },
+      tileContent: [
+        {
+          date: '2019-6-13',
+          className: 'holiday',
+          content: '休'
+        }
+      ]
     }
   },
   components: {
@@ -51,6 +68,16 @@ export default {
       this.setDate(_obj)
       wx.navigateTo({url: '../index/main'})
     }
+  },
+  mounted () {
+    let currDate = new Date()
+    let currYear = currDate.getFullYear()
+    let currMonth = currDate.getMonth() + 1
+    let mill = currDate.setMonth(currDate.getMonth() + 3)
+    let targetYear = new Date(mill).getFullYear()
+    let targetMonth = new Date(mill).getMonth() + 1
+
+    this.monthRange = [`${currYear}-${currMonth}`, `${targetYear}-${targetMonth}`]
   },
   created () {
   // let app = getApp()

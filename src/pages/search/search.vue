@@ -85,8 +85,6 @@ export default {
               color: '#42434D'
             },
             formatter: function (value, index) {
-              // var currdate = new Date()
-              // var timestrip = new Date(currdate.getFullYear(), currdate.getMonth(), currdate.getDate()).getTime() / 1000
               var date = new Date(value * 1000)
               var month = date.getMonth() + 1
               var day = date.getDate()
@@ -163,9 +161,6 @@ export default {
                 } else {
                   return '{b|¥' + params.value + '}'
                 }
-                // var date = new Date()
-                // var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-                // return (timestrip === dataAxis[params.dataIndex]) ? '{a|¥' + params.value + '}' : '{b|¥' + params.value + '}'
               },
               rich: {
                 a: {
@@ -185,9 +180,6 @@ export default {
                   } else {
                     return '#e3effc'
                   }
-                  // var date = new Date()
-                  // var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-                  // return (timestrip === dataAxis[params.dataIndex]) ? 'rgb(58, 111, 246)' : 'rgb(229, 239, 251)'
                 }
               }
             },
@@ -225,12 +217,13 @@ export default {
         pvalue = params.name
         let _startValue = 0
         let _endValue = 0
-        if (params.dataIndex - 3 > 0) {
-          _startValue = params.dataIndex - 3
+        console.log(parseInt(_that.dataAxis.length / 2))
+        if (params.dataIndex <= parseInt(_that.dataAxis.length / 2)) {
+          _startValue = params.dataIndex - 3 > 0 ? params.dataIndex - 3 : 0
           _endValue = _startValue + 6
         } else {
-          _startValue = 0
-          _endValue = _startValue + 6
+          _endValue = params.dataIndex + 3 > (_that.dataAxis.length - 1) ? (_that.dataAxis.length - 1) : params.dataIndex + 3
+          _startValue = _endValue - 6
         }
         _that.chartOpt.dataZoom[0].startValue = _startValue
         _that.chartOpt.dataZoom[0].endValue = _endValue
@@ -252,6 +245,7 @@ export default {
 <style scoped>
 .content{
   background: #f5f5f5;
+  height: 100%;
 }
 .flight-info-wrap{
   background: #fff;
