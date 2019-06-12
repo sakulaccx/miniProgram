@@ -1,6 +1,6 @@
-# vue-miniprogram
+# whale
 
-> Develop mini program use vue
+> A Mpvue project
 
 ## Build Setup
 
