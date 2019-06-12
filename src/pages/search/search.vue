@@ -27,147 +27,8 @@ import * as echarts from '../../../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
 
 let chart = null
+let pvalue = ''
 
-// function initChart (canvas, width, height) {
-//   var option = {
-//     grid: {
-//       left: '5%',
-//       top: '8%',
-//       right: '5%',
-//       bottom: '20%'
-//     },
-//     xAxis: {
-//       data: dataAxis,
-//       axisLabel: {
-//         interval: 0,
-//         inside: false,
-//         textStyle: {
-//           color: '#42434D'
-//         },
-//         formatter: function (value, index) {
-//           var currdate = new Date()
-//           var timestrip = new Date(currdate.getFullYear(), currdate.getMonth(), currdate.getDate()).getTime() / 1000
-//           var date = new Date(value * 1000)
-//           var month = date.getMonth() + 1
-//           var day = date.getDate()
-//           var weekday = weekdays[date.getDay()]
-//           var dateStr = month + '月' + day + '日'
-//           if (timestrip === value) {
-//             return [
-//               '{a|' + dateStr + '}',
-//               '{b|' + weekday + '}'
-//             ].join('\n')
-//           } else {
-//             return [
-//               '{c|' + dateStr + '}',
-//               '{d|' + weekday + '}'
-//             ].join('\n')
-//           }
-//         },
-//         rich: {
-//           a: {
-//             fontSize: 11,
-//             color: '#EC624C'
-//           },
-//           b: {
-//             fontSize: 12,
-//             lineHeight: 18,
-//             color: '#EC624C'
-//           },
-//           c: {
-//             fontSize: 11
-//           },
-//           d: {
-//             fontSize: 12,
-//             lineHeight: 18
-//           }
-//         }
-//       },
-//       axisTick: {
-//         show: false
-//       },
-//       axisLine: {
-//         show: false
-//       },
-//       z: 10
-//     },
-//     yAxis: {
-//       show: false
-//     },
-//     dataZoom: [{
-//       type: 'inside',
-//       xAxisIndex: [0],
-//       start: 40,
-//       end: 90
-//     }],
-//     series: [
-//       { // For shadow
-//         type: 'bar',
-//         itemStyle: {
-//           normal: { color: '#F8F9FC' }
-//         },
-//         barGap: '-100%',
-//         barCategoryGap: '40%',
-//         data: dataShadow,
-//         animation: false
-//       },
-//       {
-//         type: 'bar',
-//         label: {
-//           show: true,
-//           position: 'top',
-//           formatter: function (params) {
-//             var date = new Date()
-//             var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-//             return (timestrip === dataAxis[params.dataIndex]) ? '{a|¥' + params.value + '}' : '{b|¥' + params.value + '}'
-//           },
-//           rich: {
-//             a: {
-//               color: '#EB5B3E'
-//             },
-//             b: {
-//               color: '#42434D'
-//             }
-//           }
-//         },
-//         itemStyle: {
-//           normal: {
-//             color: function (params) {
-//               var date = new Date()
-//               var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-//               return (timestrip === dataAxis[params.dataIndex]) ? 'rgb(58, 111, 246)' : 'rgb(229, 239, 251)'
-//             }
-//           }
-//         },
-//         emphasis: {
-//           label: {
-//             show: true,
-//             position: 'top',
-//             formatter: '¥{c}',
-//             color: '#42434D'
-//           },
-//           itemStyle: {
-//             color: function (params) {
-//               var date = new Date()
-//               var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-//               return (timestrip === dataAxis[params.dataIndex]) ? 'rgb(58, 111, 246)' : 'rgb(229, 239, 251)'
-//             }
-//           }
-//         },
-//         data: data
-//       }
-//     ]
-//   }
-
-//   chart = echarts.init(canvas, null, {
-//     width: width,
-//     height: height
-//   })
-//   canvas.setChart(chart)
-//   chart.setOption(option)
-
-//   return chart
-// }
 export default {
   data () {
     return {
@@ -178,6 +39,7 @@ export default {
         date: '4月1日'
       },
       echarts,
+      dataAxis: [],
       chartOpt: null
     }
   },
@@ -197,14 +59,14 @@ export default {
       console.log('go to detail page')
     },
     initChart (canvas, width, height) {
-      let dataAxis = [1559664000, 1559750400, 1559836800, 1559923200, 1560009600, 1560096000, 1560182400, 1560268800, 1560355200, 1560441600, 1560528000]
+      this.dataAxis = [1559664000, 1559750400, 1559836800, 1559923200, 1560009600, 1560096000, 1560182400, 1560268800, 1560355200, 1560441600, 1560528000]
       let data = [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 313]
-      let yMax = 500
+      let yMax = Math.max(...data)
       let dataShadow = []
       let weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
       for (let i = 0; i < data.length; i++) {
-        dataShadow.push(yMax)
+        dataShadow.push(yMax + 200)
       }
 
       this.chartOpt = {
@@ -215,7 +77,7 @@ export default {
           bottom: '20%'
         },
         xAxis: {
-          data: dataAxis,
+          data: this.dataAxis,
           axisLabel: {
             interval: 0,
             inside: false,
@@ -223,14 +85,14 @@ export default {
               color: '#42434D'
             },
             formatter: function (value, index) {
-              var currdate = new Date()
-              var timestrip = new Date(currdate.getFullYear(), currdate.getMonth(), currdate.getDate()).getTime() / 1000
+              // var currdate = new Date()
+              // var timestrip = new Date(currdate.getFullYear(), currdate.getMonth(), currdate.getDate()).getTime() / 1000
               var date = new Date(value * 1000)
               var month = date.getMonth() + 1
               var day = date.getDate()
               var weekday = weekdays[date.getDay()]
               var dateStr = month + '月' + day + '日'
-              if (timestrip === value) {
+              if (pvalue === value) {
                 return [
                   '{a|' + dateStr + '}',
                   '{b|' + weekday + '}'
@@ -275,8 +137,8 @@ export default {
         dataZoom: [{
           type: 'inside',
           xAxisIndex: [0],
-          start: 40,
-          end: 90
+          startValue: 2,
+          endValue: 8
         }],
         series: [
           { // For shadow
@@ -295,9 +157,15 @@ export default {
               show: true,
               position: 'top',
               formatter: function (params) {
-                var date = new Date()
-                var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-                return (timestrip === dataAxis[params.dataIndex]) ? '{a|¥' + params.value + '}' : '{b|¥' + params.value + '}'
+                var key = params.name
+                if (key === pvalue) {
+                  return '{a|¥' + params.value + '}'
+                } else {
+                  return '{b|¥' + params.value + '}'
+                }
+                // var date = new Date()
+                // var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
+                // return (timestrip === dataAxis[params.dataIndex]) ? '{a|¥' + params.value + '}' : '{b|¥' + params.value + '}'
               },
               rich: {
                 a: {
@@ -311,25 +179,31 @@ export default {
             itemStyle: {
               normal: {
                 color: function (params) {
-                  var date = new Date()
-                  var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-                  return (timestrip === dataAxis[params.dataIndex]) ? 'rgb(58, 111, 246)' : 'rgb(229, 239, 251)'
+                  var key = params.name
+                  if (key === pvalue) {
+                    return '#2b6cff'
+                  } else {
+                    return '#e3effc'
+                  }
+                  // var date = new Date()
+                  // var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
+                  // return (timestrip === dataAxis[params.dataIndex]) ? 'rgb(58, 111, 246)' : 'rgb(229, 239, 251)'
                 }
               }
             },
-            emphasis: {
-              label: {
-                show: true,
-                position: 'top',
-                formatter: '¥{c}',
-                color: '#42434D'
-              },
-              itemStyle: {
-                color: function (params) {
-                  var date = new Date()
-                  var timestrip = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-                  return (timestrip === dataAxis[params.dataIndex]) ? 'rgb(58, 111, 246)' : 'rgb(229, 239, 251)'
+            markLine: {
+              silent: true,
+              symbol: 'none',
+              data: [
+                {
+                  yAxis: yMax
                 }
+              ],
+              label: {
+                show: false
+              },
+              lineStyle: {
+                color: '#ff6c58'
               }
             },
             data: data
@@ -338,16 +212,9 @@ export default {
       }
 
       this.$refs.echarts.init()
-      // chart = echarts.init(canvas, null, {
-      //   width: width,
-      //   height: height
-      // })
-      // canvas.setChart(chart)
-      // chart.setOption(option)
-
-      // return chart
     },
     handleInit (canvas, width, height) {
+      var _that = this
       chart = echarts.init(canvas, null, {
         width: width,
         height: height
@@ -355,14 +222,26 @@ export default {
       canvas.setChart(chart)
       chart.setOption(this.chartOpt)
       chart.on('click', function (params) {
-        console.log(params)
+        pvalue = params.name
+        let _startValue = 0
+        let _endValue = 0
+        if (params.dataIndex - 3 > 0) {
+          _startValue = params.dataIndex - 3
+          _endValue = _startValue + 6
+        } else {
+          _startValue = 0
+          _endValue = _startValue + 6
+        }
+        _that.chartOpt.dataZoom[0].startValue = _startValue
+        _that.chartOpt.dataZoom[0].endValue = _endValue
+        chart.setOption(_that.chartOpt, true)
       })
       return chart
     }
   },
   mounted () {
+    pvalue = '1560096000'
     this.initChart()
-    console.log(this.$refs.echarts)
   },
   created () {
     // let app = getApp()
