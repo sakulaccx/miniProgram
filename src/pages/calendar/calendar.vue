@@ -39,14 +39,7 @@ export default {
         '10-5': '休',
         '10-6': '休',
         '10-7': '休'
-      },
-      tileContent: [
-        {
-          date: '2019-6-13',
-          className: 'holiday',
-          content: '休'
-        }
-      ]
+      }
     }
   },
   components: {

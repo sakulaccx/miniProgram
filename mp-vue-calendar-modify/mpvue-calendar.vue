@@ -32,9 +32,10 @@
           <td v-for="(child,k2) in day" :key="k2" :class="[{'selected': child.selected, 'mc-today-element': child.isToday, 'disabled': child.disabled, 'mc-range-select-one': rangeBgHide && child.selected, 'lunarStyle': lunar, 'mc-range-row-first': k2 === 0 && child.selected, 'month-last-date': child.lastDay, 'month-first-date': 1 === child.day, 'mc-range-row-last': k2 === 6 && child.selected, 'mc-last-month': child.lastMonth, 'mc-next-month': child.nextMonth}, child.className, child.rangeClassName]" @click="select(k1, k2, child, $event, index)" class="mc-day" :style="itemStyle">
             
             <span v-if="showToday.show && child.isToday" class="mc-today calendar-date">{{showToday.text}}</span>
-            <span v-else-if="child.isAlmanac || child.isLunarFestival || child.isGregorianFestival || child.isTerm" class="mc-text-lunar" :class="{'isLunarFestival': child.isAlmanac || child.isLunarFestival,'isGregorianFestival': child.isGregorianFestival,'isTerm': child.isTerm}">{{child.almanac || child.lunar}}</span>
+            <!-- <span v-else-if="child.isAlmanac || child.isLunarFestival || child.isGregorianFestival || child.isTerm" class="mc-text-lunar" :class="{'isLunarFestival': child.isAlmanac || child.isLunarFestival,'isGregorianFestival': child.isGregorianFestival,'isTerm': child.isTerm}">{{child.almanac || child.lunar}}</span> -->
+            <span v-else-if="child.isLunarFestival || child.isGregorianFestival" class="mc-text-lunar" :class="{'isLunarFestival': child.isAlmanac || child.isLunarFestival,'isGregorianFestival': child.isGregorianFestival}">{{child.almanac || child.lunar}}</span>
+            <span v-else-if="child.isAlmanac" class='isAlmanc'>{{child.day}}<span class="inner-almanac">{{child.almanac}}</span></span>
             <span :class="[{'mc-date-red': k2 === (monFirst ? 5 : 0) || k2 === 6}, 'calendar-date']" v-else>{{child.day}}</span>
-            
             <div class="slot-element" v-if="!!child.content">{{child.content}}</div>
             <div class="mc-text remark-text" v-if="child.eventName && !clean">{{child.eventName}}</div>
             <div class="mc-dot" v-if="child.eventName && clean"></div>

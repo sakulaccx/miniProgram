@@ -122,7 +122,7 @@
 }
 .mc-today{
   /*color: #3b75fb;*/
-  color:#ea6151;
+  /*color:#ea6151;*/
 }
 .mpvue-calendar td.selected span{
   background-color: #3b75fb;
@@ -144,7 +144,20 @@
 .mpvue-calendar td .isGregorianFestival,
 .mpvue-calendar td .isTerm,
 .mpvue-calendar td .isLunarFestival{
-  color:#ea6151;
+  /*color:#ea6151;*/
+}
+.mpvue-calendar td .isAlmanc .inner-almanac{
+  color: #ea6151;
+  position: absolute;
+  right: 10rpx;
+  top: 10rpx;
+  font-size: 20rpx;
+  line-height: 0rpx;
+  text-align: right;
+}
+.mpvue-calendar td.selected .isAlmanc .inner-almanac{
+  color: #fff;
+  background: none;
 }
 .mpvue-calendar td.selected span.mc-date-red{
   background-color: #3b75fb;
@@ -157,18 +170,18 @@
   width: 90rpx;
   height: 80rpx;
   line-height:60rpx;
-  font-size: 16px;
+  font-size: 28rpx;
 }
 .mpvue-calendar .lunarStyle .mc-text{
   top: 50rpx;
 }
 .mpvue-calendar .lunarStyle .mc-text-lunar{
   top: 0;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 .mpvue-calendar thead td {
   text-transform: uppercase;
-  height:30px;
+  height: 60rpx;
   vertical-align: middle;
 }
 .mc-head {
