@@ -1,7 +1,7 @@
 <template>
   <div class="notice-bar">
     <div class="inner-text">您可点击筛选，按照起飞时段选择航班</div>
-    <div class="notice-btn" @click="popupFilter">筛选></div>
+    <div class="notice-btn" @click="showTimeFilter">筛选></div>
     <div class="clearfix"></div>
   </div>
 </template>
@@ -18,8 +18,8 @@ export default {
   components: {},
 
   methods: {
-    popupFilter () {
-      console.log('sssssssssss')
+    showTimeFilter () {
+      this.$emit('showTimeBox')
     }
   },
 

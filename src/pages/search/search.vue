@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <notice-bar />
+    <notice-bar @showTimeBox="showTimeFilter" />
     <favorite-bar />
     <div class="flight-info-wrap">
       <div class="curr-price">
@@ -17,12 +17,14 @@
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
     </div>
     <div class="btn detail-btn" @click="gotoDetail">查看详情</div>
+    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" />
   </div>
 </template>
 
 <script>
 import noticeBar from '@/components/notice-bar'
 import favoriteBar from '@/components/favorite-bar'
+import timeDialog from '@/components/time-dialog'
 import * as echarts from '../../../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
 
@@ -33,6 +35,7 @@ export default {
   data () {
     return {
       pagename: '搜索页面',
+      showTimeDialog: false,
       flightInfo: {
         currPrice: 700,
         expectPrice: 200,
@@ -47,6 +50,7 @@ export default {
   components: {
     noticeBar,
     favoriteBar,
+    timeDialog,
     mpvueEcharts
   },
   computed: {
@@ -217,7 +221,6 @@ export default {
         pvalue = params.name
         let _startValue = 0
         let _endValue = 0
-        console.log(parseInt(_that.dataAxis.length / 2))
         if (params.dataIndex <= parseInt(_that.dataAxis.length / 2)) {
           _startValue = params.dataIndex - 3 > 0 ? params.dataIndex - 3 : 0
           _endValue = _startValue + 6
@@ -230,6 +233,16 @@ export default {
         chart.setOption(_that.chartOpt, true)
       })
       return chart
+    },
+    showTimeFilter () {
+      this.showTimeDialog = true
+    },
+    confirmTime (_obj) {
+      console.log(_obj.startTime)
+      console.log(_obj.endTime)
+    },
+    closeTimePopup () {
+      this.showTimeDialog = false
     }
   },
   mounted () {
@@ -288,7 +301,7 @@ export default {
   margin-top: 30rpx;
 }
 .detail-btn{
-  margin: 30rpx auto 0 auto;
+  margin: 60rpx auto 0 auto;
   background: #2065ff;
   width: 90%;
   height: 88rpx;

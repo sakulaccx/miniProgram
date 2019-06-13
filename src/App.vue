@@ -22,4 +22,13 @@ page{
 	line-height: 80rpx;
 	text-align: center;
 }
+.clearfix:after {
+	content: " ";
+	display: block;
+	clear: both;
+	height: 0;
+}
+.clearfix {
+	zoom: 1;
+}
 </style>

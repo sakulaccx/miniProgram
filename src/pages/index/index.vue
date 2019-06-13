@@ -101,48 +101,92 @@ export default {
           list: []
         },
         {
-          title: '国际热门城市',
-          list: [
-            {
-              label: '普吉',
-              value: 'PUK'
-            },
-            {
-              label: '雅典',
-              value: 'ATH'
-            }
-          ]
-        },
-        {
           title: '国内热门城市',
           list: [
-            {
-              label: '上海',
-              value: 'SH'
-            },
             {
               label: '北京',
               value: 'BJ'
             },
             {
+              label: '上海',
+              value: 'SH'
+            },
+            {
+              label: '广州',
+              value: 'CAN'
+            },
+            {
               label: '成都',
-              value: 'CD'
+              value: 'CTU'
+            },
+            {
+              label: '深圳',
+              value: 'SZX'
+            },
+            {
+              label: '杭州',
+              value: 'HGH'
             },
             {
               label: '重庆',
               value: 'CQ'
             },
             {
-              label: '乌鲁木齐',
-              value: 'WLMQ'
+              label: '西安',
+              value: 'SIA'
             },
             {
-              label: '黑龙江',
-              value: 'HLJ'
+              label: '南京',
+              value: 'NKG'
             },
             {
-              label: '西藏',
-              value: 'XZ'
+              label: '天津',
+              value: 'TSN'
+            },
+            {
+              label: '昆明',
+              value: 'KMG'
+            },
+            {
+              label: '武汉',
+              value: 'WUH'
+            },
+            {
+              label: '郑州',
+              value: 'CGO'
+            },
+            {
+              label: '沈阳',
+              value: 'SHE'
+            },
+            {
+              label: '青岛',
+              value: 'TAO'
+            },
+            {
+              label: '长沙',
+              value: 'CSX'
+            }
+          ]
+        },
+        {
+          title: '出发城市列表',
+          list: [
+            {
+              label: '北京',
+              value: 'BJS'
+            },
+            {
+              label: '上海',
+              value: 'SHA'
+            },
+            {
+              label: '天津',
+              value: 'TSN'
+            },
+            {
+              label: '重庆',
+              value: 'CKG'
             }
           ]
         }
@@ -228,7 +272,7 @@ export default {
     },
     searchFly () {
       if (this.searchForm.date.length > 0 && this.searchForm.from.length > 0 && this.searchForm.target.length > 0) {
-        wx.navigateTo({url: '../flightList/main'})
+        wx.navigateTo({url: '../search/main'})
       } else if (this.searchForm.date.length === 0) {
         console.log('请选择出发日期')
       } else if (this.searchForm.from.length === 0) {
