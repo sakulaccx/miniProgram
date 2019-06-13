@@ -141,9 +141,9 @@
   color:#444;
   z-index: 4;
 }
-.mpvue-calendar td .isGregorianFestival,
-.mpvue-calendar td .isTerm,
-.mpvue-calendar td .isLunarFestival{
+.mpvue-calendar td:not(.disabled) .isGregorianFestival,
+.mpvue-calendar td:not(.disabled) .isTerm,
+.mpvue-calendar td:not(.disabled) .isLunarFestival{
   color:#ea6151;
 }
 .mpvue-calendar td .isLunarFestival .inner-almanac,
