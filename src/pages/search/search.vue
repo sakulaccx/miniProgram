@@ -130,8 +130,7 @@ export default {
           },
           axisLine: {
             show: false
-          },
-          z: 10
+          }
         },
         yAxis: {
           show: false

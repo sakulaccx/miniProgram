@@ -345,6 +345,7 @@ export default {
     text-align: center;
     display: inline-block;
     color: rgb(153, 153, 157);
+    vertical-align: middle;
   }
   .choose-city.selected{
     color: rgb(49, 49, 49);

@@ -169,7 +169,7 @@ export default {
   top: 0;
   left: 0;
   background: #f5f5f5;
-  z-index: 1000
+  z-index: 10000
 }
 .time-wrap{
   position: relative;
