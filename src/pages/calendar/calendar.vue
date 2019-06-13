@@ -8,8 +8,9 @@
       :rangeMonthFormat="rangeMonthFormat"
       :clean="false"
       :lunar="true"
-      @select="select"
       :almanacs="almanacs"
+      :disabled="dateDisabled"
+      @select="select"
     />
   </div>
 
@@ -26,20 +27,20 @@ export default {
       weekarr: ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
       monthRange: [],
       rangeMonthFormat: 'yyyy年MM月',
-      events: {'2019-5-1': '¥600', '2019-5-8': '¥300', '2020-4-5': '¥1400'},
-      almanacs: {
-        '1-1': '休',
-        '4-4': '休',
-        '5-1': '休',
-        '6-7': '休',
-        '10-1': '休',
-        '10-2': '休',
-        '10-3': '休',
-        '10-4': '休',
-        '10-5': '休',
-        '10-6': '休',
-        '10-7': '休'
-      }
+      events: {
+        '2019-6-7': '¥600',
+        '2019-6-11': '¥600',
+        '2019-6-18': '¥300',
+        '2019-7-5': '¥1400'
+      },
+      date90: null,
+      date90Year: '',
+      date90Month: '',
+      date45: null,
+      date45Year: '',
+      date45Month: '',
+      date45Date: '',
+      dateDisabled: []
     }
   },
   components: {
@@ -65,15 +66,37 @@ export default {
       let currDate = new Date()
       let currYear = currDate.getFullYear()
       let currMonth = currDate.getMonth() + 1
-      let mill = currDate.setMonth(currDate.getMonth() + 3)
-      let targetYear = new Date(mill).getFullYear()
-      let targetMonth = new Date(mill).getMonth() + 1
+      this.date90 = new Date(currDate.setMonth(currDate.getMonth() + 2))
+      this.date90Year = this.date90.getFullYear()
+      this.date90Month = this.date90.getMonth() + 1
 
-      this.monthRange = [`${currYear}-${currMonth}`, `${targetYear}-${targetMonth}`]
+      this.monthRange = [`${currYear}-${currMonth}`, `${this.date90Year}-${this.date90Month}`]
+    },
+    setDisableDays () {
+      let currDate = new Date()
+      let _today = currDate.getDate()
+      this.date45 = new Date(currDate.setDate(currDate.getDate() + 44))
+      this.date45Year = this.date45.getFullYear()
+      this.date45Month = this.date45.getMonth() + 1
+      this.date45Date = this.date45.getDate()
+      if (_today > 1) {
+        for (var i = 1; i < _today; i++) {
+          this.dateDisabled.push(`${currDate.getFullYear()}-${currDate.getMonth()}-${i}`)
+        }
+      }
+
+      for (var ii = 1; ii < 50; ii++) {
+        var _newdate = new Date()
+        var _45date = new Date(_newdate.setDate(_newdate.getDate() + 44))
+        var _targetdate = new Date(_45date.setDate(_45date.getDate() + ii))
+
+        this.dateDisabled.push(`${_targetdate.getFullYear()}-${_targetdate.getMonth() + 1}-${_targetdate.getDate()}`)
+      }
     }
   },
   mounted () {
     this.set90DaysRange()
+    this.setDisableDays()
   },
   created () {
   // let app = getApp()
