@@ -9,7 +9,7 @@
       </div>
       <div class="middle-line"></div>
       <div class="expect-price">
-        <div :class="['price-show', 'iconfont', {'green-price icon-downarrow-after': checkPrice < 0, 'red-price icon-uparrow-after': checkPrice > 0}]">￥{{flightInfo.expectPrice}}</div>
+        <div :class="['price-show', 'iconfont', {'green-price icon-iconset0413-after': checkPrice < 0, 'red-price icon-iconset0414-after': checkPrice > 0, 'black-price': checkPrice === 0}]">￥{{flightInfo.expectPrice}}</div>
         <div class="expect-text">预计达到价格</div>
       </div>
     </div>
@@ -277,6 +277,7 @@ export default {
 }
 .price-show{
   font-size: 52rpx;
+  text-align: center;
 }
 .date-show,
 .expect-text{
@@ -289,6 +290,9 @@ export default {
 }
 .red-price{
   color: #ff320b;
+}
+.black-price{
+  color: #000;
 }
 .middle-line{
   height: 42%;

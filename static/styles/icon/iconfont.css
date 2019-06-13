@@ -20,8 +20,14 @@
 .icon-iconset0413:before {
   content: "\e724";
 }
+.icon-iconset0413-after:after {
+  content: "\e724";
+}
 
 .icon-iconset0414:before {
+  content: "\e725";
+}
+.icon-iconset0414-after:after {
   content: "\e725";
 }
 
