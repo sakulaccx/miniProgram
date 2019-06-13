@@ -60,17 +60,20 @@ export default {
       }
       this.setDate(_obj)
       wx.navigateTo({url: '../index/main'})
+    },
+    set90DaysRange () {
+      let currDate = new Date()
+      let currYear = currDate.getFullYear()
+      let currMonth = currDate.getMonth() + 1
+      let mill = currDate.setMonth(currDate.getMonth() + 3)
+      let targetYear = new Date(mill).getFullYear()
+      let targetMonth = new Date(mill).getMonth() + 1
+
+      this.monthRange = [`${currYear}-${currMonth}`, `${targetYear}-${targetMonth}`]
     }
   },
   mounted () {
-    let currDate = new Date()
-    let currYear = currDate.getFullYear()
-    let currMonth = currDate.getMonth() + 1
-    let mill = currDate.setMonth(currDate.getMonth() + 3)
-    let targetYear = new Date(mill).getFullYear()
-    let targetMonth = new Date(mill).getMonth() + 1
-
-    this.monthRange = [`${currYear}-${currMonth}`, `${targetYear}-${targetMonth}`]
+    this.set90DaysRange()
   },
   created () {
   // let app = getApp()

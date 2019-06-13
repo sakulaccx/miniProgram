@@ -33,7 +33,7 @@
             
             <span v-if="showToday.show && child.isToday" class="mc-today calendar-date">{{showToday.text}}</span>
             <!-- <span v-else-if="child.isAlmanac || child.isLunarFestival || child.isGregorianFestival || child.isTerm" class="mc-text-lunar" :class="{'isLunarFestival': child.isAlmanac || child.isLunarFestival,'isGregorianFestival': child.isGregorianFestival,'isTerm': child.isTerm}">{{child.almanac || child.lunar}}</span> -->
-            <span v-else-if="child.isLunarFestival || child.isGregorianFestival" class="mc-text-lunar" :class="{'isLunarFestival': child.isAlmanac || child.isLunarFestival,'isGregorianFestival': child.isGregorianFestival}">{{child.almanac || child.lunar}}</span>
+            <span v-else-if="child.isLunarFestival || child.isGregorianFestival" class="mc-text-lunar" :class="{'isLunarFestival': child.isAlmanac || child.isLunarFestival,'isGregorianFestival': child.isGregorianFestival}">{{child.lunar}}<!-- <span class="inner-almanac">{{child.almanac}}</span> --></span>
             <span v-else-if="child.isAlmanac" class='isAlmanc'>{{child.day}}<span class="inner-almanac">{{child.almanac}}</span></span>
             <span :class="[{'mc-date-red': k2 === (monFirst ? 5 : 0) || k2 === 6}, 'calendar-date']" v-else>{{child.day}}</span>
             <div class="slot-element" v-if="!!child.content">{{child.content}}</div>
@@ -197,14 +197,14 @@
           lunar:{
             "1-1":"春节",
             "1-15":"元宵节",
-            "2-2":"龙头节",
+            //"2-2":"龙头节",
             "5-5":"端午节",
             "7-7":"七夕节",
-            "7-15":"中元节",
+            //"7-15":"中元节",
             "8-15":"中秋节",
             "9-9":"重阳节",
-            "10-1":"寒衣节",
-            "10-15":"下元节",
+            //"10-1":"寒衣节",
+            //"10-15":"下元节",
             "12-8":"腊八节",
             "12-23":"小年",
           },
@@ -216,8 +216,8 @@
             "5-1":"劳动节",
             "5-4":"青年节",
             "6-1":"儿童节",
-            "7-1":"建党节",
-            "8-1":"建军节",
+            // "7-1":"建党节",
+            // "8-1":"建军节",
             "9-10":"教师节",
             "10-1":"国庆节",
             "12-24":"平安夜",

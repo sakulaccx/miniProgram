@@ -144,8 +144,9 @@
 .mpvue-calendar td .isGregorianFestival,
 .mpvue-calendar td .isTerm,
 .mpvue-calendar td .isLunarFestival{
-  /*color:#ea6151;*/
+  color:#ea6151;
 }
+.mpvue-calendar td .isLunarFestival .inner-almanac,
 .mpvue-calendar td .isAlmanc .inner-almanac{
   color: #ea6151;
   position: absolute;
@@ -155,6 +156,7 @@
   line-height: 0rpx;
   text-align: right;
 }
+.mpvue-calendar td.selected .isLunarFestival .inner-almanac,
 .mpvue-calendar td.selected .isAlmanc .inner-almanac{
   color: #fff;
   background: none;
