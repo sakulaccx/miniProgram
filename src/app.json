@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/index/main",
     "pages/search/main",
+    "pages/index/main",
     "pages/calendar/main",    
     "pages/flightList/main"
   ],

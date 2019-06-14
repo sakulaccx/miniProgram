@@ -235,6 +235,7 @@ export default {
     },
     showTimeFilter () {
       this.showTimeDialog = true
+      chart.clear()
     },
     confirmTime (_obj) {
       console.log(_obj.startTime)
@@ -242,6 +243,7 @@ export default {
     },
     closeTimePopup () {
       this.showTimeDialog = false
+      chart.setOption(this.chartOpt)
     }
   },
   mounted () {
