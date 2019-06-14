@@ -7,7 +7,7 @@
         <span class="choose-city left-city">
           <van-field
            :disabled="fromDisabled"
-           :value="from"
+           :value="searchForm.from_str"
            placeholder="出发地"
            placeholder-style="color:rgb(153, 153, 157)"
            :border="false"
@@ -20,7 +20,7 @@
         <span class="choose-city right-city target">
           <van-field
            :disabled="targetDisabled"
-           :value="target"
+           :value="searchForm.target_str"
            placeholder="目的地"
            placeholder-style="color:rgb(153, 153, 157)"
            :border="false"
@@ -79,8 +79,6 @@ import {mapState, mapMutations} from 'vuex'
 export default {
   data () {
     return {
-      from: '',
-      target: '',
       date: '选择出行日期',
       weekday: '',
       selectFrom: 1,
@@ -91,8 +89,10 @@ export default {
       searchTimer: null,
       searchCityResult: [],
       searchForm: {
-        from: '',
-        target: '',
+        from_code: '',
+        target_code: '',
+        from_str: '',
+        target_str: '',
         date: ''
       },
       cityGroup: [
@@ -191,16 +191,7 @@ export default {
           ]
         }
       ],
-      searchCityArr: [
-        {
-          label: '上海',
-          value: 'SH'
-        },
-        {
-          label: '北京',
-          value: 'BJS'
-        }
-      ]
+      searchCityArr: []
     }
   },
   computed: {
@@ -214,7 +205,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setHistory: 'SET_HISTORY_SEARCH'
+      setHistory: 'SET_HISTORY_SEARCH',
+      setDepart: 'SET_DEPART_DATE'
     }),
     showCity (val) {
       this.selectFrom = val
@@ -227,9 +219,9 @@ export default {
       }
     },
     exchangeCity () {
-      let _tpl = this.from
-      this.from = this.target
-      this.target = _tpl
+      let _tpl = this.searchForm.from_str
+      this.searchForm.from_str = this.searchForm.target_str
+      this.searchForm.target_str = _tpl
     },
     searchCity (val) {
       let searchStr = val.mp.detail
@@ -247,7 +239,6 @@ export default {
           _tplArr.push(v)
         }
       })
-
       this.searchCityResult = _tplArr
     },
     showCalendar () {
@@ -255,11 +246,11 @@ export default {
     },
     saveCity (obj) {
       if (this.selectFrom === 1) {
-        this.from = obj.label
-        this.searchForm.from = obj.value
+        this.searchForm.from_str = obj.label
+        this.searchForm.from_code = obj.value
       } else {
-        this.target = obj.label
-        this.searchForm.target = obj.value
+        this.searchForm.target_str = obj.label
+        this.searchForm.target_code = obj.value
       }
       let _tplArr = this.search_history
       _tplArr = [..._tplArr, obj]
@@ -271,16 +262,16 @@ export default {
       return newArr
     },
     searchFly () {
-      if (this.searchForm.date.length > 0 && this.searchForm.from.length > 0 && this.searchForm.target.length > 0) {
+      if (this.searchForm.date.length > 0 && this.searchForm.from_code.length > 0 && this.searchForm.target_code.length > 0) {
+        this.setDepart(this.searchForm)
         wx.navigateTo({url: '../search/main'})
       } else if (this.searchForm.date.length === 0) {
         console.log('请选择出发日期')
-      } else if (this.searchForm.from.length === 0) {
+      } else if (this.searchForm.from_code.length === 0) {
         console.log('请选择出发地')
       } else {
         console.log('请选择目的地')
       }
-      console.log(this.searchForm)
     },
     closeSearchBox () {
       this.showCityBox = false

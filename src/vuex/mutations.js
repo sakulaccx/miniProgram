@@ -5,6 +5,6 @@ export default {
     state.search_history = arr
   },
   [type.SET_DEPART_DATE] (state, dateObj) {
-    state.depart_date = dateObj
+    state.depart_date = {...state.depart_date, ...dateObj}
   }
 }

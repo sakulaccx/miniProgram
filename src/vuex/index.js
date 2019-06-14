@@ -12,7 +12,11 @@ const state = {
   depart_date: {
     date_display: '',
     date_week: '',
-    date_search: ''
+    date_search: '',
+    from_str: '',
+    target_str: '',
+    from_code: '',
+    target_code: ''
   }
 }
 
