@@ -1,6 +1,20 @@
 <template>
   <div class="content">
     <notice-bar @showTimeBox="showTimeFilter" />
+    <div class="detail-wrap">
+      <div class="info-wrap">
+        <div class="price-show">￥{{flightInfo.currPrice}}</div>
+        <div class="price-desc">{{flightInfo.date}}机票价格</div>
+        <div class="btn buy-btn">现在就买</div>
+        <div class="favorit-link" v-if="!isfavorited">添加关注，提醒我购票</div>
+      </div>
+      <div class="forecast-wrap">
+        <div class="forecast-title">111</div>
+        <div class="suggest-content"></div>
+        <div class="clearfix"></div>
+        <div class="suggest-desc"></div>
+      </div>
+    </div>
     <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" />
   </div>
 </template>
@@ -217,7 +231,7 @@ export default {
     },
     showTimeFilter () {
       this.showTimeDialog = true
-      chart.clear()
+      // chart.clear()
     },
     confirmTime (_obj) {
       console.log(_obj.startTime)
@@ -225,7 +239,7 @@ export default {
     },
     closeTimePopup () {
       this.showTimeDialog = false
-      chart.setOption(this.chartOpt)
+      // chart.setOption(this.chartOpt)
     }
   },
   mounted () {
@@ -234,7 +248,6 @@ export default {
     wx.setNavigationBarTitle({
       title: `${this.depart_date.from_str} - ${this.depart_date.target_str}`
     })
-    console.log(this.depart_date)
   },
   created () {
     // let app = getApp()
@@ -247,7 +260,73 @@ export default {
   background: #f5f5f5;
   height: 100%;
 }
-
+.detail-wrap{
+  width: 100%;
+}
+.info-wrap{
+  width: 90%;
+  margin: 20rpx auto 0 auto;
+  height: 300rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  
+}
+.price-show{
+  width: 100%;
+  text-align: center;
+  font-size: 52rpx;
+}
+.price-desc{
+  width: 100%;
+  text-align: center;
+  font-size: 22rpx;
+  color: #66666e;
+}
+.buy-btn{
+  height: 70rpx;
+  background: #2065ff;
+  color: #fff;
+  line-height: 70rpx;
+  border-radius: 50rpx;
+  width: 50%;
+  margin: 20rpx auto 10rpx auto;
+  font-size: 30rpx;
+}
+.favorit-link{
+  color: #4680f6;
+  font-size: 26rpx;
+}
+.forecast-wrap{
+  margin-top: 30rpx;
+  background: #fff;
+  height: 80rpx;
+  padding: 20rpx 40rpx;
+}
+.forecast-title{
+  position: relative;
+  float: left;
+  padding-left: 40rpx;
+  font-size: 30rpx;
+  color: #33333e;
+}
+.forecast-title:before{
+  content: " ";
+  display: block;
+  height: 90%;
+  width: 16rpx;
+  position: absolute;
+  left: 0;
+  top: 5rpx;
+  background: #7796E3;
+  border-radius: 5rpx;
+}
+.suggest-content{
+  float: right;
+}
 .chart-show{
   width: 100%;
   height: 100%;
