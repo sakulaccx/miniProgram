@@ -9,10 +9,27 @@
         <div class="favorit-link" v-if="!isfavorited">添加关注，提醒我购票</div>
       </div>
       <div class="forecast-wrap">
-        <div class="forecast-title">111</div>
-        <div class="suggest-content"></div>
+        <div class="forecast-title">{{flightInfo.date}}机票价格</div>
+        <div class="suggest-content" :class="suggestion ? 'red-text' : 'green-text'">{{suggestText[suggestion]}}</div>
         <div class="clearfix"></div>
-        <div class="suggest-desc"></div>
+        <div class="suggest-desc">
+          {{suggestionDesc}}
+          <span :class="suggestion ? 'red-text' : 'green-text'">¥{{priceRange}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="bar-chart-wrap">
+      <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
+    </div>
+    <div class="price-trend-wrap">
+      <div class="trend-title">
+        价格分析
+        <span>航班起飞{{flightInfo.date}}</span>
+      </div>
+      <div class="trend-list">
+        <div class="list-item" v-for="(item, index) in trendList" :key="index">
+          {{item.date}} {{item.trend === 'up' ? trendOrder[index] + '价格呈上升趋势, 高至¥' : trendOrder[index] + '价格呈下降趋势, 低至¥'}}{{item.price}};
+        </div>
       </div>
     </div>
     <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" />
@@ -27,7 +44,6 @@ import mpvueEcharts from 'mpvue-echarts'
 import {mapState} from 'vuex'
 
 let chart = null
-let pvalue = ''
 
 export default {
   data () {
@@ -35,11 +51,17 @@ export default {
       showTimeDialog: false,
       flightInfo: {
         currPrice: 700,
+        expectPrice: 800,
         date: '4月1日'
       },
       echarts,
       dataAxis: [],
-      chartOpt: null
+      chartOpt: null,
+      suggestText: ['建议等等', '建议购买'],
+      cvalue: '',
+      dataVal: [],
+      trendList: [],
+      trendOrder: ['前', '后']
     }
   },
 
@@ -52,72 +74,101 @@ export default {
     ...mapState([
       'search_history',
       'depart_date'
-    ])
+    ]),
+    suggestion () {
+      if (this.flightInfo.currPrice > this.flightInfo.expectPrice) {
+        return 0
+      } else {
+        return 1
+      }
+    },
+    suggestionDesc () {
+      if (this.flightInfo.currPrice > this.flightInfo.expectPrice) {
+        return '价格会下降,' + this.depart_date.from_str + '-' + this.depart_date.target_str + '价格会下降'
+      } else {
+        return '价格会上升,' + this.depart_date.from_str + '-' + this.depart_date.target_str + '价格会上升'
+      }
+    },
+    priceRange () {
+      if (this.flightInfo.currPrice > this.flightInfo.expectPrice) {
+        return (this.flightInfo.currPrice - this.flightInfo.expectPrice)
+      } else {
+        return (this.flightInfo.expectPrice - this.flightInfo.currPrice)
+      }
+    },
+    showTrend (o) {
+      return function (o) {
+        if (o.trend === 'up') {
+          // return o.date + '前价格呈上升趋势, 高至¥' + o.price
+          return 1
+        } else {
+          // return o.date + '后价格呈下降趋势, 低至¥' + o.price
+          return 2
+        }
+      }
+    }
   },
   methods: {
     gotoList () {
       console.log('go to list page')
     },
     initChart (canvas, width, height) {
-      this.dataAxis = [1559664000, 1559750400, 1559836800, 1559923200, 1560009600, 1560096000, 1560182400, 1560268800, 1560355200, 1560441600, 1560528000]
-      let data = [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 313]
-      let yMax = Math.max(...data)
-      let dataShadow = []
-      let weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+      let _that = this
 
-      for (let i = 0; i < data.length; i++) {
-        dataShadow.push(yMax + 200)
-      }
+      this.dataAxis.forEach(function (v, i) {
+        if (i < (_that.dataAxis.length - 1)) {
+          _that.dataVal.push({
+            value: Math.floor(Math.random() * (3000 - 500 + 1)) + 500,
+            label: {
+              show: false
+            }
+          })
+        } else {
+          _that.dataVal.push({
+            value: Math.floor(Math.random() * (3000 - 500 + 1)) + 500,
+            label: {
+              show: true
+            }
+          })
+        }
+      })
 
       this.chartOpt = {
         grid: {
-          left: '5%',
-          top: '8%',
+          left: '12%',
+          top: '12%',
           right: '5%',
           bottom: '20%'
         },
         xAxis: {
-          data: this.dataAxis,
+          type: 'category',
+          boundaryGap: false,
+          data: _that.dataAxis,
           axisLabel: {
             interval: 0,
             inside: false,
-            textStyle: {
-              color: '#42434D'
-            },
+            rotate: 45,
             formatter: function (value, index) {
-              var date = new Date(value * 1000)
+              var date = new Date(value * 1)
               var month = date.getMonth() + 1
               var day = date.getDate()
-              var weekday = weekdays[date.getDay()]
               var dateStr = month + '月' + day + '日'
-              if (pvalue === value) {
-                return [
-                  '{a|' + dateStr + '}',
-                  '{b|' + weekday + '}'
-                ].join('\n')
+              if ((_that.cvalue * 1) === (value * 1)) {
+                return '{c|' + dateStr + '}'
               } else {
-                return [
-                  '{c|' + dateStr + '}',
-                  '{d|' + weekday + '}'
-                ].join('\n')
+                return '{a|' + dateStr + '}'
               }
             },
             rich: {
               a: {
                 fontSize: 11,
-                color: '#EC624C'
-              },
-              b: {
-                fontSize: 12,
-                lineHeight: 18,
-                color: '#EC624C'
+                fontWeight: 'lighter',
+                color: '#CBCBCD'
               },
               c: {
-                fontSize: 11
-              },
-              d: {
-                fontSize: 12,
-                lineHeight: 18
+                fontSize: 11,
+                fontWeight: 'lighter',
+                color: '#ED6823'
               }
             }
           },
@@ -129,80 +180,63 @@ export default {
           }
         },
         yAxis: {
-          show: false
+          type: 'value',
+          axisLabel: {
+            color: '#999CA9',
+            fontSize: 11,
+            fontWeight: 'lighter'
+          }
         },
         dataZoom: [{
           type: 'inside',
           xAxisIndex: [0],
-          startValue: 2,
-          endValue: 8
+          startValue: 7,
+          endValue: 13
         }],
-        series: [
-          { // For shadow
-            type: 'bar',
-            itemStyle: {
-              normal: { color: '#F8F9FC' }
-            },
-            barGap: '-100%',
-            barCategoryGap: '40%',
-            data: dataShadow,
-            animation: false
+        series: [{
+          data: _that.dataVal,
+          type: 'line',
+          symbolSize: 10,
+          itemStyle: {
+            normal: {
+              color: 'rgb(40, 126, 227)'
+            }
           },
-          {
-            type: 'bar',
-            label: {
-              show: true,
-              position: 'top',
-              formatter: function (params) {
-                var key = params.name
-                if (key === pvalue) {
-                  return '{a|¥' + params.value + '}'
-                } else {
-                  return '{b|¥' + params.value + '}'
-                }
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0, color: 'rgba(115, 165, 248, 0.1)' // 0% 处的颜色
               },
-              rich: {
-                a: {
-                  color: '#EB5B3E'
-                },
-                b: {
-                  color: '#42434D'
-                }
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: function (params) {
-                  var key = params.name
-                  if (key === pvalue) {
-                    return '#2b6cff'
-                  } else {
-                    return '#e3effc'
-                  }
-                }
-              }
-            },
-            markLine: {
-              silent: true,
-              symbol: 'none',
-              data: [
-                {
-                  yAxis: yMax
-                }
-              ],
-              label: {
-                show: false
-              },
-              lineStyle: {
-                color: '#ff6c58'
-              }
-            },
-            data: data
+              {
+                offset: 1, color: 'rgba(115, 165, 248, 1)' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            }
+          },
+          lineStyle: {
+            color: 'rgb(40, 126, 227)'
+          },
+          label: {
+            show: false,
+            position: 'top',
+            distance: 3,
+            formatter: '¥{c}',
+            fontSize: 11,
+            fontWeight: 'lighter',
+            backgroundColor: '#fff',
+            borderWidth: 1,
+            borderColor: '#ccc',
+            padding: 4
           }
-        ]
+        }]
       }
 
-      // this.$refs.echarts.init()
+      this.$refs.echarts.init()
     },
     handleInit (canvas, width, height) {
       var _that = this
@@ -213,7 +247,7 @@ export default {
       canvas.setChart(chart)
       chart.setOption(this.chartOpt)
       chart.on('click', function (params) {
-        pvalue = params.name
+        _that.cvalue = params.name
         let _startValue = 0
         let _endValue = 0
         if (params.dataIndex <= parseInt(_that.dataAxis.length / 2)) {
@@ -225,6 +259,28 @@ export default {
         }
         _that.chartOpt.dataZoom[0].startValue = _startValue
         _that.chartOpt.dataZoom[0].endValue = _endValue
+        if (_that.dataVal.length > 0) {
+          let _tpl = []
+          _that.dataVal.forEach(function (v, i) {
+            if ((v.value * 1) === (params.value * 1)) {
+              _tpl.push({
+                value: v.value,
+                label: {
+                  show: true
+                }
+              })
+            } else {
+              _tpl.push({
+                value: v.value,
+                label: {
+                  show: false
+                }
+              })
+            }
+          })
+          _that.dataVal = _tpl
+        }
+        _that.chartOpt.series[0].data = _that.dataVal
         chart.setOption(_that.chartOpt, true)
       })
       return chart
@@ -243,11 +299,36 @@ export default {
     }
   },
   mounted () {
-    pvalue = '1560096000'
-    // this.initChart()
     wx.setNavigationBarTitle({
       title: `${this.depart_date.from_str} - ${this.depart_date.target_str}`
     })
+
+    // 定义假数据
+    this.trendList = [
+      {
+        date: '5-1',
+        price: '1000',
+        trend: 'up'
+      },
+      {
+        date: '5-11',
+        price: '300',
+        trend: 'down'
+      }
+    ]
+
+    // chart数据
+    let ff = []
+    for (let i = 14; i > 0; i--) {
+      let currdate = new Date()
+      let before = new Date(currdate.setDate(i))
+      ff.push(before.getTime())
+    }
+    this.dataAxis = ff.reverse()
+    this.cvalue = this.dataAxis[(this.dataAxis.length - 1)]
+
+    // 初始化chart
+    this.initChart()
   },
   created () {
     // let app = getApp()
@@ -304,12 +385,12 @@ export default {
   margin-top: 30rpx;
   background: #fff;
   height: 80rpx;
-  padding: 20rpx 40rpx;
+  padding: 16rpx 40rpx;
 }
 .forecast-title{
   position: relative;
   float: left;
-  padding-left: 40rpx;
+  padding-left: 30rpx;
   font-size: 30rpx;
   color: #33333e;
 }
@@ -317,18 +398,61 @@ export default {
   content: " ";
   display: block;
   height: 90%;
-  width: 16rpx;
+  width: 14rpx;
   position: absolute;
   left: 0;
   top: 5rpx;
-  background: #7796E3;
-  border-radius: 5rpx;
+  background: #5281EE;
 }
 .suggest-content{
   float: right;
+  font-size: 30rpx;
+}
+.suggest-desc{
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  text-align: right;
+  color: #99999E;
+}
+.red-text{
+  color: #ED6400;
+}
+.green-text{
+  color: green;
 }
 .chart-show{
   width: 100%;
   height: 100%;
+}
+.bar-chart-wrap{
+  width: 100%;
+  height: 376rpx;
+  background: #fff;
+  margin-top: 30rpx;
+}
+.price-trend-wrap{
+  margin-top: 30rpx;
+  padding-left: 20rpx;
+  background: #fff;
+}
+.trend-title{
+  height: 80rpx;
+  line-height: 80rpx;
+  color: #33333e;
+  font-size: 28rpx;
+  border-bottom: 2rpx solid #EAEAEB;
+}
+.trend-title span{
+  font-size: 24rpx;
+  color: #808086;
+}
+.trend-list{
+  font-size: 28rpx;
+  color: #5F5F64;
+  padding: 10rpx 0;
+}
+.trend-list .list-item{
+  height: 50rpx;
+  line-height: 50rpx;
 }
 </style>

@@ -71,7 +71,7 @@ export default {
       wx.navigateTo({url: '../detail/main'})
     },
     initChart (canvas, width, height) {
-      this.dataAxis = [1559664000, 1559750400, 1559836800, 1559923200, 1560009600, 1560096000, 1560182400, 1560268800, 1560355200, 1560441600, 1560528000]
+      this.dataAxis = [1559664000000, 1559750400000, 1559836800000, 1559923200000, 1560009600000, 1560096000000, 1560182400000, 1560268800000, 1560355200000, 1560441600000, 1560528000000]
       let data = [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 313]
       let yMax = Math.max(...data)
       let dataShadow = []
@@ -97,7 +97,7 @@ export default {
               color: '#42434D'
             },
             formatter: function (value, index) {
-              var date = new Date(value * 1000)
+              var date = new Date(value * 1)
               var month = date.getMonth() + 1
               var day = date.getDate()
               var weekday = weekdays[date.getDay()]
@@ -258,7 +258,7 @@ export default {
     wx.setNavigationBarTitle({
       title: `${this.depart_date.from_str} - ${this.depart_date.target_str}`
     })
-    pvalue = '1560096000'
+    pvalue = '1560096000000'
     this.initChart()
   },
   created () {
