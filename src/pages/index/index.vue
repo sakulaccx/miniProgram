@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import Toast from './../../../static/vant/toast/toast'
 import {mapState, mapMutations} from 'vuex'
 
 export default {
@@ -279,6 +280,7 @@ export default {
     }
   },
   mounted () {
+    Toast('hahaha')
     this.cityGroup[0].list = this.search_history
     if (this.depart_date.date_search.length > 0) {
       this.searchForm.date = this.depart_date.date_search

@@ -75,13 +75,16 @@ export default {
     setDisableDays () {
       let currDate = new Date()
       let _today = currDate.getDate()
-      this.date45 = new Date(currDate.setDate(currDate.getDate() + 44))
+      let _targetDate = new Date()
+      this.date45 = new Date(_targetDate.setDate(_targetDate.getDate() + 44))
       this.date45Year = this.date45.getFullYear()
       this.date45Month = this.date45.getMonth() + 1
       this.date45Date = this.date45.getDate()
+
+      // console.log()
       if (_today > 1) {
         for (var i = 1; i < _today; i++) {
-          this.dateDisabled.push(`${currDate.getFullYear()}-${currDate.getMonth()}-${i}`)
+          this.dateDisabled.push(`${currDate.getFullYear()}-${currDate.getMonth() + 1}-${i}`)
         }
       }
 
