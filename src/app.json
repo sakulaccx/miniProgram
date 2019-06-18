@@ -1,10 +1,10 @@
 {
   "pages": [
     "pages/index/main",
+    "pages/search/main",
     "pages/calendar/main",
     "pages/detail/main",
-    "pages/search/main",
-        
+    "pages/destination/main",
     "pages/flightList/main"
   ],
   "window":

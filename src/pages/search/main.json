@@ -1,5 +1,7 @@
 {
-	"usingComponents": {
-    },
-    "navigationBarTitleText": ""
+    "navigationBarTitleText": "城市",
+    "usingComponents": {
+    	"van-field": "./../../../static/vant/field/index",
+    	"van-toast": "./../../../static/vant/toast/index"
+    }
 }

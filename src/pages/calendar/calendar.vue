@@ -60,7 +60,7 @@ export default {
         date_week: `${this.weekarr[info.nWeek]}`
       }
       this.setDate(_obj)
-      wx.navigateTo({url: '../index/main'})
+      wx.redirectTo({url: '../search/main'})
     },
     set90DaysRange () {
       let currDate = new Date()

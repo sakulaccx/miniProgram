@@ -1,336 +1,471 @@
-<template>
+<template style="height: 100%">
   <div class="content">
-    <notice-bar @showTimeBox="showTimeFilter" />
-    <favorite-bar />
-    <div class="flight-info-wrap">
-      <div class="curr-price">
-        <div class="price-show">￥{{flightInfo.currPrice}}</div>
-        <div class="date-show">{{flightInfo.date}}机票价格</div>
+    <div class="top-search-wrap">
+      <div class="top-search-l1">
+        <i class="iconfont icon-feiji800 icon-select"></i>
+        <!-- <span class="choose-city left-city" :class="searchForm.from.length > 0 ? 'selected' : ''" @click="showCity(1)" v-if="!showFromInput">{{from}}</span> -->
+        <span class="choose-city left-city">
+          <van-field
+           :disabled="fromDisabled"
+           :value="searchForm.from_str"
+           placeholder="出发地"
+           placeholder-style="color:rgb(153, 153, 157)"
+           :border="false"
+           @click="showCity(1)"
+           @input="searchCity"
+          />
+        </span>
+        <i class="iconfont icon-baohudi_zuoyouduitiao- icon-select" @click="exchangeCity"></i>
+        <!-- <span class="choose-city right-city target" :class="searchForm.target.length > 0 ? 'selected' : ''" @click="showCity(2)" v-if="!showTargetInput">{{target}}</span> -->
+        <span class="choose-city right-city target">
+          <van-field
+           :disabled="targetDisabled"
+           :value="searchForm.target_str"
+           placeholder="目的地"
+           placeholder-style="color:rgb(153, 153, 157)"
+           :border="false"
+           input-align="right"
+           @click="showCity(2)"
+           @input="searchCity"
+          />
+        </span>
       </div>
-      <div class="middle-line"></div>
-      <div class="expect-price">
-        <div :class="['price-show', 'iconfont', {'green-price icon-iconset0413-after': checkPrice < 0, 'red-price icon-iconset0414-after': checkPrice > 0, 'black-price': checkPrice === 0}]">￥{{flightInfo.expectPrice}}</div>
-        <div class="expect-text">预计达到价格</div>
+      <div class="divider-line"></div>
+      <div class="top-search-l2" @click="showCalendar">
+        <i class="iconfont icon-shizhong-fill date-select"></i>
+        <div class="search-l2-box">
+          <span class="choose-date" :class="searchForm.date.length > 0 ? 'selected' : ''">{{date}}</span>
+          <span class="weekday">{{weekday}}</span>
+        </div>
+        <i class="iconfont icon-rightarrow"></i>
       </div>
     </div>
-    <div class="bar-chart-wrap">
-      <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
+    <div class="btn search-btn" @click="searchFly">搜索</div>
+    <div class="city-box-wrap">
+      <div class="search-city-wrap" :class="showCityBox ? 'search-city-active' : ''">
+        <div class="city-group-wrap">
+          <div class="city-group" v-for="(group, index) in cityGroup" :key="index">
+            <div class="group-title" v-if="group.list.length > 0">{{group.title}}</div>
+            <div class="citylist" v-for="(item, index2) in group.list" :key="index2" v-if="group.list.length > 0" @click="saveCity(item)">
+              {{item.label}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="search-city-wrap" :class="showSearchBox ? 'search-city-active' : ''">
+        <div class="city-group-wrap">
+          <div class="city-group">
+            <div class="group-title" v-if="searchCityResult.length > 0">请选择城市</div>
+            <div class="group-title" v-else>未找到匹配城市</div>
+            <div class="search-list" v-for="(item, index) in searchCityResult" :key="index" v-if="searchCityResult.length > 0" @click="saveCity(item)">
+              <div class='city-name'>{{item.label}}</div>
+              <div class="iconfont icon-zuoshangjiao select-icon"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="btn detail-btn" @click="gotoDetail">查看详情</div>
-    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" />
+    <div class="search-close-wrap" v-if="showBottomClose">
+      <div class="search-close-btn" @click="closeSearchBox">
+        <span class="iconfont icon-guanbi"></span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import noticeBar from '@/components/notice-bar'
-import favoriteBar from '@/components/favorite-bar'
-import timeDialog from '@/components/time-dialog'
-import * as echarts from '../../../static/lib/echarts.min.js'
-import mpvueEcharts from 'mpvue-echarts'
+import Toast from './../../../static/vant/toast/toast'
 import {mapState, mapMutations} from 'vuex'
-
-let chart = null
-let pvalue = ''
 
 export default {
   data () {
     return {
-      pagename: '搜索页面',
-      showTimeDialog: false,
-      flightInfo: {
-        currPrice: 700,
-        expectPrice: 200,
-        date: '4月1日'
+      date: '选择出行日期',
+      weekday: '',
+      selectFrom: 1,
+      showCityBox: false,
+      fromDisabled: true,
+      targetDisabled: true,
+      showSearchBox: false,
+      searchTimer: null,
+      searchCityResult: [],
+      searchForm: {
+        from_code: '',
+        target_code: '',
+        from_str: '',
+        target_str: '',
+        date: ''
       },
-      echarts,
-      dataAxis: [],
-      chartOpt: null
+      cityGroup: [
+        {
+          title: '历史搜索',
+          list: []
+        },
+        {
+          title: '国内热门城市',
+          list: [
+            {
+              label: '北京',
+              value: 'BJ'
+            },
+            {
+              label: '上海',
+              value: 'SH'
+            },
+            {
+              label: '广州',
+              value: 'CAN'
+            },
+            {
+              label: '成都',
+              value: 'CTU'
+            },
+            {
+              label: '深圳',
+              value: 'SZX'
+            },
+            {
+              label: '杭州',
+              value: 'HGH'
+            },
+            {
+              label: '重庆',
+              value: 'CQ'
+            },
+            {
+              label: '西安',
+              value: 'SIA'
+            },
+            {
+              label: '南京',
+              value: 'NKG'
+            },
+            {
+              label: '天津',
+              value: 'TSN'
+            },
+            {
+              label: '昆明',
+              value: 'KMG'
+            },
+            {
+              label: '武汉',
+              value: 'WUH'
+            },
+            {
+              label: '郑州',
+              value: 'CGO'
+            },
+            {
+              label: '沈阳',
+              value: 'SHE'
+            },
+            {
+              label: '青岛',
+              value: 'TAO'
+            },
+            {
+              label: '长沙',
+              value: 'CSX'
+            }
+          ]
+        },
+        {
+          title: '出发城市列表',
+          list: [
+            {
+              label: '北京',
+              value: 'BJS'
+            },
+            {
+              label: '上海',
+              value: 'SHA'
+            },
+            {
+              label: '天津',
+              value: 'TSN'
+            },
+            {
+              label: '重庆',
+              value: 'CKG'
+            }
+          ]
+        }
+      ],
+      searchCityArr: []
     }
   },
-
-  components: {
-    noticeBar,
-    favoriteBar,
-    timeDialog,
-    mpvueEcharts
-  },
   computed: {
-    checkPrice () {
-      return this.flightInfo.expectPrice - this.flightInfo.currPrice
-    },
     ...mapState([
       'search_history',
       'depart_date'
-    ])
+    ]),
+    showBottomClose () {
+      return this.showCityBox || this.showSearchBox
+    }
   },
   methods: {
     ...mapMutations({
-      setHistory: 'SET_HISTORY_SEARCH'
+      setHistory: 'SET_HISTORY_SEARCH',
+      setDepart: 'SET_DEPART_DATE'
     }),
-    gotoDetail () {
-      wx.navigateTo({url: '../detail/main'})
-    },
-    initChart (canvas, width, height) {
-      this.dataAxis = [1559664000000, 1559750400000, 1559836800000, 1559923200000, 1560009600000, 1560096000000, 1560182400000, 1560268800000, 1560355200000, 1560441600000, 1560528000000]
-      let data = [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 313]
-      let yMax = Math.max(...data)
-      let dataShadow = []
-      let weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-
-      for (let i = 0; i < data.length; i++) {
-        dataShadow.push(yMax + 200)
+    showCity (val) {
+      this.selectFrom = val
+      this.showCityBox = true
+      this.showSearchBox = false
+      if (val === 1) {
+        this.fromDisabled = false
+      } else {
+        this.targetDisabled = false
       }
-
-      this.chartOpt = {
-        grid: {
-          left: '5%',
-          top: '8%',
-          right: '5%',
-          bottom: '20%'
-        },
-        xAxis: {
-          data: this.dataAxis,
-          axisLabel: {
-            interval: 0,
-            inside: false,
-            textStyle: {
-              color: '#42434D'
-            },
-            formatter: function (value, index) {
-              var date = new Date(value * 1)
-              var month = date.getMonth() + 1
-              var day = date.getDate()
-              var weekday = weekdays[date.getDay()]
-              var dateStr = month + '月' + day + '日'
-              if (pvalue === value) {
-                return [
-                  '{a|' + dateStr + '}',
-                  '{b|' + weekday + '}'
-                ].join('\n')
-              } else {
-                return [
-                  '{c|' + dateStr + '}',
-                  '{d|' + weekday + '}'
-                ].join('\n')
-              }
-            },
-            rich: {
-              a: {
-                fontSize: 11,
-                color: '#EC624C'
-              },
-              b: {
-                fontSize: 12,
-                lineHeight: 18,
-                color: '#EC624C'
-              },
-              c: {
-                fontSize: 11
-              },
-              d: {
-                fontSize: 12,
-                lineHeight: 18
-              }
-            }
-          },
-          axisTick: {
-            show: false
-          },
-          axisLine: {
-            show: false
-          }
-        },
-        yAxis: {
-          show: false
-        },
-        dataZoom: [{
-          type: 'inside',
-          xAxisIndex: [0],
-          startValue: 2,
-          endValue: 8
-        }],
-        series: [
-          { // For shadow
-            type: 'bar',
-            itemStyle: {
-              normal: { color: '#F8F9FC' }
-            },
-            barGap: '-100%',
-            barCategoryGap: '40%',
-            data: dataShadow,
-            animation: false
-          },
-          {
-            type: 'bar',
-            label: {
-              show: true,
-              position: 'top',
-              formatter: function (params) {
-                var key = params.name
-                if (key === pvalue) {
-                  return '{a|¥' + params.value + '}'
-                } else {
-                  return '{b|¥' + params.value + '}'
-                }
-              },
-              rich: {
-                a: {
-                  color: '#EB5B3E'
-                },
-                b: {
-                  color: '#42434D'
-                }
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: function (params) {
-                  var key = params.name
-                  if (key === pvalue) {
-                    return '#2b6cff'
-                  } else {
-                    return '#e3effc'
-                  }
-                }
-              }
-            },
-            markLine: {
-              silent: true,
-              symbol: 'none',
-              data: [
-                {
-                  yAxis: yMax
-                }
-              ],
-              label: {
-                show: false
-              },
-              lineStyle: {
-                color: '#ff6c58'
-              }
-            },
-            data: data
-          }
-        ]
-      }
-
-      this.$refs.echarts.init()
     },
-    handleInit (canvas, width, height) {
-      var _that = this
-      chart = echarts.init(canvas, null, {
-        width: width,
-        height: height
-      })
-      canvas.setChart(chart)
-      chart.setOption(this.chartOpt)
-      chart.on('click', function (params) {
-        pvalue = params.name
-        let _startValue = 0
-        let _endValue = 0
-        if (params.dataIndex <= parseInt(_that.dataAxis.length / 2)) {
-          _startValue = params.dataIndex - 3 > 0 ? params.dataIndex - 3 : 0
-          _endValue = _startValue + 6
-        } else {
-          _endValue = params.dataIndex + 3 > (_that.dataAxis.length - 1) ? (_that.dataAxis.length - 1) : params.dataIndex + 3
-          _startValue = _endValue - 6
+    exchangeCity () {
+      let _tpl = this.searchForm.from_str
+      this.searchForm.from_str = this.searchForm.target_str
+      this.searchForm.target_str = _tpl
+    },
+    searchCity (val) {
+      let searchStr = val.mp.detail
+      this.showCityBox = false
+      this.showSearchBox = true
+      clearTimeout(this.searchTimer)
+      this.searchTimer = setTimeout(() => {
+        this.getSearchCity(searchStr)
+      }, 100)
+    },
+    getSearchCity (_str) {
+      let _tplArr = []
+      this.searchCityArr.forEach((v) => {
+        if (v.label.indexOf(_str) >= 0) {
+          _tplArr.push(v)
         }
-        _that.chartOpt.dataZoom[0].startValue = _startValue
-        _that.chartOpt.dataZoom[0].endValue = _endValue
-        chart.setOption(_that.chartOpt, true)
       })
-      return chart
+      this.searchCityResult = _tplArr
     },
-    showTimeFilter () {
-      this.showTimeDialog = true
-      chart.clear()
+    showCalendar () {
+      wx.redirectTo({url: '../calendar/main'})
     },
-    confirmTime (_obj) {
-      console.log(_obj.startTime)
-      console.log(_obj.endTime)
+    saveCity (obj) {
+      if (this.selectFrom === 1) {
+        this.searchForm.from_str = obj.label
+        this.searchForm.from_code = obj.value
+      } else {
+        this.searchForm.target_str = obj.label
+        this.searchForm.target_code = obj.value
+      }
+      let _tplArr = this.search_history
+      _tplArr = [..._tplArr, obj]
+      this.setHistory(this.mergArr(_tplArr))
+      this.cityGroup[0].list = this.search_history
     },
-    closeTimePopup () {
-      this.showTimeDialog = false
-      chart.setOption(this.chartOpt)
+    mergArr (arr) {
+      const newArr = arr.reduce((all, next) => all.some((atom) => atom['value'] === next['value']) ? all : [...all, next], [])
+      return newArr
+    },
+    searchFly () {
+      if (this.searchForm.date.length > 0 && this.searchForm.from_code.length > 0 && this.searchForm.target_code.length > 0) {
+        this.setDepart(this.searchForm)
+        wx.navigateTo({url: '../destination/main'})
+      } else if (this.searchForm.date.length === 0) {
+        wx.showToast({
+          title: '请选择出发日期',
+          icon: 'none'
+        })
+      } else if (this.searchForm.from_code.length === 0) {
+        wx.showToast({
+          title: '请选择出发地',
+          icon: 'none'
+        })
+      } else {
+        wx.showToast({
+          title: '请选择目的地',
+          icon: 'none'
+        })
+      }
+    },
+    closeSearchBox () {
+      this.showCityBox = false
+      this.showSearchBox = false
     }
   },
   mounted () {
-    wx.setNavigationBarTitle({
-      title: `${this.depart_date.from_str} - ${this.depart_date.target_str}`
-    })
-    pvalue = '1560096000000'
-    this.initChart()
+    Toast('hahaha')
+    this.cityGroup[0].list = this.search_history
+    if (this.depart_date.date_search.length > 0) {
+      this.searchForm.date = this.depart_date.date_search
+      this.date = this.depart_date.date_display
+      this.weekday = this.depart_date.date_week
+    }
   },
   created () {
-    // let app = getApp()
+  // let app = getApp()
   }
 }
 </script>
-
+<style>
+  .choose-city .field-index--van-field{
+    padding: 0;
+    font-size: 32rpx;
+  }
+</style>
 <style scoped>
-.content{
-  background: #f5f5f5;
-  height: 100%;
-}
-.flight-info-wrap{
-  background: #fff;
-  width: 90%;
-  height: 240rpx;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20rpx;
-  margin: 20rpx auto 0 auto;
-}
-.curr-price,
-.expect-price{
-  padding: 30rpx 50rpx;
-}
-.price-show{
-  font-size: 52rpx;
-  text-align: center;
-}
-.date-show,
-.expect-text{
-  font-size: 24rpx;
-  color: #66666e;
-  text-align: center;
-}
-.green-price{
-  color: #07d428;
-}
-.red-price{
-  color: #ff320b;
-}
-.black-price{
-  color: #000;
-}
-.middle-line{
-  height: 42%;
-  border-left: 1px solid #f5f5f5;
-}
-.bar-chart-wrap{
-  width: 100%;
-  height: 376rpx;
-  background: #fff;
-  margin-top: 30rpx;
-}
-.detail-btn{
-  margin: 60rpx auto 0 auto;
-  background: #2065ff;
-  width: 90%;
-  height: 88rpx;
-  line-height: 88rpx;
-  text-align: center;
-  color: #fff;
-  font-size: 30rpx;
-  border-radius: 44rpx;
-  overflow: hidden;
-  overflow-x: auto;
-}
-.chart-show{
-  width: 100%;
-  height: 100%;
-}
+  .content{
+    height: 100%;
+    overflow: hidden;
+    background: rgb(245, 245, 245);
+  }
+  .top-search-wrap{
+    margin: 30rpx auto;
+    width: 90%;
+    background: #fff;
+    border-radius: 20rpx;
+    height: 210rpx;
+  }
+  .top-search-l1,
+  .top-search-l2{
+    height: 50%;
+    line-height: 100rpx;
+    font-size: 32rpx;
+    vertical-align: middle;
+  }
+  .divider-line{
+    margin: 0 auto;
+    width: 95%;
+    height: 1px;
+    border-bottom: 1px solid rgb(243, 243, 243);
+  }
+  .icon-select{
+    font-size: 28px;
+    margin: 0 40rpx;
+  }
+  .date-select{
+    margin: 0 40rpx;
+    font-size: 20px;
+  }
+  .choose-city{
+    width: 150rpx;
+    text-align: center;
+    display: inline-block;
+    color: rgb(153, 153, 157);
+    vertical-align: middle;
+  }
+  .choose-city.selected{
+    color: rgb(49, 49, 49);
+  }
+  .left-city{
+    text-align: left;
+  }
+  .right-city{
+    text-align: right;
+  }
+  .search-l2-box{
+    display: inline-block;
+    min-width: 70%;
+  }
+  .choose-date{
+    color: rgb(153, 153, 157);
+  }
+  .choose-date.selected{
+    color: rgb(49, 49, 49);
+  }
+  .weekday{
+    margin-left: 10rpx;
+    font-size: 14px;
+    color: rgb(141, 141, 146);
+  }
+  .icon-rightarrow{
+    font-size: 30px;
+  }
+  .search-btn{
+    font-size: 16px;
+    color: #fff;
+    border-radius: 40rpx;
+    background: rgb(48, 104, 246);
+  }
+  .city-box-wrap{
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+  .search-city-wrap{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 700rpx;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transform: translate(0, 200%);
+    opacity: 0;
+    transition: all .3s ease-in .1s;
+  }
+  .city-group-wrap{
+    padding: 0 40rpx 40rpx 40rpx;
+  }
+  .search-close-wrap{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 116rpx;
+    width: 100%;
+    line-height: 58rpx;
+    text-align: center;
+    font-size: 50rpx;
+    background: rgb(255, 255, 255);
+  }
+  .search-close-btn{
+    width: 50rpx;
+    height: 50rpx;
+    margin: 25rpx auto;
+  }
+  .search-city-active{
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  .group-title{
+    font-size: 14px;
+    color: rgb(181, 181, 185);
+    margin-bottom: 10rpx;
+    font-weight: lighter;
+  }
+  .city-group{
+    margin-top: 30rpx;
+  }
+  .citylist{
+    width: 160rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    text-align: center;
+    font-size: 14px;
+    background: #fff;
+    color: rgb(115, 115, 122);
+    display: inline-block;
+    margin-top: 20rpx;
+    margin-right: 30rpx;
+  }
+  .search-list{
+    width: 100%;
+    height: 100rpx;
+    line-height: 100rpx;
+    border-bottom: 1px solid #ccc;
+  }
+  .search-list div{
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+  }
+  .search-list .city-name{
+    width: 90%;
+  }
+  .search-list .select-icon{
+    width: 8%;
+    text-align: right;
+  }
+  .closebtn{
+    width: 80rpx;
+    height: 80rpx;
+    content: "关闭";
+    line-height: 80rpx;
+    text-align: center;
+  }
 </style>
