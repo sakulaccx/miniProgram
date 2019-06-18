@@ -1,11 +1,11 @@
 {
   "pages": [
+    "pages/flightList/main",
     "pages/index/main",
     "pages/search/main",
     "pages/calendar/main",
     "pages/detail/main",
-    "pages/destination/main",
-    "pages/flightList/main"
+    "pages/destination/main"
   ],
   "window":
   {

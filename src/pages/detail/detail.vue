@@ -5,7 +5,7 @@
       <div class="info-wrap">
         <div class="price-show">￥{{flightInfo.currPrice}}</div>
         <div class="price-desc">{{flightInfo.date}}机票价格</div>
-        <div class="btn buy-btn">现在就买</div>
+        <div class="btn buy-btn" @click="gotoList">现在就买</div>
         <div class="favorit-link" v-if="!isfavorited">添加关注，提醒我购票</div>
       </div>
       <div class="forecast-wrap">
@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     gotoList () {
-      console.log('go to list page')
+      wx.navigateTo({url: '../flightList/main'})
     },
     initChart (canvas, width, height) {
       let _that = this

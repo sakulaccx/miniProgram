@@ -1,6 +1,8 @@
 {
   "navigationBarTitleText": "航班列表",
   "usingComponents": {
-    "van-loading": "../../static/vant/loading/index"
+    "van-loading": "../../static/vant/loading/index",
+    "van-tab": "../../static/vant/tab/index",
+  	"van-tabs": "../../static/vant/tabs/index"
   }
 }
