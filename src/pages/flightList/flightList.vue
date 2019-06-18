@@ -28,9 +28,15 @@
       <div class="list-item" v-for="(item, index) in flightList" :key="index">
         <div class="item-left-wrap">
           <div class="item-left-top">
-            <div class="item-from-info"></div>
-            <i class="iconfont icon-xianzhongzhuandaodachang"></i>
-            <div class="item-target-info"></div>
+            <div class="item-from-info">
+              <div class="up-info">{{item.departureTime}}</div>
+              <div class="donw-info">{{item.departureAirport}}</div>
+            </div>
+            <div class="item-middle-line">----></div>
+            <div class="item-target-info">
+              <div class="up-info">{{item.arrivalTime}}</div>
+              <div class="donw-info">{{item.arrivalAirport}}</div>
+            </div>
           </div>
           <div class="item-left-bottom">
             {{item.company}} {{item.flightNumber}}
@@ -95,7 +101,16 @@ export default {
     hideLoading () {
     },
     rebindList (index) {
-      console.log(index)
+      wx.showLoading({
+        title: '',
+        mask: true
+      })
+
+      this.flightList.reverse()
+
+      setTimeout(() => {
+        wx.hideLoading()
+      }, 1000)
     },
     showTimeFilter () {
       this.showTimeDialog = true
@@ -221,20 +236,39 @@ export default {
 }
 .item-left-wrap{
   float: left;
-  width: 80%;
+  width: 76%;
   height: 100%;
 }
 .item-left-top{
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  padding-top: 54rpx;
+}
+.item-from-info,
+.item-target-info{
+  text-align: left;
+}
+.item-target-info{
+  margin-right: 20rpx;
+}
+.up-info{
+  font-size: 40rpx;
+}
+.donw-info{
+  font-size: 28rpx;
+  color: #A1A2A3;
+}
+.item-middle-line{
+  width: 120rpx;
 }
 .item-left-bottom{
   font-size: 24rpx;
   height: 60rpx;
   line-height: 60rpx;
   color: #A1A2A3;
+  margin-top: 10rpx;
 }
 .item-right-wrap{
   float: right;

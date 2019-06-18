@@ -89,6 +89,61 @@ export default {
           label: '中国南方航空公司',
           value: 'CSN',
           iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司',
+          value: 'CSN',
+          iselected: false
+        },
+        {
+          label: '中国南方航空公司aca',
+          value: 'CSN',
+          iselected: false
         }
       ],
       timeRage: [],
@@ -196,7 +251,8 @@ export default {
 .btn-wrap{
   position: absolute;
   width: 100%;
-  bottom: 30rpx;
+  background: #fff;
+  bottom: 0;
 }
 .confirm-btn{
   width: 80%;
@@ -204,6 +260,14 @@ export default {
   color: #fff;
   border-radius: 40rpx;
   background: rgb(48, 104, 246);
+}
+.list-wrap{
+  height: 100%;
+}
+.time-box{
+  height: 40%;
+  overflow: hidden;
+  overflow-y: auto;
 }
 .list-title{
   width: 87%;
@@ -258,6 +322,8 @@ export default {
   color: #7796E3;
 }
 .flight-box{
-  margin-top: 60rpx;
+  height: 40%;
+  overflow: hidden;
+  overflow-y: auto;
 }
 </style>
