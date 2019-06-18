@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import Toast from './../../../static/vant/toast/toast'
+import cityList from './cityData.json'
 import {mapState, mapMutations} from 'vuex'
 
 export default {
@@ -172,24 +172,7 @@ export default {
         },
         {
           title: '出发城市列表',
-          list: [
-            {
-              label: '北京',
-              value: 'BJS'
-            },
-            {
-              label: '上海',
-              value: 'SHA'
-            },
-            {
-              label: '天津',
-              value: 'TSN'
-            },
-            {
-              label: '重庆',
-              value: 'CKG'
-            }
-          ]
+          list: cityList
         }
       ],
       searchCityArr: []
@@ -289,7 +272,6 @@ export default {
     }
   },
   mounted () {
-    Toast('hahaha')
     this.cityGroup[0].list = this.search_history
     if (this.depart_date.date_search.length > 0) {
       this.searchForm.date = this.depart_date.date_search
