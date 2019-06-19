@@ -22,14 +22,26 @@ export default {
   methods: {
     ...mapMutations({
       setHistory: 'SET_HISTORY_SEARCH',
-      setDepart: 'SET_DEPART_DATE'
+      setDepart: 'SET_DEPART_DATE',
+      setUserInfo: 'SET_USERINFO'
     })
   },
   onLoad () {
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log(res)
+        this.$fly.post('/xiaoJingAdmin/wxApp/login/getOpenid', {
+          jsCode: res.code
+        }).then(res => {
+          this.setUserInfo(res.data)
+        }).catch(err => {
+          console.log(err)
+          this.setUserInfo({
+            openid: '123456',
+            unionid: '123456',
+            isRegister: 0
+          })
+        })
         wx.redirectTo({
           url: '../search/main'
         })

@@ -17,6 +17,11 @@ const state = {
     target_str: '',
     from_code: '',
     target_code: ''
+  },
+  userInfo: {
+    openid: '123456',
+    unionid: '123456',
+    isRegister: 0
   }
 }
 
