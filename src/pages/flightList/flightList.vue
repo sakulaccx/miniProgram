@@ -32,7 +32,9 @@
               <div class="up-info">{{item.departureTime}}</div>
               <div class="donw-info">{{item.departureAirport}}</div>
             </div>
-            <div class="item-middle-line">----></div>
+            <div class="item-middle-line">
+              <img src="../../../static/images/arrive-arrow.jpg" alt="">
+            </div>
             <div class="item-target-info">
               <div class="up-info">{{item.arrivalTime}}</div>
               <div class="donw-info">{{item.arrivalAirport}}</div>
@@ -210,13 +212,13 @@ export default {
 }
 .left-desc span{
   font-size: 24rpx;
-  color: #A1A2A3;
+  color: #878787;
   margin-left: 10rpx;
 }
 .right-desc{
   text-align: right;
   font-size: 24rpx;
-  color: #A1A2A3;
+  color: #878787;
 }
 .right-desc .iconfont{
   font-size: 24rpx;
@@ -225,6 +227,7 @@ export default {
 .list-wrap{
   width: 90%;
   margin: 30rpx auto 0 auto;
+  color: #3d3d3d;
 }
 .list-item{
   background: #fff;
@@ -258,16 +261,20 @@ export default {
 }
 .donw-info{
   font-size: 28rpx;
-  color: #A1A2A3;
+  color: #878787;
 }
 .item-middle-line{
   width: 120rpx;
+}
+.item-middle-line img{
+  width: 100%;
+  height: 20rpx;
 }
 .item-left-bottom{
   font-size: 24rpx;
   height: 60rpx;
   line-height: 60rpx;
-  color: #A1A2A3;
+  color: #878787;
   margin-top: 10rpx;
 }
 .item-right-wrap{
