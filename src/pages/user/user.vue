@@ -58,9 +58,9 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([
+    ...mapMutations({
       setLoginInfo: 'SET_LOGINED'
-    ]),
+    }),
     showLoginForm () {
       this.showLogion = true
     },
@@ -134,10 +134,16 @@ export default {
         })
       }
     },
+    checkLogined () {
+      this.islogined = this.loginInfo.islogined
+      if (this.islogined) {
+        this.phoneNum = this.loginInfo.phoneNum
+      }
+    },
     stopPopup () {}
   },
   mounted () {
-    this.islogined = this.loginInfo.islogined
+    this.checkLogined()
   },
   created () {
   // let app = getApp()
