@@ -9,5 +9,8 @@ export default {
   },
   [type.SET_USERINFO] (state, userInfo) {
     state.userInfo = {...state.userInfo, ...userInfo}
+  },
+  [type.SET_LOGINED] (state, loginInfo) {
+  	state.loginInfo = {...state.loginInfo, ...loginInfo}
   }
 }

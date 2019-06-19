@@ -3,7 +3,7 @@
 */
 import Fly from 'flyio/dist/npm/wx'
 const fly = new Fly()
-const host = 'https://img.alicdn.com/bao'
+const host = 'http://www.hxw4656.fun/xiaoJingAdmin/wxApp'
 
 // 请求拦截器
 fly.interceptors.request.use((request) => {

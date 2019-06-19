@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "机务处",
+  "usingComponents": {
+    "van-cell": "./../../../static/vant/cell/index"
+  }
+}

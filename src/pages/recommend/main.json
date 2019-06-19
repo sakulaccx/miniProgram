@@ -1,6 +1,3 @@
 {
-    "navigationBarTitleText": "意见反馈",
-    "usingComponents": {
-    	"van-field": "./../../../static/vant/field/index"
-    }
+    "navigationBarTitleText": "意见反馈"
 }

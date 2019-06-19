@@ -1,8 +1,5 @@
 <template>
   <div class="content">
-    <div class="loading-wrap" v-if="isLoading">
-      <van-loading color="#3068F6"/>
-    </div>
     <notice-bar @showTimeBox="showTimeFilter" />
     <div class="desc-bar">
       <div class="left-desc">
@@ -60,7 +57,6 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   data () {
     return {
-      isLoading: true,
       curractive: 0,
       flightList: [
         {
@@ -136,9 +132,6 @@ export default {
     }
   },
   mounted () {
-    setTimeout(() => {
-      this.isLoading = false
-    }, 1000)
   },
   created () {
   // let app = getApp()

@@ -1,5 +1,7 @@
 {
   "pages": [
+    "pages/user/main",
+    "pages/aboutus/main",
     "pages/interest/main",
     "pages/recommend/main",
     "pages/flightList/main",

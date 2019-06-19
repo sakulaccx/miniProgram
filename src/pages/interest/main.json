@@ -1,6 +1,3 @@
 {
-    "navigationBarTitleText": "机务处",
-    "usingComponents": {
-      "van-swipe-cell": "./../../../static/vant/swipe-cell/index"
-    }
+    "navigationBarTitleText": "机务处"
 }

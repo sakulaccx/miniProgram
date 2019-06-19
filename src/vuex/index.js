@@ -18,6 +18,10 @@ const state = {
     from_code: '',
     target_code: ''
   },
+  loginInfo: {
+    phone: '',
+    islogined: false
+  },
   userInfo: {
     openid: '123456',
     unionid: '123456',
