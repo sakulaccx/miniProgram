@@ -27,13 +27,22 @@ export default {
         this.$fly.post('/login/getOpenid', {
           jsCode: res.code
         }).then(res => {
-          this.setUserInfo(res.data)
+          if (res.code === '0') {
+            this.setUserInfo(res.data)
+          } else {
+            // 测试
+            this.setUserInfo({
+              openid: '123456',
+              unionid: '123456',
+              isRegister: 1
+            })
+          }
         }).catch(err => {
           console.log(err)
           this.setUserInfo({
             openid: '123456',
-            unionid: '123456',
-            isRegister: 0
+            unionid: '',
+            isRegister: 1
           })
         })
         wx.redirectTo({

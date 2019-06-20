@@ -188,11 +188,22 @@ export default {
         this.setDepart(this.searchForm)
         this.$fly.post('/record/add', {
           openid: this.userInfo.openid,
-          cityName: this.searchForm.from_str,
-          cityCode: this.searchForm.from_code
+          cities: [
+            {
+              cityName: this.searchForm.from_str,
+              cityCode: this.searchForm.from_code
+            },
+            {
+              cityName: this.searchForm.target_str,
+              cityCode: this.searchForm.target_code
+            }
+          ]
         }).then(res => {
           if (res.code === '0') {
-            wx.navigateTo({url: '../destination/main'})
+            // 获取历史搜索城市
+            this.$fly.all([this.getHistoryCity()]).then(this.$fly.spread((records, project) => {
+              wx.navigateTo({url: '../destination/main'})
+            }))
           } else {
             wx.showToast({
               title: '网络开小差了',
@@ -224,18 +235,21 @@ export default {
       this.showSearchBox = false
     },
     getHistoryCity () {
-      this.$fly.get('/record/getList', {
+      return this.$fly.get('/record/getList', {
         openid: this.userInfo.openid
       }).then(res => {
         if (res.data && res.data.length > 0) {
+          let _tpl = []
           res.data.forEach((v, i) => {
-            this.cityGroup[0].list.push(
+            _tpl.push(
               {
                 label: v.cityName,
                 value: v.cityCode
               }
             )
           })
+
+          this.cityGroup[0].list = _tpl
         }
       }).catch(err => {
         console.log(err)
@@ -247,14 +261,16 @@ export default {
     }
   },
   mounted () {
+    // 获取历史搜索
+    this.getHistoryCity()
+
+    // 获取之前选择的日期
     if (this.depart_date.date_search.length > 0) {
       this.searchForm.date = this.depart_date.date_search
     }
   },
   created () {
-  // let app = getApp()
-    // 获取历史搜索城市
-    this.getHistoryCity()
+    // let app = getApp()
   }
 }
 </script>

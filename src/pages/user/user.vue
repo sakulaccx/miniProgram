@@ -4,8 +4,8 @@
       <div class="avator-box">
         <img src="../../../static/images/my-avator.png" alt="">
       </div>
-      <div class="btn login-btn" @click="showLoginForm" v-if="!islogined">登录</div>
-      <div class="user-info" v-if="islogined">
+      <div class="btn login-btn" @click="showLoginForm" v-if="!isRegister">登录</div>
+      <div class="user-info" v-if="isRegister">
         <div class="phone-num">{{cutPhone}}</div>
         <div class="under-text">机务处给你最佳选择</div>
       </div>
@@ -39,7 +39,7 @@ export default {
     return {
       phoneNum: '',
       codeNum: '',
-      islogined: false,
+      isRegister: false,
       showLogion: false,
       getCodeTimer: null,
       getCodeDue: 0,
@@ -121,9 +121,9 @@ export default {
         this.$fly.post('/login/userLogin', _obj).then(res => {
           this.setLoginInfo({
             phone: this.phoneNum,
-            islogined: true
+            isRegister: true
           })
-          this.islogined = true
+          this.isRegister = true
           this.showLogion = false
         }).catch(err => {
           console.log(err)
@@ -135,8 +135,8 @@ export default {
       }
     },
     checkLogined () {
-      this.islogined = this.loginInfo.islogined
-      if (this.islogined) {
+      this.isRegister = this.loginInfo.isRegister
+      if (this.isRegister) {
         this.phoneNum = this.loginInfo.phone
       }
     },

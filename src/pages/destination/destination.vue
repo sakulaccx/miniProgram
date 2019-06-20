@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <notice-bar @showTimeBox="showTimeFilter" />
-    <favorite-bar />
+    <favorite-bar :status="favoriteStatus" ref='favorite' />
     <div class="flight-info-wrap">
       <div class="curr-price">
         <div class="price-show">￥{{flightInfo.currPrice}}</div>
@@ -17,7 +17,7 @@
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
     </div>
     <div class="btn detail-btn" @click="gotoDetail">查看详情</div>
-    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" />
+    <time-dialog :show="showTimeDialog" @closeTimeBox="closeTimePopup" />
   </div>
 </template>
 
@@ -27,6 +27,7 @@ import favoriteBar from '@/components/favorite-bar'
 import timeDialog from '@/components/time-dialog'
 import * as echarts from '../../../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
+import format from '@/utils/dateFormat'
 import {mapState, mapMutations} from 'vuex'
 
 let chart = null
@@ -37,13 +38,17 @@ export default {
     return {
       pagename: '搜索页面',
       showTimeDialog: false,
+      favoriteStatus: 0,
       flightInfo: {
-        currPrice: 700,
-        expectPrice: 200,
-        date: '4月1日'
+        currPrice: 0,
+        expectPrice: 0,
+        date: ''
       },
       echarts,
       dataAxis: [],
+      dataAyis: [],
+      zoomStart: 0,
+      zoomEnd: 0,
       chartOpt: null
     }
   },
@@ -59,7 +64,7 @@ export default {
       return this.flightInfo.expectPrice - this.flightInfo.currPrice
     },
     ...mapState([
-      'search_history',
+      'userInfo',
       'depart_date'
     ])
   },
@@ -71,13 +76,11 @@ export default {
       wx.navigateTo({url: '../detail/main'})
     },
     initChart (canvas, width, height) {
-      this.dataAxis = [1559664000000, 1559750400000, 1559836800000, 1559923200000, 1560009600000, 1560096000000, 1560182400000, 1560268800000, 1560355200000, 1560441600000, 1560528000000]
-      let data = [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 313]
-      let yMax = Math.max(...data)
+      let yMax = Math.max(...this.dataAyis)
       let dataShadow = []
       let weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < this.dataAyis.length; i++) {
         dataShadow.push(yMax + 200)
       }
 
@@ -146,8 +149,8 @@ export default {
         dataZoom: [{
           type: 'inside',
           xAxisIndex: [0],
-          startValue: 2,
-          endValue: 8
+          startValue: this.zoomStart,
+          endValue: this.zoomEnd
         }],
         series: [
           { // For shadow
@@ -209,7 +212,7 @@ export default {
                 color: '#ff6c58'
               }
             },
-            data: data
+            data: this.dataAyis
           }
         ]
       }
@@ -238,6 +241,10 @@ export default {
         _that.chartOpt.dataZoom[0].startValue = _startValue
         _that.chartOpt.dataZoom[0].endValue = _endValue
         chart.setOption(_that.chartOpt, true)
+
+        let _date = new Date((pvalue * 1))
+        let _dateStr = format(_date, 'yyyy-MM-dd')
+        _that.changeBar(_dateStr)
       })
       return chart
     },
@@ -250,18 +257,111 @@ export default {
       console.log(_obj.endTime)
     },
     closeTimePopup () {
-      this.showTimeDialog = false
-      chart.setOption(this.chartOpt)
+      this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
+        this.showTimeDialog = false
+        chart.setOption(this.chartOpt)
+      }))
+    },
+    changeBar (_dateStr) {
+      this.$fly.post('/flightData/getAppointDatePrice', {
+        departureCityCode: this.depart_date.from_code,
+        arrivalCityCode: this.depart_date.target_code,
+        departureDate: _dateStr,
+        timeSlotList: this.depart_date.time_filter,
+        companyList: this.depart_date.company_filter
+      }).then(res => {
+        if (res.data) {
+          let currData = res.data
+          let dateInfo = new Date(currData.departureDate)
+          let _obj = {
+            currPrice: currData.lowestPrice * 1,
+            expectPrice: currData.futureLowestPrice * 1,
+            date: `${dateInfo.getMonth() + 1}月${dateInfo.getDate()}日`
+          }
+          this.flightInfo = {...this.flightInfo, ..._obj}
+
+          // 同步请求关注数据
+          this.$refs.favorite.getFavorite(currData.departureTime, currData.flightNumber, currData.lowestPrice)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     getData () {
-      this.$fly.post('/flightData/getSearchResultData', {
+      return this.$fly.post('/flightData/getSearchResultData', {
         departureCityCode: this.depart_date.from_code,
         arrivalCityCode: this.depart_date.target_code,
         departureDate: this.depart_date.date_search,
         timeSlotList: this.depart_date.time_filter,
         companyList: this.depart_date.company_filter
       }).then(res => {
-        console.log(res)
+        if (res.code === '0' && res.data && res.data.list.length > 0) {
+          if (res.data.currentData) {
+            // 定义变量
+            let currData = res.data.currentData
+            let dateInfo = new Date(currData.departureDate)
+            let dataIndex = 0
+            let _startValue = 0
+            let _endValue = 0
+
+            // 同步请求关注数据
+            this.$refs.favorite.getFavorite(currData.departureTime, currData.flightNumber, currData.lowestPrice)
+
+            // 赋值全局当前时间戳
+            pvalue = dateInfo.getTime().toString()
+
+            // 当前日期的价格信息
+            let _obj = {
+              currPrice: currData.lowestPrice * 1,
+              expectPrice: currData.futureLowestPrice * 1,
+              date: `${dateInfo.getMonth() + 1}月${dateInfo.getDate()}日`
+            }
+            this.flightInfo = {...this.flightInfo, ..._obj}
+
+            // Charts柱状图处理
+            if (res.data.list.length > 0) {
+              this.dataAxis = []
+              this.dataAyis = []
+              res.data.list.forEach((v, i) => {
+                let _date = new Date(v.departureDate).getTime()
+                this.dataAxis.push(_date)
+                this.dataAyis.push(v.lowestPrice)
+
+                // 这个柱状图当前显示的数据
+                if (v.departureDate === currData.departureDate) {
+                  dataIndex = i
+                }
+              })
+
+              // 柱状图dataZoom起始和结束的位置
+              if (dataIndex <= parseInt(res.data.list.length / 2)) {
+                _startValue = dataIndex - 3 > 0 ? dataIndex - 3 : 0
+                _endValue = _startValue + 6
+              } else {
+                _endValue = dataIndex + 3 > (res.data.list.length - 1) ? (res.data.list.length - 1) : dataIndex + 3
+                _startValue = _endValue - 6
+              }
+
+              this.zoomStart = _startValue
+              this.zoomEnd = _endValue
+
+              // 生成柱状图
+              this.initChart()
+
+              // 清空filter
+              let _dep = {
+                time_filter: [],
+                company_filter: []
+              }
+              this.setDepart(_dep)
+            }
+          }
+        } else {
+          wx.showToast({
+            title: '没有符合条件的数据',
+            icon: 'none'
+          })
+        }
       }).catch(err => {
         console.log(err)
       })
@@ -272,8 +372,6 @@ export default {
       title: `${this.depart_date.from_str} - ${this.depart_date.target_str}`
     })
     this.getData()
-    pvalue = '1560096000000'
-    this.initChart()
   },
   created () {
     // let app = getApp()
@@ -299,7 +397,9 @@ export default {
 }
 .curr-price,
 .expect-price{
-  padding: 30rpx 50rpx;
+  width: 50%;
+  padding: 30rpx 0;
+  text-align: center;
 }
 .price-show{
   font-size: 52rpx;

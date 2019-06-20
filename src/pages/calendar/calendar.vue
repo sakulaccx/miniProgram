@@ -2,7 +2,7 @@
   <div class="content">
     <Calendar
       ref="calendar"
-      :events="events"
+      :events="cevents"
       :now="'今天'"
       :monthRange="monthRange"
       :rangeMonthFormat="rangeMonthFormat"
@@ -19,20 +19,17 @@
 <script>
 import Calendar from 'mpvue-calendar'
 import 'mpvue-calendar/src/style.css'
+import format from '@/utils/dateFormat'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
   data () {
     return {
+      currDate: '2019-04-05',
       weekarr: ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
       monthRange: [],
       rangeMonthFormat: 'yyyy年MM月',
-      events: {
-        '2019-6-7': '¥600',
-        '2019-6-11': '¥600',
-        '2019-6-18': '¥300',
-        '2019-7-5': '¥1400'
-      },
+      cevents: {},
       date90: null,
       date90Year: '',
       date90Month: '',
@@ -69,7 +66,7 @@ export default {
       wx.redirectTo({url: '../search/main'})
     },
     set90DaysRange () {
-      let currDate = new Date()
+      let currDate = new Date(this.currDate)
       let currYear = currDate.getFullYear()
       let currMonth = currDate.getMonth() + 1
       this.date90 = new Date(currDate.setMonth(currDate.getMonth() + 2))
@@ -79,9 +76,9 @@ export default {
       this.monthRange = [`${currYear}-${currMonth}`, `${this.date90Year}-${this.date90Month}`]
     },
     setDisableDays () {
-      let currDate = new Date()
+      let currDate = new Date(this.currDate)
       let _today = currDate.getDate()
-      let _targetDate = new Date()
+      let _targetDate = new Date(this.currDate)
       this.date45 = new Date(_targetDate.setDate(_targetDate.getDate() + 44))
       this.date45Year = this.date45.getFullYear()
       this.date45Month = this.date45.getMonth() + 1
@@ -96,7 +93,7 @@ export default {
 
       // 补足30或31天
       for (var ii = 1; ii < 50; ii++) {
-        var _newdate = new Date()
+        var _newdate = new Date(this.currDate)
         var _45date = new Date(_newdate.setDate(_newdate.getDate() + 44))
         var _targetdate = new Date(_45date.setDate(_45date.getDate() + ii))
 
@@ -108,10 +105,21 @@ export default {
         departureCityCode: this.depart_date.from_code,
         arrivalCityCode: this.depart_date.target_code
       }).then(res => {
-        console.log(res)
+        if (res.code === '0' && res.data && res.data.length > 0) {
+          this.setPriceDate(res.data)
+        }
       }).catch(err => {
         console.log(err)
       })
+    },
+    setPriceDate (priceList) {
+      let _tpl = {}
+      priceList.forEach((v, i) => {
+        let _date = new Date(v.departureDate)
+        let key = format(_date, 'yyyy-M-d')
+        _tpl[key] = '¥' + v.lowestPrice
+      })
+      this.cevents = _tpl
     }
   },
   mounted () {

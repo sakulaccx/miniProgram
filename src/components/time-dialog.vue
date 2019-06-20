@@ -38,7 +38,7 @@
 </template>
 
 <script>
-
+import {mapState, mapMutations} from 'vuex'
 export default {
   props: ['show'],
   data () {
@@ -69,89 +69,21 @@ export default {
           iselected: false
         }
       ],
-      flightList: [
-        {
-          label: '中国东方航空公司',
-          value: 'CES',
-          iselected: false
-        },
-        {
-          label: '中国国际航空公司',
-          value: 'CCA',
-          iselected: false
-        },
-        {
-          label: '上海吉祥航空公司',
-          value: 'DKH',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司',
-          value: 'CSN',
-          iselected: false
-        },
-        {
-          label: '中国南方航空公司aca',
-          value: 'CSN',
-          iselected: false
-        }
-      ],
+      flightList: [],
       timeRage: [],
       flightCode: []
     }
   },
   components: {},
+  computed: {
+    ...mapState([
+      'depart_date'
+    ])
+  },
   methods: {
+    ...mapMutations({
+      setDepart: 'SET_DEPART_DATE'
+    }),
     closePopup () {
       this.$emit('closeTimeBox')
     },
@@ -192,23 +124,64 @@ export default {
       }
     },
     userFilter () {
-      let _tplarr = []
-      this.timeRage.sort((a, b) => {
-        return a['range'] - b['range']
-      })
-      this.timeRage.forEach((v, i) => {
-        _tplarr.push({
-          range: v.value
-        })
-      })
+      if (this.timeRage.length === 0 && this.flightCode.length === 0) {
+        let obj = {
+          time_filter: [],
+          company_filter: []
+        }
 
-      let _tplarr2 = []
-      this.flightCode.forEach((v, i) => {
-        _tplarr2.push({
-          code: v.value
-        })
+        this.setDepart(obj)
+      } else {
+        let _tplarr = []
+        let _tplarr2 = []
+
+        if (this.timeRage.length > 0) {
+          this.timeRage.sort((a, b) => {
+            return a['range'] - b['range']
+          })
+          this.timeRage.forEach((v, i) => {
+            _tplarr.push(v.value)
+          })
+        }
+
+        if (this.flightCode.length > 0) {
+          this.flightCode.forEach((v, i) => {
+            _tplarr2.push(v.value)
+          })
+        }
+
+        let obj = {
+          time_filter: _tplarr,
+          company_filter: _tplarr2
+        }
+
+        this.setDepart(obj)
+      }
+
+      this.closePopup()
+    },
+    getCompanyList () {
+      this.$fly.post('/flightData/getCompanies', {
+        departureCityCode: this.depart_date.from_code,
+        arrivalCityCode: this.depart_date.target_code,
+        departureDate: this.depart_date.date_search
+      }).then(res => {
+        if (res.code === '0' && res.data && res.data.length > 0) {
+          res.data.forEach((v, i) => {
+            this.flightList.push({
+              label: v,
+              value: v,
+              iselected: false
+            })
+          })
+        }
+      }).catch(err => {
+        console.log(err)
       })
     }
+  },
+  mounted () {
+    this.getCompanyList()
   },
   created () {
     // let app = getApp()

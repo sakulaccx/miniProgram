@@ -17,16 +17,16 @@ const state = {
     target_str: '',
     from_code: '',
     target_code: '',
-    time_filter: '',
-    company_filter: ''
+    time_filter: [],
+    company_filter: []
   },
   loginInfo: {
     phone: '',
-    islogined: false
+    isLogined: false
   },
   userInfo: {
-    openid: '123456',
-    unionid: '123456',
+    openid: '',
+    unionid: '',
     isRegister: 0
   }
 }
