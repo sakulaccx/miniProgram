@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setHistory: 'SET_HISTORY_SEARCH'
+      setDepart: 'SET_DEPART_DATE'
     }),
     gotoDetail () {
       wx.navigateTo({url: '../detail/main'})
@@ -252,12 +252,26 @@ export default {
     closeTimePopup () {
       this.showTimeDialog = false
       chart.setOption(this.chartOpt)
+    },
+    getData () {
+      this.$fly.post('/flightData/getSearchResultData', {
+        departureCityCode: this.depart_date.from_code,
+        arrivalCityCode: this.depart_date.target_code,
+        departureDate: this.depart_date.date_search,
+        timeSlotList: this.depart_date.time_filter,
+        companyList: this.depart_date.company_filter
+      }).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   mounted () {
     wx.setNavigationBarTitle({
       title: `${this.depart_date.from_str} - ${this.depart_date.target_str}`
     })
+    this.getData()
     pvalue = '1560096000000'
     this.initChart()
   },

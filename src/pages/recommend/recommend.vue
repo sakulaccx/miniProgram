@@ -1,4 +1,4 @@
-<template style="height: 100%">
+<template>
   <div class="content">
     <div class="recommend-wrap">
       <div class="recommend-text-wrap">
@@ -82,11 +82,6 @@ export default {
 }
 </script>
 <style scoped>
-  .content{
-    height: 100%;
-    overflow: hidden;
-    background: rgb(245, 245, 245);
-  }
   .recommend-wrap{
     width: 90%;
     margin: 30rpx auto 0 auto;

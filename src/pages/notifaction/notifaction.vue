@@ -13,15 +13,19 @@
               </div>
               <div class="item-info info-date">
                 <span>{{item.departureMonth}}月</span> - <span>{{item.departureDay}}日</span>
-                <div class="under-text">
+                <!-- <div class="under-text">
                   {{item.departureTime}} ― {{item.arrivalTime}}
-                </div>
+                </div> -->
               </div>
               <div class="item-info info-price">
                 ￥{{item.lowestPrice}}
               </div>
             </div>
-            <div :class="['item-box-bottom', {'red-text': item.actionFlag === 0, 'green-text': item.actionFlag === 1}]">{{buyOpt[item.actionFlag]}}</div>
+            <div class="mark-line"></div>
+            <div class="under-desc">
+              <span>可以立即购票，当前已是最低价格</span>
+              <span>2分钟前已更新</span>
+            </div>
           </div>
           <div class="item-box-right" @click="deleteItem(index, item.id)">取消关注</div>
           <div class="clearfix"></div>
@@ -160,30 +164,34 @@ export default {
   }
   .info-price{
     font-size: 46rpx;
+    color: #ED6F2E;
   }
   .under-text{
     font-size: 24rpx;
     color: #66666e;
     text-align: center;
   }
-  .item-box-bottom{
-    height: 50rpx;
-    line-height: 50rpx;
-    font-size: 32rpx;
+  .mark-line{
+    width: 95%;
+    margin: 18rpx 0 0 40rpx;
+    border-bottom: 1rpx solid #EAEAEA;
+  }
+  .under-desc{
+    font-size: 26rpx;
+    color: #63646C;
+    padding: 0 30rpx;
+  }
+  .under-desc span{
+    display: inline-block;
+    vertical-align: middle;
+    height: 60rpx;
+    line-height: 60rpx;
+  }
+  .under-desc span:first-child{
+    width: 60%;
+  }
+  .under-desc span:last-child{
+    width: 39%;
     text-align: right;
-    padding-right: 30rpx;
-    margin-top: 10rpx;
-  }
-  .red-text{
-    color: #ff6600;
-  }
-  .green-text{
-    color: #38ca50;
-  }
-  .item-box[data-type="0"]{
-    transform: translate3d(0,0,0);
-  }
-  .item-box[data-type="1"]{
-    transform: translate3d(-135rpx,0,0);
   }
 </style>

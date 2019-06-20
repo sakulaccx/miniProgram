@@ -19,7 +19,7 @@
 <script>
 import Calendar from 'mpvue-calendar'
 import 'mpvue-calendar/src/style.css'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   data () {
@@ -45,6 +45,12 @@ export default {
   },
   components: {
     Calendar
+  },
+  computed: {
+    ...mapState([
+      'depart_date',
+      'userInfo'
+    ])
   },
   methods: {
     ...mapMutations({
@@ -88,6 +94,7 @@ export default {
         }
       }
 
+      // 补足30或31天
       for (var ii = 1; ii < 50; ii++) {
         var _newdate = new Date()
         var _45date = new Date(_newdate.setDate(_newdate.getDate() + 44))
@@ -95,11 +102,22 @@ export default {
 
         this.dateDisabled.push(`${_targetdate.getFullYear()}-${_targetdate.getMonth() + 1}-${_targetdate.getDate()}`)
       }
+    },
+    getPriceDate () {
+      this.$fly.post('/flightData/calendarPriceData', {
+        departureCityCode: this.depart_date.from_code,
+        arrivalCityCode: this.depart_date.target_code
+      }).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   mounted () {
     this.set90DaysRange()
     this.setDisableDays()
+    this.getPriceDate()
   },
   created () {
   // let app = getApp()
@@ -108,6 +126,10 @@ export default {
 </script>
 
 <style scoped>
+page,
+.content{
+  overflow-y: auto;
+}
 .mpvue-calendar ._td.selected ._span{
   border-radius: 20rpx;
 }

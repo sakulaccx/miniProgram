@@ -1,11 +1,11 @@
-<template style="height: 100%">
+<template>
   <div class="index-wrap">
     <img src="/static/images/launch.jpg" alt="">
   </div>
 </template>
 
 <script>
-import {mapState, mapMutations} from 'vuex'
+import { mapMutations } from 'vuex'
 
 export default {
   data () {
@@ -14,15 +14,9 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'search_history',
-      'depart_date'
-    ])
   },
   methods: {
     ...mapMutations({
-      setHistory: 'SET_HISTORY_SEARCH',
-      setDepart: 'SET_DEPART_DATE',
       setUserInfo: 'SET_USERINFO'
     })
   },
@@ -30,7 +24,7 @@ export default {
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        this.$fly.post('/xiaoJingAdmin/wxApp/login/getOpenid', {
+        this.$fly.post('/login/getOpenid', {
           jsCode: res.code
         }).then(res => {
           this.setUserInfo(res.data)
@@ -49,11 +43,6 @@ export default {
     })
   },
   mounted () {
-    this.$fly.get({
-      url: '/uploaded/i4/O1CN01mFJukB1w4pvUknib0_!!0-rate.jpg_40x40.jpg'
-    }).then(res => {
-      console.log(res)
-    })
   },
   created () {
   // let app = getApp()

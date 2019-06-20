@@ -1,0 +1,66 @@
+[
+  {
+    "label": "北京",
+    "value": "BJS"
+  },
+  {
+    "label": "上海",
+    "value": "SHA"
+  },
+  {
+    "label": "广州",
+    "value": "CAN"
+  },
+  {
+    "label": "成都",
+    "value": "CTU"
+  },
+  {
+    "label": "深圳",
+    "value": "SZX"
+  },
+  {
+    "label": "杭州",
+    "value": "HGH"
+  },
+  {
+    "label": "重庆",
+    "value": "CKG"
+  },
+  {
+    "label": "西安",
+    "value": "SIA"
+  },
+  {
+    "label": "南京",
+    "value": "NKG"
+  },
+  {
+    "label": "天津",
+    "value": "TSN"
+  },
+  {
+    "label": "昆明",
+    "value": "KMG"
+  },
+  {
+    "label": "武汉",
+    "value": "WUH"
+  },
+  {
+    "label": "郑州",
+    "value": "CGO"
+  },
+  {
+    "label": "沈阳",
+    "value": "SHE"
+  },
+  {
+    "label": "青岛",
+    "value": "TAO"
+  },
+  {
+    "label": "长沙",
+    "value": "CSX"
+  }
+]

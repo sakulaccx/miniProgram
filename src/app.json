@@ -1,14 +1,15 @@
 {
   "pages": [
-    "pages/user/main",
+    "pages/index/main",
+    "pages/notifaction/main",
     "pages/aboutus/main",
+    "pages/search/main",
+    "pages/detail/main",
+    "pages/user/main",
     "pages/interest/main",
     "pages/recommend/main",
     "pages/flightList/main",
-    "pages/index/main",
-    "pages/search/main",
     "pages/calendar/main",
-    "pages/detail/main",
     "pages/destination/main"
   ],
   "window":

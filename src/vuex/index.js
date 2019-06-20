@@ -16,7 +16,9 @@ const state = {
     from_str: '',
     target_str: '',
     from_code: '',
-    target_code: ''
+    target_code: '',
+    time_filter: '',
+    company_filter: ''
   },
   loginInfo: {
     phone: '',

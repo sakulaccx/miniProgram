@@ -140,11 +140,6 @@ export default {
 </script>
 
 <style scoped>
-.content{
-  height: 100%;
-  overflow: hidden;
-  background: rgb(245, 245, 245);
-}
 .loading-wrap{
   height: 100%;
   display: flex;

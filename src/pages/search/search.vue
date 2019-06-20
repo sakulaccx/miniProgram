@@ -34,8 +34,8 @@
       <div class="top-search-l2" @click="showCalendar">
         <i class="iconfont icon-shizhong-fill date-select"></i>
         <div class="search-l2-box">
-          <span class="choose-date" :class="searchForm.date.length > 0 ? 'selected' : ''">{{date}}</span>
-          <span class="weekday">{{weekday}}</span>
+          <span class="choose-date" :class="searchForm.date.length > 0 ? 'selected' : ''">{{depart_date.date_display}}</span>
+          <span class="weekday">{{depart_date.date_week}}</span>
         </div>
         <i class="iconfont icon-rightarrow"></i>
       </div>
@@ -46,8 +46,11 @@
         <div class="city-group-wrap">
           <div class="city-group" v-for="(group, index) in cityGroup" :key="index">
             <div class="group-title" v-if="group.list.length > 0">{{group.title}}</div>
-            <div class="citylist" v-for="(item, index2) in group.list" :key="index2" v-if="group.list.length > 0" @click="saveCity(item)">
-              {{item.label}}
+            <div class="city-wrap">
+              <div class="citylist" v-for="(item, index2) in group.list" :key="index2" v-if="group.list.length > 0" @click="saveCity(item)">
+                {{item.label}}
+              </div>
+              <div class="filllist" v-for="(item, index3) in (cityRow - group.list.length % cityRow)" v-if="group.list.length % cityRow > 0" :key="index3"></div>
             </div>
           </div>
         </div>
@@ -75,13 +78,12 @@
 
 <script>
 import cityList from './cityData.json'
+import hotCity from './hotCity.json'
 import {mapState, mapMutations} from 'vuex'
 
 export default {
   data () {
     return {
-      date: '选择出行日期',
-      weekday: '',
       selectFrom: 1,
       showCityBox: false,
       fromDisabled: true,
@@ -103,85 +105,21 @@ export default {
         },
         {
           title: '国内热门城市',
-          list: [
-            {
-              label: '北京',
-              value: 'BJ'
-            },
-            {
-              label: '上海',
-              value: 'SH'
-            },
-            {
-              label: '广州',
-              value: 'CAN'
-            },
-            {
-              label: '成都',
-              value: 'CTU'
-            },
-            {
-              label: '深圳',
-              value: 'SZX'
-            },
-            {
-              label: '杭州',
-              value: 'HGH'
-            },
-            {
-              label: '重庆',
-              value: 'CQ'
-            },
-            {
-              label: '西安',
-              value: 'SIA'
-            },
-            {
-              label: '南京',
-              value: 'NKG'
-            },
-            {
-              label: '天津',
-              value: 'TSN'
-            },
-            {
-              label: '昆明',
-              value: 'KMG'
-            },
-            {
-              label: '武汉',
-              value: 'WUH'
-            },
-            {
-              label: '郑州',
-              value: 'CGO'
-            },
-            {
-              label: '沈阳',
-              value: 'SHE'
-            },
-            {
-              label: '青岛',
-              value: 'TAO'
-            },
-            {
-              label: '长沙',
-              value: 'CSX'
-            }
-          ]
+          list: hotCity
         },
         {
           title: '出发城市列表',
           list: cityList
         }
       ],
-      searchCityArr: []
+      cityRow: 3,
+      searchCityArr: cityList
     }
   },
   computed: {
     ...mapState([
-      'search_history',
-      'depart_date'
+      'depart_date',
+      'userInfo'
     ]),
     showBottomClose () {
       return this.showCityBox || this.showSearchBox
@@ -189,7 +127,6 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setHistory: 'SET_HISTORY_SEARCH',
       setDepart: 'SET_DEPART_DATE'
     }),
     showCity (val) {
@@ -226,7 +163,7 @@ export default {
       this.searchCityResult = _tplArr
     },
     showCalendar () {
-      wx.redirectTo({url: '../calendar/main'})
+      wx.navigateTo({url: '../calendar/main'})
     },
     saveCity (obj) {
       if (this.selectFrom === 1) {
@@ -236,19 +173,35 @@ export default {
         this.searchForm.target_str = obj.label
         this.searchForm.target_code = obj.value
       }
-      let _tplArr = this.search_history
-      _tplArr = [..._tplArr, obj]
-      this.setHistory(this.mergArr(_tplArr))
-      this.cityGroup[0].list = this.search_history
+      this.setDepart(this.searchForm)
+      // let _tplArr = this.search_history
+      // _tplArr = [..._tplArr, obj]
+      // this.setHistory(this.mergArr(_tplArr))
+      // this.cityGroup[0].list = this.search_history
     },
-    mergArr (arr) {
-      const newArr = arr.reduce((all, next) => all.some((atom) => atom['value'] === next['value']) ? all : [...all, next], [])
-      return newArr
-    },
+    // mergArr (arr) {
+    //   const newArr = arr.reduce((all, next) => all.some((atom) => atom['value'] === next['value']) ? all : [...all, next], [])
+    //   return newArr
+    // },
     searchFly () {
       if (this.searchForm.date.length > 0 && this.searchForm.from_code.length > 0 && this.searchForm.target_code.length > 0) {
         this.setDepart(this.searchForm)
-        wx.navigateTo({url: '../destination/main'})
+        this.$fly.post('/record/add', {
+          openid: this.userInfo.openid,
+          cityName: this.searchForm.from_str,
+          cityCode: this.searchForm.from_code
+        }).then(res => {
+          if (res.code === '0') {
+            wx.navigateTo({url: '../destination/main'})
+          } else {
+            wx.showToast({
+              title: '网络开小差了',
+              icon: 'none'
+            })
+          }
+        }).catch(err => {
+          console.log(err)
+        })
       } else if (this.searchForm.date.length === 0) {
         wx.showToast({
           title: '请选择出发日期',
@@ -269,18 +222,39 @@ export default {
     closeSearchBox () {
       this.showCityBox = false
       this.showSearchBox = false
+    },
+    getHistoryCity () {
+      this.$fly.get('/record/getList', {
+        openid: this.userInfo.openid
+      }).then(res => {
+        if (res.data && res.data.length > 0) {
+          res.data.forEach((v, i) => {
+            this.cityGroup[0].list.push(
+              {
+                label: v.cityName,
+                value: v.cityCode
+              }
+            )
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+        wx.showToast({
+          title: '历史搜索加载失败',
+          icon: 'none'
+        })
+      })
     }
   },
   mounted () {
-    this.cityGroup[0].list = this.search_history
     if (this.depart_date.date_search.length > 0) {
       this.searchForm.date = this.depart_date.date_search
-      this.date = this.depart_date.date_display
-      this.weekday = this.depart_date.date_week
     }
   },
   created () {
   // let app = getApp()
+    // 获取历史搜索城市
+    this.getHistoryCity()
   }
 }
 </script>
@@ -404,26 +378,38 @@ export default {
     opacity: 1;
     transform: translate(0, 0);
   }
+  .city-group{
+    margin-top: 30rpx;
+  }
   .group-title{
     font-size: 14px;
     color: rgb(181, 181, 185);
     margin-bottom: 10rpx;
     font-weight: lighter;
   }
-  .city-group{
-    margin-top: 30rpx;
+  .city-wrap{
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
   }
   .citylist{
-    width: 160rpx;
+    width: 30%;
     height: 60rpx;
     line-height: 60rpx;
     text-align: center;
     font-size: 14px;
     background: #fff;
     color: rgb(115, 115, 122);
-    display: inline-block;
     margin-top: 20rpx;
-    margin-right: 30rpx;
+  }
+  .filllist{
+    content: '';
+    width: 30%;
+    border:1px solid transparent;
+    overflow: hidden;
+
   }
   .search-list{
     width: 100%;

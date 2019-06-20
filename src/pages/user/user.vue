@@ -1,4 +1,4 @@
-<template style="height: 100%">
+<template>
   <div class="content">
     <div class="info-wrap">
       <div class="avator-box">
@@ -137,7 +137,7 @@ export default {
     checkLogined () {
       this.islogined = this.loginInfo.islogined
       if (this.islogined) {
-        this.phoneNum = this.loginInfo.phoneNum
+        this.phoneNum = this.loginInfo.phone
       }
     },
     stopPopup () {}
