@@ -1,16 +1,17 @@
 {
   "pages": [
+    
     "pages/index/main",
-    "pages/destination/main",
+    "pages/flightList/main",
     "pages/detail/main",
+    "pages/destination/main",
     "pages/interest/main",
     "pages/search/main",
     "pages/calendar/main",
     "pages/notifaction/main",
     "pages/aboutus/main",
     "pages/user/main",
-    "pages/recommend/main",
-    "pages/flightList/main"
+    "pages/recommend/main"
   ],
   "window": {
     "backgroundTextStyle": "dark",

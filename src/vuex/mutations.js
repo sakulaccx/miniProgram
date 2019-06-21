@@ -15,5 +15,8 @@ export default {
   },
   [type.SET_DETAIL_DATE] (state, searchDetail) {
     state.detail_date = {...state.detail_date, ...searchDetail}
+  },
+  [type.SET_SEARCH_STR] (state, searchStr) {
+    state.search_data = {...state.search_data, ...searchStr}
   }
 }

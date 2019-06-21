@@ -4,13 +4,13 @@
     <div class="detail-wrap">
       <div class="info-wrap">
         <div class="price-show">￥{{flightInfo.currPrice}}</div>
-        <div class="price-desc">{{flightInfo.date}}机票价格</div>
+        <div class="price-desc">{{flightInfo.dateStr}}机票价格</div>
         <div class="btn buy-btn" @click="gotoList">现在就买</div>
         <div class="favorit-link" v-if="!favoriteStatus" @click="addFavorite">添加关注，提醒我购票</div>
         <div class="favorit-link" v-else @click="gotoFavoriteList">已关注，查看关注列表</div>
       </div>
       <div class="forecast-wrap">
-        <div class="forecast-title">{{flightInfo.date}}机票价格</div>
+        <div class="forecast-title">{{flightInfo.dateStr}}机票价格</div>
         <div class="suggest-content" :class="suggestion ? 'green-text' : 'red-text'">{{suggestText[suggestion]}}</div>
         <div class="clearfix"></div>
         <div class="suggest-desc">
@@ -25,15 +25,13 @@
     <div class="price-trend-wrap">
       <div class="trend-title">
         价格分析
-        <span>航班起飞{{flightInfo.date}}</span>
+        <span>航班起飞{{flightInfo.dateStr}}</span>
       </div>
       <div class="trend-list">
-        <div class="list-item" v-for="(item, index) in trendList" :key="index">
-          {{item.date}} {{item.trend === 'up' ? trendOrder[index] + '价格呈上升趋势, 高至¥' : trendOrder[index] + '价格呈下降趋势, 低至¥'}}{{item.price}};
-        </div>
+        {{trendText}}
       </div>
     </div>
-    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" />
+    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData"/>
     <van-dialog id="van-dialog" />
   </div>
 </template>
@@ -44,7 +42,7 @@ import timeDialog from '@/components/time-dialog'
 import * as echarts from '@/../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
 import Dialog from '@/../static/vant/dialog/dialog'
-import {mapState} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
 
 let chart = null
 
@@ -60,7 +58,9 @@ export default {
         currPrice: 0,
         expectPrice: 0,
         actionFlag: 0,
-        date: ''
+        dateStr: '',
+        departureDate: '',
+        futureLowestPriceDate: 0
       },
       favoriteStatus: 0,
       echarts,
@@ -69,8 +69,7 @@ export default {
       suggestText: ['建议购买', '建议等等'],
       cvalue: '',
       dataVal: [],
-      trendList: [],
-      trendOrder: ['前', '后']
+      trendText: ''
     }
   },
   components: {
@@ -95,20 +94,12 @@ export default {
     },
     priceRange () {
       return Math.abs(this.flightInfo.currPrice - this.flightInfo.expectPrice)
-    },
-    showTrend (o) {
-      return function (o) {
-        if (o.trend === 'up') {
-          // return o.date + '前价格呈上升趋势, 高至¥' + o.price
-          return 1
-        } else {
-          // return o.date + '后价格呈下降趋势, 低至¥' + o.price
-          return 2
-        }
-      }
     }
   },
   methods: {
+    ...mapMutations({
+      setDetailDate: 'SET_DETAIL_DATE'
+    }),
     gotoList () {
       wx.navigateTo({url: '/pages/flightList/main'})
     },
@@ -268,6 +259,7 @@ export default {
     },
     showTimeFilter () {
       this.showTimeDialog = true
+      chart.clear()
     },
     confirmTime (_obj) {
       console.log(_obj.startTime)
@@ -275,6 +267,13 @@ export default {
     },
     closeTimePopup () {
       this.showTimeDialog = false
+      chart.setOption(this.chartOpt)
+    },
+    updateData () {
+      this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
+        this.showTimeDialog = false
+        chart.setOption(this.chartOpt, true)
+      }))
     },
     getDetailData () {
       this.$fly.post('/flightData/getSearchDetailData', {
@@ -297,13 +296,22 @@ export default {
               currPrice: (currData.lowestPrice * 1),
               expectPrice: (currData.futureLowestPrice * 1),
               actionFlag: (currData.actionFlag * 1),
-              date: `${(_date.getMonth() + 1)}月${_date.getDate()}日`
+              dateStr: `${(_date.getMonth() + 1)}月${_date.getDate()}日`,
+              departureDate: currData.departureDate,
+              futureLowestPriceDate: (currData.futureLowestPriceDate * 1)
             }
             this.flightInfo = {...this.flightInfo, ..._obj}
-            this.checkFavorite()
+
+            // 设置title
             wx.setNavigationBarTitle({
               title: `${this.flightInfo.departureCity} - ${this.flightInfo.arrivalCity}`
             })
+
+            // 设置趋势分析
+            this.setTrend()
+
+            // 匹配关注
+            this.checkFavorite()
           }
 
           if (res.data && res.data.list && res.data.list.length > 0) {
@@ -324,7 +332,6 @@ export default {
                 })
               }
             })
-
             this.cvalue = this.dataAxis[(this.dataAxis.length - 1)]
 
             // 初始化chart
@@ -342,6 +349,22 @@ export default {
           icon: 'none'
         })
       })
+    },
+    setTrend () {
+      this.trendText = ''
+      let dateVal = this.flightInfo.departureDate
+      let futureDate = this.flightInfo.futureLowestPriceDate
+      let _date = new Date(dateVal)
+      let _future = new Date(new Date(dateVal).setDate(_date.getDate() + futureDate))
+      let _price = this.flightInfo.lowestPrice - this.flightInfo.futureLowestPrice
+      let _dateStr = `${_future.getMonth() + 1}月${_future.getDate()}日`
+      if (_price < 0) {
+        this.trendText += `今天到${_dateStr}，价格逐步上涨，预计${_dateStr}会上涨到${this.flightInfo.futureLowestPrice}左右，比今天贵${Math.abs(_price)}`
+      } else if (_price > 0) {
+        this.trendText += `今天到${_dateStr}，价格逐步下跌，预计${_dateStr}会下降至${this.flightInfo.futureLowestPrice}左右，比今天省${Math.abs(_price)}`
+      } else {
+        this.trendText += `今天到${_dateStr}，价格持平`
+      }
     },
     checkFavorite () {
       // 查询是否已关注
@@ -391,6 +414,12 @@ export default {
     }
   },
   mounted () {
+    // 清空filter条件
+    this.setDetailDate({
+      timeSlotList: [],
+      companyList: []
+    })
+
     // 获取数据
     this.getDetailData()
   },
@@ -399,10 +428,10 @@ export default {
   },
   onPullDownRefresh () {
     wx.showNavigationBarLoading()
-    this.$fly.all([this.getDetailData()]).then(() => {
+    this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
       wx.hideNavigationBarLoading()
       wx.stopPullDownRefresh()
-    })
+    }))
   }
 }
 </script>

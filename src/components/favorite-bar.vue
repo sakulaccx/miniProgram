@@ -68,8 +68,8 @@ export default {
     addFavorite () {
       this.$fly.post('/attention/add', {
         openid: this.userInfo.openid,
-        departureCityCode: this.depart_date.from_code,
-        arrivalCityCode: this.depart_date.target_code,
+        departureCityCode: this.depart_date.departureCityCode,
+        arrivalCityCode: this.depart_date.arrivalCityCode,
         departureTime: this.departureTime,
         flightNumber: this.flightNumber,
         lowestPrice: this.lowestPrice
@@ -92,8 +92,8 @@ export default {
       // 查询是否已关注
       this.$fly.post('/attention/isAttention', {
         openid: this.userInfo.openid,
-        departureCityCode: this.depart_date.from_code,
-        arrivalCityCode: this.depart_date.target_code,
+        departureCityCode: this.depart_date.departureCityCode,
+        arrivalCityCode: this.depart_date.arrivalCityCode,
         departureTime: depTime,
         flightNumber: flyNum
       }).then(res => {

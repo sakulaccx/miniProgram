@@ -77,7 +77,7 @@ export default {
   components: {},
   computed: {
     ...mapState([
-      'depart_date'
+      'detail_date'
     ])
   },
   methods: {
@@ -87,6 +87,9 @@ export default {
     }),
     closePopup () {
       this.$emit('closeTimeBox')
+    },
+    updateData () {
+      this.$emit('updateData')
     },
     resetForm () {
       this.timeList.forEach((v, i) => {
@@ -127,8 +130,8 @@ export default {
     userFilter () {
       if (this.timeRage.length === 0 && this.flightCode.length === 0) {
         let objDep = {
-          time_filter: [],
-          company_filter: []
+          timeSlotList: [],
+          companyList: []
         }
 
         let objDet = {
@@ -158,8 +161,8 @@ export default {
         }
 
         let objDep = {
-          time_filter: _tplarr,
-          company_filter: _tplarr2
+          timeSlotList: _tplarr,
+          companyList: _tplarr2
         }
 
         let objDet = {
@@ -171,13 +174,13 @@ export default {
         this.setDetailSearch(objDet)
       }
 
-      this.closePopup()
+      this.updateData()
     },
     getCompanyList () {
       this.$fly.post('/flightData/getCompanies', {
-        departureCityCode: this.depart_date.from_code,
-        arrivalCityCode: this.depart_date.target_code,
-        departureDate: this.depart_date.date_search
+        departureCityCode: this.detail_date.departureCityCode,
+        arrivalCityCode: this.detail_date.arrivalCityCode,
+        departureDate: this.detail_date.departureDate
       }).then(res => {
         if (res.code === '0' && res.data && res.data.length > 0) {
           res.data.forEach((v, i) => {
@@ -194,7 +197,7 @@ export default {
     }
   },
   mounted () {
-    this.getCompanyList()
+    // this.getCompanyList()
   },
   created () {
     // let app = getApp()

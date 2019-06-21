@@ -69,7 +69,6 @@ export default {
   computed: {
     ...mapState([
       'userInfo',
-      'search_history',
       'depart_date'
     ])
   },

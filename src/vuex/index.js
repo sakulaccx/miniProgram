@@ -8,17 +8,17 @@ import mutations from './mutations'
 Vue.use(Vuex)
 
 const state = {
-  search_history: [],
-  depart_date: {
+  search_data: {
     date_display: '',
-    date_week: '',
-    date_search: '',
-    from_str: '',
-    target_str: '',
-    from_code: '',
-    target_code: '',
-    time_filter: [],
-    company_filter: []
+    departure_str: '',
+    arrival_str: ''
+  },
+  depart_date: {
+    departureDate: '',
+    departureCityCode: '',
+    arrivalCityCode: '',
+    timeSlotList: [],
+    companyList: []
   },
   detail_date: {
     departureCityCode: '',

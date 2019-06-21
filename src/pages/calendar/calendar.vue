@@ -51,19 +51,16 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setDate: 'SET_DEPART_DATE'
+      setDate: 'SET_DEPART_DATE',
+      setSearch: 'SET_SEARCH_STR'
     }),
     select (val, val2) {
       const info = this.$refs.calendar.dateInfo(val[0], val[1], val[2])
       let monthDate = info.cMonth > 9 ? info.cMonth : `0${info.cMonth}`
       let dayDate = info.cDay > 9 ? info.cDay : `0${info.cDay}`
-      let _obj = {
-        date_display: `${info.cMonth}月${info.cDay}日`,
-        date_search: `${info.cYear}-${monthDate}-${dayDate}`,
-        date_week: `${this.weekarr[info.nWeek]}`
-      }
-      this.setDate(_obj)
-      wx.redirectTo({url: '../search/main'})
+      this.setDate({departureDate: `${info.cYear}-${monthDate}-${dayDate}`})
+      this.setSearch({date_display: `${info.cMonth}月${info.cDay}日`})
+      wx.redirectTo({url: '/pages/search/main'})
     },
     set90DaysRange () {
       let currDate = new Date(this.currDate)
@@ -102,8 +99,8 @@ export default {
     },
     getPriceDate () {
       this.$fly.post('/flightData/calendarPriceData', {
-        departureCityCode: this.depart_date.from_code,
-        arrivalCityCode: this.depart_date.target_code
+        departureCityCode: this.depart_date.departureCityCode,
+        arrivalCityCode: this.depart_date.arrivalCityCode
       }).then(res => {
         if (res.code === '0' && res.data && res.data.length > 0) {
           this.setPriceDate(res.data)

@@ -7,7 +7,7 @@
         <span class="choose-city left-city">
           <van-field
            :disabled="fromDisabled"
-           :value="searchForm.from_str"
+           :value="searchForm.departure_str"
            placeholder="出发地"
            placeholder-style="color:rgb(153, 153, 157)"
            :border="false"
@@ -20,7 +20,7 @@
         <span class="choose-city right-city target">
           <van-field
            :disabled="targetDisabled"
-           :value="searchForm.target_str"
+           :value="searchForm.arrival_str"
            placeholder="目的地"
            placeholder-style="color:rgb(153, 153, 157)"
            :border="false"
@@ -34,8 +34,8 @@
       <div class="top-search-l2" @click="showCalendar">
         <i class="iconfont icon-shizhong-fill date-select"></i>
         <div class="search-l2-box">
-          <span class="choose-date" :class="searchForm.date.length > 0 ? 'selected' : ''">{{depart_date.date_display}}</span>
-          <span class="weekday">{{depart_date.date_week}}</span>
+          <span class="choose-date" :class="searchForm.departureDate.length > 0 ? 'selected' : ''">{{search_data.date_display}}</span>
+          <span class="weekday">{{showWeek}}</span>
         </div>
         <i class="iconfont icon-rightarrow"></i>
       </div>
@@ -92,12 +92,13 @@ export default {
       searchTimer: null,
       searchCityResult: [],
       searchForm: {
-        from_code: '',
-        target_code: '',
-        from_str: '',
-        target_str: '',
-        date: ''
+        departureCityCode: '',
+        arrivalCityCode: '',
+        departure_str: '',
+        arrival_str: '',
+        departureDate: ''
       },
+      weekarr: ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
       cityGroup: [
         {
           title: '历史搜索',
@@ -119,15 +120,20 @@ export default {
   computed: {
     ...mapState([
       'depart_date',
+      'search_data',
       'userInfo'
     ]),
     showBottomClose () {
       return this.showCityBox || this.showSearchBox
+    },
+    showWeek () {
+      return this.weekarr[new Date(this.depart_date.departureDate).getDay()]
     }
   },
   methods: {
     ...mapMutations({
-      setDepart: 'SET_DEPART_DATE'
+      setDepart: 'SET_DEPART_DATE',
+      setSearchStr: 'SET_SEARCH_STR'
     }),
     showCity (val) {
       this.selectFrom = val
@@ -140,9 +146,9 @@ export default {
       }
     },
     exchangeCity () {
-      let _tpl = this.searchForm.from_str
-      this.searchForm.from_str = this.searchForm.target_str
-      this.searchForm.target_str = _tpl
+      let _tpl = this.searchForm.departure_str
+      this.searchForm.departure_str = this.searchForm.arrival_str
+      this.searchForm.arrival_str = _tpl
     },
     searchCity (val) {
       let searchStr = val.mp.detail
@@ -167,43 +173,51 @@ export default {
     },
     saveCity (obj) {
       if (this.selectFrom === 1) {
-        this.searchForm.from_str = obj.label
-        this.searchForm.from_code = obj.value
+        this.searchForm.departure_str = obj.label
+        this.searchForm.departureCityCode = obj.value
       } else {
-        this.searchForm.target_str = obj.label
-        this.searchForm.target_code = obj.value
+        this.searchForm.arrival_str = obj.label
+        this.searchForm.arrivalCityCode = obj.value
       }
-      this.setDepart(this.searchForm)
-      // let _tplArr = this.search_history
-      // _tplArr = [..._tplArr, obj]
-      // this.setHistory(this.mergArr(_tplArr))
-      // this.cityGroup[0].list = this.search_history
+
+      this.setStore()
     },
-    // mergArr (arr) {
-    //   const newArr = arr.reduce((all, next) => all.some((atom) => atom['value'] === next['value']) ? all : [...all, next], [])
-    //   return newArr
-    // },
+    setStore () {
+      let _dept = {
+        departureDate: this.searchForm.departureDate,
+        departureCityCode: this.searchForm.departureCityCode,
+        arrivalCityCode: this.searchForm.arrivalCityCode
+      }
+
+      let _search = {
+        departure_str: this.searchForm.departure_str,
+        arrival_str: this.searchForm.arrival_str
+      }
+      this.setDepart(_dept)
+      this.setSearchStr(_search)
+    },
     searchFly () {
-      if (this.searchForm.date.length > 0 && this.searchForm.from_code.length > 0 && this.searchForm.target_code.length > 0) {
-        this.setDepart(this.searchForm)
+      if (this.searchForm.departureDate.length > 0 && this.searchForm.departureCityCode.length > 0 && this.searchForm.arrivalCityCode.length > 0) {
+        this.setStore()
         this.$fly.post('/record/add', {
           openid: this.userInfo.openid,
           cities: [
             {
-              cityName: this.searchForm.from_str,
-              cityCode: this.searchForm.from_code
+              cityName: this.searchForm.departure_str,
+              cityCode: this.searchForm.departureCityCode
             },
             {
-              cityName: this.searchForm.target_str,
-              cityCode: this.searchForm.target_code
+              cityName: this.searchForm.arrival_str,
+              cityCode: this.searchForm.arrivalCityCode
             }
           ]
         }).then(res => {
           if (res.code === '0') {
             // 获取历史搜索城市
-            this.$fly.all([this.getHistoryCity()]).then(this.$fly.spread((records, project) => {
-              wx.navigateTo({url: '../destination/main'})
-            }))
+            // this.$fly.all([this.getHistoryCity()]).then(this.$fly.spread((records, project) => {
+            //   wx.navigateTo({url: '../destination/main'})
+            // }))
+            wx.navigateTo({url: '/pages/destination/main'})
           } else {
             wx.showToast({
               title: '网络开小差了',
@@ -213,12 +227,12 @@ export default {
         }).catch(err => {
           console.log(err)
         })
-      } else if (this.searchForm.date.length === 0) {
+      } else if (this.searchForm.departureDate.length === 0) {
         wx.showToast({
           title: '请选择出发日期',
           icon: 'none'
         })
-      } else if (this.searchForm.from_code.length === 0) {
+      } else if (this.searchForm.departureCityCode.length === 0) {
         wx.showToast({
           title: '请选择出发地',
           icon: 'none'
@@ -264,9 +278,9 @@ export default {
     // 获取历史搜索
     this.getHistoryCity()
 
-    // 获取之前选择的日期
-    if (this.depart_date.date_search.length > 0) {
-      this.searchForm.date = this.depart_date.date_search
+    // 获取选择的日期
+    if (this.depart_date.departureDate.length > 0) {
+      this.searchForm.departureDate = this.depart_date.departureDate
     }
   },
   created () {

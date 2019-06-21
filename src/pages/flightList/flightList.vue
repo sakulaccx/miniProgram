@@ -3,8 +3,8 @@
     <notice-bar @showTimeBox="showTimeFilter" />
     <div class="desc-bar">
       <div class="left-desc">
-        {{depart_date.from_str}} - {{depart_date.target_str}}
-        <span>{{depart_date.date_display}}</span>
+        {{search_data.departure_str}} - {{search_data.arrival_str}}
+        <span>{{search_data.date_display}}</span>
       </div>
       <div class="right-desc">
         <i class="iconfont icon-jinggao1"></i>
@@ -21,7 +21,7 @@
       </div>
       <div class="clearfix"></div>
     </div>
-    <div class="list-wrap">
+    <div class="list-wrap" v-if="flightList.length > 0">
       <div class="list-item" v-for="(item, index) in flightList" :key="index">
         <div class="item-left-wrap">
           <div class="item-left-top">
@@ -45,7 +45,10 @@
         <div class="clearfix"></div>
       </div>
     </div>
-    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" />
+    <div class="no-data" v-else>
+      没有查询到数据
+    </div>
+    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData" />
   </div>
 </template>
 
@@ -58,6 +61,7 @@ export default {
   data () {
     return {
       curractive: 0,
+      orderBy: 2,
       flightList: [
         {
           flightNumber: 'C657',
@@ -87,36 +91,24 @@ export default {
   },
   computed: {
     ...mapState([
-      'depart_date'
+      'search_data',
+      'depart_date',
+      'detail_date',
+      'userInfo'
     ])
   },
   methods: {
     ...mapMutations({
-      setDate: 'SET_DEPART_DATE'
+      setDetailDate: 'SET_DETAIL_DATE'
     }),
-    showLoading () {
-    },
-    hideLoading () {
-    },
-    rebindList (index) {
-      wx.showLoading({
-        title: '',
-        mask: true
-      })
-
-      this.flightList.reverse()
-
-      setTimeout(() => {
-        wx.hideLoading()
-      }, 1000)
+    rebindList () {
+      this.getListData()
     },
     showTimeFilter () {
       this.showTimeDialog = true
-      // chart.clear()
     },
     closeTimePopup () {
       this.showTimeDialog = false
-      // chart.setOption(this.chartOpt)
     },
     confirmTime (_obj) {
       console.log(_obj.startTime)
@@ -127,11 +119,42 @@ export default {
         return false
       } else {
         this.curractive = n
+        this.orderBy = n === 0 ? 2 : 1
         this.rebindList(n)
       }
+    },
+    updateData () {
+      this.$fly.all([this.getListData()]).then(this.$fly.spread((records, project) => {
+        this.showTimeDialog = false
+      }))
+    },
+    getListData () {
+      this.$fly.post('/flightData/getFlightDataByDay', {
+        departureCityCode: this.detail_date.departureCityCode,
+        arrivalCityCode: this.detail_date.arrivalCityCode,
+        departureDate: this.detail_date.departureDate,
+        timeSlotList: this.detail_date.timeSlotList,
+        companyList: this.detail_date.companyList,
+        orderBy: this.orderBy
+      }).then(res => {
+        if (res.code === '0' && res.data && res.data.length > 0) {
+          this.flightList = res.data
+        } else {
+          this.flightList = []
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   mounted () {
+    // 清空filter條件
+    this.setDetailDate({
+      timeSlotList: [],
+      companyList: []
+    })
+
+    this.getListData()
   },
   created () {
   // let app = getApp()
@@ -140,13 +163,6 @@ export default {
 </script>
 
 <style scoped>
-.loading-wrap{
-  height: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-}
 .tab-wrap{
   width: 88%;
   margin: 30rpx auto 0 auto;
@@ -216,6 +232,9 @@ export default {
   width: 90%;
   margin: 30rpx auto 0 auto;
   color: #3d3d3d;
+  height: 80%;
+  overflow: hidden;
+  overflow-y: auto;
 }
 .list-item{
   background: #fff;
@@ -274,5 +293,11 @@ export default {
   justify-content: flex-end;
   align-items: center;
   font-size: 52rpx;
+}
+.no-data{
+  margin-top: 30rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #ccc;
 }
 </style>

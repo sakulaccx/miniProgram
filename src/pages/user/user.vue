@@ -50,7 +50,6 @@ export default {
     ...mapState([
       'loginInfo',
       'userInfo',
-      'search_history',
       'depart_date'
     ]),
     cutPhone () {
