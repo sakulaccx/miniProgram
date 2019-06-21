@@ -448,6 +448,11 @@ export default {
   onPullDownRefresh () {
     wx.showNavigationBarLoading()
     this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
+      if (this.hasData) {
+        this.initChart()
+        this.$refs.echarts.init()
+        this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
+      }
       wx.hideNavigationBarLoading()
       wx.stopPullDownRefresh()
     }))
