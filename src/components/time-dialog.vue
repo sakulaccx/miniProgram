@@ -82,7 +82,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setDepart: 'SET_DEPART_DATE'
+      setDepart: 'SET_DEPART_DATE',
+      setDetailSearch: 'SET_DETAIL_DATE'
     }),
     closePopup () {
       this.$emit('closeTimeBox')
@@ -125,12 +126,18 @@ export default {
     },
     userFilter () {
       if (this.timeRage.length === 0 && this.flightCode.length === 0) {
-        let obj = {
+        let objDep = {
           time_filter: [],
           company_filter: []
         }
 
-        this.setDepart(obj)
+        let objDet = {
+          timeSlotList: [],
+          companyList: []
+        }
+
+        this.setDepart(objDep)
+        this.setDetailSearch(objDet)
       } else {
         let _tplarr = []
         let _tplarr2 = []
@@ -150,12 +157,18 @@ export default {
           })
         }
 
-        let obj = {
+        let objDep = {
           time_filter: _tplarr,
           company_filter: _tplarr2
         }
 
-        this.setDepart(obj)
+        let objDet = {
+          timeSlotList: _tplarr,
+          companyList: _tplarr2
+        }
+
+        this.setDepart(objDep)
+        this.setDetailSearch(objDet)
       }
 
       this.closePopup()

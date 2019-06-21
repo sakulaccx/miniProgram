@@ -20,6 +20,13 @@ const state = {
     time_filter: [],
     company_filter: []
   },
+  detail_date: {
+    departureCityCode: '',
+    arrivalCityCode: '',
+    departureDate: '',
+    timeSlotList: [],
+    companyList: []
+  },
   loginInfo: {
     phone: '',
     isLogined: false

@@ -6,15 +6,16 @@
         <div class="price-show">￥{{flightInfo.currPrice}}</div>
         <div class="price-desc">{{flightInfo.date}}机票价格</div>
         <div class="btn buy-btn" @click="gotoList">现在就买</div>
-        <div class="favorit-link" v-if="!isfavorited">添加关注，提醒我购票</div>
+        <div class="favorit-link" v-if="!favoriteStatus" @click="addFavorite">添加关注，提醒我购票</div>
+        <div class="favorit-link" v-else @click="gotoFavoriteList">已关注，查看关注列表</div>
       </div>
       <div class="forecast-wrap">
         <div class="forecast-title">{{flightInfo.date}}机票价格</div>
-        <div class="suggest-content" :class="suggestion ? 'red-text' : 'green-text'">{{suggestText[suggestion]}}</div>
+        <div class="suggest-content" :class="suggestion ? 'green-text' : 'red-text'">{{suggestText[suggestion]}}</div>
         <div class="clearfix"></div>
         <div class="suggest-desc">
           {{suggestionDesc}}
-          <span :class="suggestion ? 'red-text' : 'green-text'">¥{{priceRange}}</span>
+          <span :class="suggestion ? 'green-text' : 'red-text'">¥{{priceRange}}</span>
         </div>
       </div>
     </div>
@@ -33,14 +34,16 @@
       </div>
     </div>
     <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" />
+    <van-dialog id="van-dialog" />
   </div>
 </template>
 
 <script>
 import noticeBar from '@/components/notice-bar'
 import timeDialog from '@/components/time-dialog'
-import * as echarts from '../../../static/lib/echarts.min.js'
+import * as echarts from '@/../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
+import Dialog from '@/../static/vant/dialog/dialog'
 import {mapState} from 'vuex'
 
 let chart = null
@@ -50,21 +53,26 @@ export default {
     return {
       showTimeDialog: false,
       flightInfo: {
-        currPrice: 700,
-        expectPrice: 800,
-        date: '4月1日'
+        flightNumber: '',
+        departureTime: '',
+        departureCity: '',
+        arrivalCity: '',
+        currPrice: 0,
+        expectPrice: 0,
+        actionFlag: 0,
+        date: ''
       },
+      favoriteStatus: 0,
       echarts,
       dataAxis: [],
       chartOpt: null,
-      suggestText: ['建议等等', '建议购买'],
+      suggestText: ['建议购买', '建议等等'],
       cvalue: '',
       dataVal: [],
       trendList: [],
       trendOrder: ['前', '后']
     }
   },
-
   components: {
     noticeBar,
     timeDialog,
@@ -72,29 +80,21 @@ export default {
   },
   computed: {
     ...mapState([
-      'search_history',
-      'depart_date'
+      'detail_date',
+      'userInfo'
     ]),
     suggestion () {
-      if (this.flightInfo.currPrice > this.flightInfo.expectPrice) {
-        return 0
-      } else {
-        return 1
-      }
+      return this.flightInfo.actionFlag
     },
     suggestionDesc () {
       if (this.flightInfo.currPrice > this.flightInfo.expectPrice) {
-        return '价格会下降,' + this.depart_date.from_str + '-' + this.depart_date.target_str + '价格会下降'
+        return '价格会下降,' + this.flightInfo.departureCity + '-' + this.flightInfo.arrivalCity + '价格会下降'
       } else {
-        return '价格会上升,' + this.depart_date.from_str + '-' + this.depart_date.target_str + '价格会上升'
+        return '价格会上升,' + this.flightInfo.departureCity + '-' + this.flightInfo.arrivalCity + '价格会上升'
       }
     },
     priceRange () {
-      if (this.flightInfo.currPrice > this.flightInfo.expectPrice) {
-        return (this.flightInfo.currPrice - this.flightInfo.expectPrice)
-      } else {
-        return (this.flightInfo.expectPrice - this.flightInfo.currPrice)
-      }
+      return Math.abs(this.flightInfo.currPrice - this.flightInfo.expectPrice)
     },
     showTrend (o) {
       return function (o) {
@@ -110,29 +110,10 @@ export default {
   },
   methods: {
     gotoList () {
-      wx.navigateTo({url: '../flightList/main'})
+      wx.navigateTo({url: '/pages/flightList/main'})
     },
     initChart (canvas, width, height) {
       let _that = this
-
-      this.dataAxis.forEach(function (v, i) {
-        if (i < (_that.dataAxis.length - 1)) {
-          _that.dataVal.push({
-            value: Math.floor(Math.random() * (3000 - 500 + 1)) + 500,
-            label: {
-              show: false
-            }
-          })
-        } else {
-          _that.dataVal.push({
-            value: Math.floor(Math.random() * (3000 - 500 + 1)) + 500,
-            label: {
-              show: true
-            }
-          })
-        }
-      })
-
       this.chartOpt = {
         grid: {
           left: '12%',
@@ -287,7 +268,6 @@ export default {
     },
     showTimeFilter () {
       this.showTimeDialog = true
-      // chart.clear()
     },
     confirmTime (_obj) {
       console.log(_obj.startTime)
@@ -295,43 +275,134 @@ export default {
     },
     closeTimePopup () {
       this.showTimeDialog = false
-      // chart.setOption(this.chartOpt)
+    },
+    getDetailData () {
+      this.$fly.post('/flightData/getSearchDetailData', {
+        departureCityCode: this.detail_date.departureCityCode,
+        arrivalCityCode: this.detail_date.arrivalCityCode,
+        departureDate: this.detail_date.departureDate,
+        timeSlotList: this.detail_date.timeSlotList,
+        companyList: this.detail_date.companyList
+      }).then(res => {
+        if (res.code === '0') {
+          if (res.data && res.data.currentData) {
+            // 赋值当前数据
+            let currData = res.data.currentData
+            let _date = new Date(currData.departureDate)
+            let _obj = {
+              flightNumber: currData.flightNumber,
+              departureTime: currData.departureTime,
+              departureCity: currData.departureCity,
+              arrivalCity: currData.arrivalCity,
+              currPrice: (currData.lowestPrice * 1),
+              expectPrice: (currData.futureLowestPrice * 1),
+              actionFlag: (currData.actionFlag * 1),
+              date: `${(_date.getMonth() + 1)}月${_date.getDate()}日`
+            }
+            this.flightInfo = {...this.flightInfo, ..._obj}
+            this.checkFavorite()
+            wx.setNavigationBarTitle({
+              title: `${this.flightInfo.departureCity} - ${this.flightInfo.arrivalCity}`
+            })
+          }
+
+          if (res.data && res.data.list && res.data.list.length > 0) {
+            // 赋值chart
+            this.dataAxis = []
+            this.dataVal = []
+            res.data.list.forEach((v, i) => {
+              this.dataAxis.push(new Date(v.departureDate).getTime())
+              if (i < res.data.list.length - 1) {
+                this.dataVal.push({
+                  value: v.lowestPrice,
+                  show: false
+                })
+              } else {
+                this.dataVal.push({
+                  value: v.lowestPrice,
+                  show: true
+                })
+              }
+            })
+
+            this.cvalue = this.dataAxis[(this.dataAxis.length - 1)]
+
+            // 初始化chart
+            this.initChart()
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+        Dialog.alert({
+          title: '',
+          message: err
+        })
+        wx.showToast({
+          title: '网络不给力，请稍后再试',
+          icon: 'none'
+        })
+      })
+    },
+    checkFavorite () {
+      // 查询是否已关注
+      this.$fly.post('/attention/isAttention', {
+        openid: this.userInfo.openid,
+        departureCityCode: this.detail_date.departureCityCode,
+        arrivalCityCode: this.detail_date.arrivalCityCode,
+        departureTime: this.flightInfo.departureTime,
+        flightNumber: this.flightInfo.flightNumber
+      }).then(res => {
+        if (res.code === '0') {
+          this.favoriteStatus = res.data * 1
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    gotoFavoriteList () {
+      if (this.userInfo.isRegister) {
+        wx.navigateTo({url: '/pages/interest/main'})
+      } else {
+        Dialog.alert({
+          title: '',
+          message: '检测到您尚未登录，如需要查看关注列表，请先登录'
+        }).then(() => {
+          wx.navigateTo('/pages/user/main')
+        })
+      }
+    },
+    addFavorite () {
+      this.$fly.post('/attention/add', {
+        openid: this.userInfo.openid,
+        departureCityCode: this.detail_date.departureCityCode,
+        arrivalCityCode: this.detail_date.arrivalCityCode,
+        departureTime: this.flightInfo.departureTime,
+        flightNumber: this.flightInfo.flightNumber,
+        lowestPrice: this.flightInfo.currPrice
+      }).then(res => {
+        if (res.code === '0') {
+          this.favoriteStatus = 1
+        } else {
+          console.log(res.msg)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   mounted () {
-    wx.setNavigationBarTitle({
-      title: `${this.depart_date.from_str} - ${this.depart_date.target_str}`
-    })
-
-    // 定义假数据
-    this.trendList = [
-      {
-        date: '5-1',
-        price: '1000',
-        trend: 'up'
-      },
-      {
-        date: '5-11',
-        price: '300',
-        trend: 'down'
-      }
-    ]
-
-    // chart数据
-    let ff = []
-    for (let i = 14; i > 0; i--) {
-      let currdate = new Date()
-      let before = new Date(currdate.setDate(i))
-      ff.push(before.getTime())
-    }
-    this.dataAxis = ff.reverse()
-    this.cvalue = this.dataAxis[(this.dataAxis.length - 1)]
-
-    // 初始化chart
-    this.initChart()
+    // 获取数据
+    this.getDetailData()
   },
   created () {
     // let app = getApp()
+  },
+  onPullDownRefresh () {
+    wx.showNavigationBarLoading()
+    this.$fly.all([this.getDetailData()]).then(() => {
+      wx.hideNavigationBarLoading()
+      wx.stopPullDownRefresh()
+    })
   }
 }
 </script>
@@ -380,6 +451,7 @@ export default {
 .favorit-link{
   color: #4680f6;
   font-size: 26rpx;
+  text-decoration: underline;
 }
 .forecast-wrap{
   margin-top: 30rpx;

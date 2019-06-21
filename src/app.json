@@ -2,21 +2,18 @@
   "pages": [
     "pages/index/main",
     "pages/destination/main",
+    "pages/detail/main",
+    "pages/interest/main",
     "pages/search/main",
     "pages/calendar/main",
-    
     "pages/notifaction/main",
     "pages/aboutus/main",
-    "pages/detail/main",
     "pages/user/main",
-    "pages/interest/main",
     "pages/recommend/main",
     "pages/flightList/main"
-    
   ],
-  "window":
-  {
-    "backgroundTextStyle": "light",
+  "window": {
+    "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"

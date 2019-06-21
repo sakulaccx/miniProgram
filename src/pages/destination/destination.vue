@@ -25,7 +25,7 @@
 import noticeBar from '@/components/notice-bar'
 import favoriteBar from '@/components/favorite-bar'
 import timeDialog from '@/components/time-dialog'
-import * as echarts from '../../../static/lib/echarts.min.js'
+import * as echarts from '@/../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
 import format from '@/utils/dateFormat'
 import {mapState, mapMutations} from 'vuex'
@@ -70,10 +70,11 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setDepart: 'SET_DEPART_DATE'
+      setDepart: 'SET_DEPART_DATE',
+      setDetailSearch: 'SET_DETAIL_DATE'
     }),
     gotoDetail () {
-      wx.navigateTo({url: '../detail/main'})
+      wx.navigateTo({url: '/pages/detail/main'})
     },
     initChart (canvas, width, height) {
       let yMax = Math.max(...this.dataAyis)
@@ -279,6 +280,7 @@ export default {
             date: `${dateInfo.getMonth() + 1}月${dateInfo.getDate()}日`
           }
           this.flightInfo = {...this.flightInfo, ..._obj}
+          this.setDetailSearchInfo(currData)
 
           // 同步请求关注数据
           this.$refs.favorite.getFavorite(currData.departureTime, currData.flightNumber, currData.lowestPrice)
@@ -304,7 +306,7 @@ export default {
             let _startValue = 0
             let _endValue = 0
 
-            // 同步请求关注数据
+            // 请求关注数据
             this.$refs.favorite.getFavorite(currData.departureTime, currData.flightNumber, currData.lowestPrice)
 
             // 赋值全局当前时间戳
@@ -354,6 +356,7 @@ export default {
                 company_filter: []
               }
               this.setDepart(_dep)
+              this.setDetailSearchInfo(currData)
             }
           }
         } else {
@@ -365,6 +368,17 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    setDetailSearchInfo (_obj) {
+      // 详情页查询数据
+      let _detail = {
+        departureCityCode: _obj.departureCityCode,
+        arrivalCityCode: _obj.arrivalCityCode,
+        departureDate: _obj.departureTime.split(' ')[0],
+        timeSlotList: [],
+        companyList: []
+      }
+      this.setDetailSearch(_detail)
     }
   },
   mounted () {
@@ -375,6 +389,13 @@ export default {
   },
   created () {
     // let app = getApp()
+  },
+  onPullDownRefresh () {
+    wx.showNavigationBarLoading()
+    this.$fly.all([this.getData()]).then(() => {
+      wx.hideNavigationBarLoading()
+      wx.stopPullDownRefresh()
+    })
   }
 }
 </script>

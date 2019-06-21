@@ -1,3 +1,6 @@
 {
-    "navigationBarTitleText": "机务处"
+    "navigationBarTitleText": "机务处",
+    "usingComponents": {
+    	"van-dialog": "../../static/vant/dialog/index"
+    }
 }

@@ -12,5 +12,8 @@ export default {
   },
   [type.SET_LOGINED] (state, loginInfo) {
     state.loginInfo = {...state.loginInfo, ...loginInfo}
+  },
+  [type.SET_DETAIL_DATE] (state, searchDetail) {
+    state.detail_date = {...state.detail_date, ...searchDetail}
   }
 }
