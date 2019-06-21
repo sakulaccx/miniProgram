@@ -48,7 +48,7 @@
     <div class="no-data" v-else>
       没有查询到数据
     </div>
-    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData" />
+    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData" ref="timeBox"/>
   </div>
 </template>
 
@@ -142,6 +142,8 @@ export default {
         } else {
           this.flightList = []
         }
+        // 获取航空公司
+        this.$refs.timeBox.getCompanyList()
       }).catch(err => {
         console.log(err)
       })

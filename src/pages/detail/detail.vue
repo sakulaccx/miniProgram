@@ -3,7 +3,7 @@
     <notice-bar @showTimeBox="showTimeFilter" />
     <div class="detail-wrap">
       <div class="info-wrap">
-        <div class="price-show">￥{{flightInfo.currPrice}}</div>
+        <div class="price-show">￥{{flightInfo.lowestPrice}}</div>
         <div class="price-desc">{{flightInfo.dateStr}}机票价格</div>
         <div class="btn buy-btn" @click="gotoList">现在就买</div>
         <div class="favorit-link" v-if="!favoriteStatus" @click="addFavorite">添加关注，提醒我购票</div>
@@ -31,7 +31,7 @@
         {{trendText}}
       </div>
     </div>
-    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData"/>
+    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData" ref="timeBox"/>
     <van-dialog id="van-dialog" />
   </div>
 </template>
@@ -55,8 +55,8 @@ export default {
         departureTime: '',
         departureCity: '',
         arrivalCity: '',
-        currPrice: 0,
-        expectPrice: 0,
+        lowestPrice: 0,
+        futureLowestPrice: 0,
         actionFlag: 0,
         dateStr: '',
         departureDate: '',
@@ -293,8 +293,8 @@ export default {
               departureTime: currData.departureTime,
               departureCity: currData.departureCity,
               arrivalCity: currData.arrivalCity,
-              currPrice: (currData.lowestPrice * 1),
-              expectPrice: (currData.futureLowestPrice * 1),
+              lowestPrice: (currData.lowestPrice * 1),
+              futureLowestPrice: (currData.futureLowestPrice * 1),
               actionFlag: (currData.actionFlag * 1),
               dateStr: `${(_date.getMonth() + 1)}月${_date.getDate()}日`,
               departureDate: currData.departureDate,
@@ -312,6 +312,9 @@ export default {
 
             // 匹配关注
             this.checkFavorite()
+
+            // 获取航空公司
+            this.$refs.timeBox.getCompanyList()
           }
 
           if (res.data && res.data.list && res.data.list.length > 0) {

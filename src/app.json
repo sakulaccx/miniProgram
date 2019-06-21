@@ -1,9 +1,9 @@
 {
   "pages": [
-    
+    "pages/detail/main",
     "pages/index/main",
     "pages/flightList/main",
-    "pages/detail/main",
+    
     "pages/destination/main",
     "pages/interest/main",
     "pages/search/main",
