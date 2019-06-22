@@ -1,10 +1,10 @@
 {
   "pages": [
+    "pages/destination/main",
     "pages/user/main",
     "pages/detail/main",
     "pages/index/main",
     "pages/flightList/main",
-    "pages/destination/main",
     "pages/interest/main",
     "pages/search/main",
     "pages/calendar/main",

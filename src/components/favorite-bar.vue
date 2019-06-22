@@ -76,6 +76,7 @@ export default {
       }).then(res => {
         if (res.code === '0') {
           this.favoriteStatus = 1
+          this.runNotifactionTrack()
         } else {
           console.log(res.msg)
         }
@@ -104,6 +105,9 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    runNotifactionTrack () {
+      this.$fly.get('/attention/updateNotes')
     }
   },
   mounted () {

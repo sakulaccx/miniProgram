@@ -457,6 +457,7 @@ export default {
       }).then(res => {
         if (res.code === '0') {
           this.favoriteStatus = 1
+          this.$fly.get('/attention/updateNotes')
         } else {
           console.log(res.msg)
         }
