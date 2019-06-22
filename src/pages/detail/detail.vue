@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <notice-bar @showTimeBox="showTimeFilter" />
-    <div class="detail-wrap">
+    <div class="detail-wrap" v-if="hasData">
       <div class="info-wrap">
         <div class="price-show">￥{{flightInfo.lowestPrice}}</div>
         <div class="price-desc">{{flightInfo.dateStr}}机票价格</div>
@@ -19,10 +19,10 @@
         </div>
       </div>
     </div>
-    <div class="bar-chart-wrap">
+    <div class="bar-chart-wrap" v-if="hasData">
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
     </div>
-    <div class="price-trend-wrap">
+    <div class="price-trend-wrap" v-if="hasData">
       <div class="trend-title">
         价格分析
         <span>航班起飞{{flightInfo.dateStr}}</span>
@@ -30,6 +30,9 @@
       <div class="trend-list">
         {{trendText}}
       </div>
+    </div>
+    <div class="no-data" v-if="!hasData">
+      没有查询到数据
     </div>
     <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData" ref="timeBox"/>
     <van-dialog id="van-dialog" />
@@ -49,6 +52,7 @@ let chart = null
 export default {
   data () {
     return {
+      hasData: false,
       showTimeDialog: false,
       flightInfo: {
         flightNumber: '',
@@ -86,14 +90,14 @@ export default {
       return this.flightInfo.actionFlag
     },
     suggestionDesc () {
-      if (this.flightInfo.currPrice > this.flightInfo.expectPrice) {
+      if (this.flightInfo.lowestPrice > this.flightInfo.futureLowestPrice) {
         return '价格会下降,' + this.flightInfo.departureCity + '-' + this.flightInfo.arrivalCity + '价格会下降'
       } else {
         return '价格会上升,' + this.flightInfo.departureCity + '-' + this.flightInfo.arrivalCity + '价格会上升'
       }
     },
     priceRange () {
-      return Math.abs(this.flightInfo.currPrice - this.flightInfo.expectPrice)
+      return Math.abs(this.flightInfo.lowestPrice - this.flightInfo.futureLowestPrice)
     }
   },
   methods: {
@@ -208,7 +212,7 @@ export default {
         }]
       }
 
-      this.$refs.echarts.init()
+      // this.$refs.echarts.init()
     },
     handleInit (canvas, width, height) {
       var _that = this
@@ -258,8 +262,11 @@ export default {
       return chart
     },
     showTimeFilter () {
+      if (!chart._disposed) {
+        chart.clear()
+        chart.dispose()
+      }
       this.showTimeDialog = true
-      chart.clear()
     },
     confirmTime (_obj) {
       console.log(_obj.startTime)
@@ -267,16 +274,26 @@ export default {
     },
     closeTimePopup () {
       this.showTimeDialog = false
-      chart.setOption(this.chartOpt)
+      setTimeout(() => {
+        this.initChart()
+        this.$refs.echarts.init()
+      }, 100)
     },
     updateData () {
+      if (!chart._disposed) {
+        chart.clear()
+        chart.dispose()
+      }
+      this.showTimeDialog = false
       this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
-        this.showTimeDialog = false
-        chart.setOption(this.chartOpt, true)
+        if (this.hasData) {
+          this.initChart()
+          this.$refs.echarts.init()
+        }
       }))
     },
     getDetailData () {
-      this.$fly.post('/flightData/getSearchDetailData', {
+      return this.$fly.post('/flightData/getSearchDetailData', {
         departureCityCode: this.detail_date.departureCityCode,
         arrivalCityCode: this.detail_date.arrivalCityCode,
         departureDate: this.detail_date.departureDate,
@@ -285,6 +302,7 @@ export default {
       }).then(res => {
         if (res.code === '0') {
           if (res.data && res.data.currentData) {
+            this.hasData = true
             // 赋值当前数据
             let currData = res.data.currentData
             let _date = new Date(currData.departureDate)
@@ -336,9 +354,36 @@ export default {
               }
             })
             this.cvalue = this.dataAxis[(this.dataAxis.length - 1)]
+          }
 
-            // 初始化chart
-            this.initChart()
+          if (!res.data.currentData || res.data.list.length === 0) {
+            this.hasData = false
+            wx.showToast({
+              title: '没有对应的数据',
+              icon: 'none'
+            })
+
+            let _obj = {
+              flightNumber: '',
+              departureTime: '',
+              departureCity: '',
+              arrivalCity: '',
+              lowestPrice: 0,
+              futureLowestPrice: 0,
+              actionFlag: 0,
+              dateStr: `--月--日`,
+              departureDate: '',
+              futureLowestPriceDate: 0
+            }
+            this.flightInfo = {...this.flightInfo, ..._obj}
+
+            // 设置趋势分析
+            this.setTrend()
+
+            // 设置title
+            wx.setNavigationBarTitle({
+              title: `${this.flightInfo.departureCity} - ${this.flightInfo.arrivalCity}`
+            })
           }
         }
       }).catch(err => {
@@ -355,18 +400,22 @@ export default {
     },
     setTrend () {
       this.trendText = ''
-      let dateVal = this.flightInfo.departureDate
-      let futureDate = this.flightInfo.futureLowestPriceDate
-      let _date = new Date(dateVal)
-      let _future = new Date(new Date(dateVal).setDate(_date.getDate() + futureDate))
-      let _price = this.flightInfo.lowestPrice - this.flightInfo.futureLowestPrice
-      let _dateStr = `${_future.getMonth() + 1}月${_future.getDate()}日`
-      if (_price < 0) {
-        this.trendText += `今天到${_dateStr}，价格逐步上涨，预计${_dateStr}会上涨到${this.flightInfo.futureLowestPrice}左右，比今天贵${Math.abs(_price)}`
-      } else if (_price > 0) {
-        this.trendText += `今天到${_dateStr}，价格逐步下跌，预计${_dateStr}会下降至${this.flightInfo.futureLowestPrice}左右，比今天省${Math.abs(_price)}`
+      if (this.hasData) {
+        let dateVal = this.flightInfo.departureDate
+        let futureDate = this.flightInfo.futureLowestPriceDate
+        let _date = new Date(dateVal)
+        let _future = new Date(new Date(dateVal).setDate(_date.getDate() + futureDate))
+        let _price = this.flightInfo.lowestPrice - this.flightInfo.futureLowestPrice
+        let _dateStr = `${_future.getMonth() + 1}月${_future.getDate()}日`
+        if (_price < 0) {
+          this.trendText += `今天到${_dateStr}，价格逐步上涨，预计${_dateStr}会上涨到${this.flightInfo.futureLowestPrice}左右，比今天贵${Math.abs(_price)}`
+        } else if (_price > 0) {
+          this.trendText += `今天到${_dateStr}，价格逐步下跌，预计${_dateStr}会下降至${this.flightInfo.futureLowestPrice}左右，比今天省${Math.abs(_price)}`
+        } else {
+          this.trendText += `今天到${_dateStr}，价格持平`
+        }
       } else {
-        this.trendText += `今天到${_dateStr}，价格持平`
+        this.trendText = ''
       }
     },
     checkFavorite () {
@@ -404,7 +453,7 @@ export default {
         arrivalCityCode: this.detail_date.arrivalCityCode,
         departureTime: this.flightInfo.departureTime,
         flightNumber: this.flightInfo.flightNumber,
-        lowestPrice: this.flightInfo.currPrice
+        lowestPrice: this.flightInfo.lowestPrice
       }).then(res => {
         if (res.code === '0') {
           this.favoriteStatus = 1
@@ -423,8 +472,13 @@ export default {
       companyList: []
     })
 
-    // 获取数据
-    this.getDetailData()
+    this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
+      if (this.hasData) {
+        // 初始化chart控件
+        this.initChart()
+        this.$refs.echarts.init()
+      }
+    }))
   },
   created () {
     // let app = getApp()
@@ -432,6 +486,10 @@ export default {
   onPullDownRefresh () {
     wx.showNavigationBarLoading()
     this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
+      if (this.hasData) {
+        this.initChart()
+        this.$refs.echarts.init()
+      }
       wx.hideNavigationBarLoading()
       wx.stopPullDownRefresh()
     }))
@@ -558,5 +616,11 @@ export default {
 .trend-list .list-item{
   height: 50rpx;
   line-height: 50rpx;
+}
+.no-data{
+  margin-top: 30rpx;
+  color: #ccc;
+  font-size: 30rpx;
+  text-align: center;
 }
 </style>
