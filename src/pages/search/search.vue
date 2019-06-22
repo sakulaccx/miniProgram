@@ -35,10 +35,10 @@
         <i class="iconfont icon-shizhong-fill date-select"></i>
         <div class="search-l2-box">
           <span class="choose-date selected" v-if="searchForm.departureDate.length > 0">{{search_data.date_display}}</span>
-          <span class="choose-date" v-else>请选择日期</span>
+          <span class="choose-date" v-else>选择日期</span>
           <span class="weekday">{{showWeek}}</span>
         </div>
-        <i class="iconfont icon-rightarrow"></i>
+        <i class="iconfont icon-youjiantou"></i>
       </div>
     </div>
     <div class="btn search-btn" @click="searchFly">搜索</div>
@@ -322,7 +322,7 @@ export default {
 <style>
   .choose-city .field-index--van-field{
     padding: 0;
-    font-size: 32rpx;
+    font-size: 36rpx;
   }
 </style>
 <style scoped>
@@ -348,16 +348,16 @@ export default {
   .divider-line{
     margin: 0 auto;
     width: 95%;
-    height: 1px;
+    height: 2rpx;
     border-bottom: 1px solid rgb(243, 243, 243);
   }
   .icon-select{
-    font-size: 28px;
+    font-size: 46rpx;
     margin: 0 40rpx;
   }
   .date-select{
     margin: 0 40rpx;
-    font-size: 20px;
+    font-size: 36rpx;
   }
   .choose-city{
     width: 150rpx;
@@ -383,21 +383,23 @@ export default {
     color: rgb(153, 153, 157);
   }
   .choose-date.selected{
-    color: rgb(49, 49, 49);
+    font-size: 36rpx;
+    color: #333333;
   }
   .weekday{
     margin-left: 10rpx;
-    font-size: 14px;
-    color: rgb(141, 141, 146);
+    font-size: 28rpx;
+    color: #99999e;
   }
-  .icon-rightarrow{
-    font-size: 30px;
+  .icon-youjiantou{
+    font-size: 46rpx;
   }
   .search-btn{
-    font-size: 16px;
+    font-size: 36rpx;
     color: #fff;
     border-radius: 40rpx;
     background: rgb(48, 104, 246);
+    border: 0 none;
   }
   .city-box-wrap{
     position: relative;

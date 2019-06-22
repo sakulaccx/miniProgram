@@ -228,14 +228,14 @@ export default {
 .left-close{
   float: left;
   margin-left: 30rpx;
-  font-size: 60rpx;
+  font-size: 48rpx;
   color: #7796E3;
 }
 .right-reset{
   float: right;
   margin-right: 32rpx;
   font-size: 28rpx;
-  color: #7796E3;
+  color: #7096e9;
 }
 .btn-wrap{
   position: absolute;
@@ -244,11 +244,14 @@ export default {
   bottom: 0;
 }
 .confirm-btn{
-  width: 80%;
-  font-size: 16px;
+  height: 64rpx;
+  line-height: 64rpx;
+  width: 70%;
+  font-size: 28rpx;
   color: #fff;
   border-radius: 40rpx;
-  background: rgb(48, 104, 246);
+  border: 0 none;
+  background: #2065ff;
 }
 .list-wrap{
   height: 100%;
@@ -262,14 +265,15 @@ export default {
   width: 87%;
   margin: 0 auto;
   position: relative;
-  font-size: 32rpx;
+  font-size: 28rpx;
+  color: #3d3d3d;
 }
 .list-subtitle{
   width: 87%;
   margin: 0 auto;
-  font-size: 24rpx;
+  font-size: 22rpx;
   padding-top: 10rpx;
-  color: #848484;
+  color: #878787;
 }
 .list-title span:first-child{
   margin-left: 30rpx;
@@ -278,16 +282,16 @@ export default {
   content: " ";
   display: block;
   height: 100%;
-  width: 16rpx;
+  width: 13rpx;
   position: absolute;
   left: 0;
   top: 0;
-  background: #7796E3;
+  background: #7096e9;
   border-radius: 5rpx;
 }
 .list-title span:last-child{
-  font-size: 24rpx;
-  color: #848484;
+  font-size: 22rpx;
+  color: #878787;
 }
 .list-item{
   margin: 0 auto;
@@ -298,17 +302,17 @@ export default {
 }
 .left-title{
   float: left;
-  font-size: 26rpx;
+  font-size: 22rpx;
   color: #000;
 }
 .right-arrow{
   float: right;
-  font-size: 50rpx;
+  font-size: 40rpx;
   color: #b5b5b5;
 }
 .selected-item .left-title,
 .selected-item .right-arrow{
-  color: #7796E3;
+  color: #7096e9;
 }
 .flight-box{
   height: 40%;

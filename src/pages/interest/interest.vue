@@ -226,8 +226,12 @@ export default {
     font-size: 34rpx;
     color: #434031;
   }
+  .info-date{
+    color: #33333e;
+  }
   .info-price{
-    font-size: 46rpx;
+    font-size: 45rpx;
+    color: #333333;
   }
   .un-effective .item-info span{
     color: #a9a9a9;
@@ -236,7 +240,7 @@ export default {
     color: #a9a9a9;
   }
   .under-text{
-    font-size: 24rpx;
+    font-size: 20rpx;
     color: #66666e;
     text-align: center;
   }
@@ -246,7 +250,7 @@ export default {
   .item-box-bottom{
     height: 50rpx;
     line-height: 50rpx;
-    font-size: 32rpx;
+    font-size: 30rpx;
     text-align: right;
     padding-right: 30rpx;
     margin-top: 10rpx;

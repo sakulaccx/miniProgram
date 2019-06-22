@@ -485,6 +485,7 @@ export default {
 .price-show{
   font-size: 52rpx;
   text-align: center;
+  color: #33333e;
 }
 .date-show,
 .expect-text{
@@ -499,11 +500,11 @@ export default {
   color: #ff320b;
 }
 .black-price{
-  color: #000;
+  color: #66666e;
 }
 .middle-line{
   height: 42%;
-  border-left: 1px solid #f5f5f5;
+  border-left: 1px solid #eaeaea;
 }
 .bar-chart-wrap{
   width: 100%;
@@ -521,6 +522,7 @@ export default {
   color: #fff;
   font-size: 30rpx;
   border-radius: 44rpx;
+  border: 0 none;
   overflow: hidden;
   overflow-x: auto;
 }

@@ -122,19 +122,19 @@ export default {
 .favorite-list,
 .favorite-bar{
   width: 100%;
-  height: 60rpx;
+  height: 54rpx;
+  line-height: 54rpx;
   background: #fee1cf;
 }
 .favorite-bar .inner-text{
   float: left;
   height: 100%;
-  line-height: 50rpx;
   padding-left: 30rpx;
-  color: #ff7216;
+  color: #ff6500;
   font-size: 28rpx;
 }
 .favorite-bar .icon-jinggao:before{
-  font-size: 38rpx;
+  font-size: 28rpx;
   margin-right: 10rpx;
 }
 .favorite-bar .favorite-btn{
@@ -142,9 +142,9 @@ export default {
   margin-right: 30rpx;
   margin-top: 7rpx;
   width: 180rpx;
-  border-radius: 48rpx;
-  height: 48rpx;
-  line-height: 48rpx;
+  border-radius: 42rpx;
+  height: 42rpx;
+  line-height: 42rpx;
   text-align: center;
   color: #fff;
   background: #ff6500;
@@ -159,13 +159,12 @@ export default {
 .favorite-list .inner-text{
   float: left;
   height: 100%;
-  line-height: 50rpx;
   padding-left: 30rpx;
   color: #1cb152;
   font-size: 28rpx;
 }
 .favorite-list .icon-jinggao:before{
-  font-size: 38rpx;
+  font-size: 28rpx;
   margin-right: 10rpx;
 }
 .favorite-list .favorite-btn{
@@ -173,9 +172,9 @@ export default {
   margin-right: 30rpx;
   margin-top: 7rpx;
   width: 180rpx;
-  border-radius: 48rpx;
-  height: 48rpx;
-  line-height: 48rpx;
+  border-radius: 42rpx;
+  height: 42rpx;
+  line-height: 42rpx;
   text-align: center;
   color: #fff;
   background: #1cb152;

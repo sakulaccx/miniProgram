@@ -32,9 +32,9 @@ export default {
 <style scoped>
 .notice-bar{
   width: 100%;
-  height: 60rpx;
+  height: 54rpx;
   background: #d8e5ff;
-  line-height: 60rpx;
+  line-height: 54rpx;
 }
 .inner-text{
   float: left;
@@ -49,9 +49,9 @@ export default {
   margin-top: 7rpx;
   color: #fff;
   width: 120rpx;
-  height: 48rpx;
-  border-radius: 48rpx;
-  line-height: 48rpx;
+  height: 42rpx;
+  border-radius: 42rpx;
+  line-height: 42rpx;
   background: #4680f6;
   font-size: 26rpx;
   text-align: center;

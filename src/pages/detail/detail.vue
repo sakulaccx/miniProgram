@@ -524,6 +524,7 @@ export default {
   width: 100%;
   text-align: center;
   font-size: 52rpx;
+  color: #33333e;
 }
 .price-desc{
   width: 100%;
@@ -537,6 +538,7 @@ export default {
   color: #fff;
   line-height: 70rpx;
   border-radius: 50rpx;
+  border: 0 none;
   width: 50%;
   margin: 20rpx auto 10rpx auto;
   font-size: 30rpx;
@@ -563,11 +565,11 @@ export default {
   content: " ";
   display: block;
   height: 90%;
-  width: 14rpx;
+  width: 13rpx;
   position: absolute;
   left: 0;
   top: 5rpx;
-  background: #5281EE;
+  background: #4680f6;
 }
 .suggest-content{
   float: right;
@@ -575,12 +577,12 @@ export default {
 }
 .suggest-desc{
   margin-top: 6rpx;
-  font-size: 24rpx;
+  font-size: 22rpx;
   text-align: right;
-  color: #99999E;
+  color: #88888e;
 }
 .red-text{
-  color: #ED6400;
+  color: #ff6500;
 }
 .green-text{
   color: green;
@@ -604,16 +606,16 @@ export default {
   height: 80rpx;
   line-height: 80rpx;
   color: #33333e;
-  font-size: 28rpx;
+  font-size: 30rpx;
   border-bottom: 2rpx solid #EAEAEB;
 }
 .trend-title span{
-  font-size: 24rpx;
-  color: #808086;
+  font-size: 26rpx;
+  color: #88888e;
 }
 .trend-list{
   font-size: 28rpx;
-  color: #5F5F64;
+  color: #33333e;
   padding: 10rpx 0;
 }
 .trend-list .list-item{

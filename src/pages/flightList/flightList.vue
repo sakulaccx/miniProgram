@@ -177,7 +177,7 @@ export default {
   font-size: 30rpx;
   border: 1px solid #7596E4;
   border-radius: 10rpx;
-  color: #7596E4;
+  color: #7096e9;
   text-align: center;
 }
 .left-desc,
@@ -186,7 +186,7 @@ export default {
   width: 50%;
 }
 .active-tab{
-  background: #7596E4;
+  background: #7096e9;
   color: #fff;
 }
 .left-desc,
@@ -217,20 +217,22 @@ export default {
 }
 .left-desc{
   text-align: left;
+  font-size: 28rpx;
+  color: #3d3d3d;
 }
 .left-desc span{
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #878787;
   margin-left: 10rpx;
 }
 .right-desc{
   text-align: right;
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #878787;
 }
 .right-desc .iconfont{
   font-size: 24rpx;
-  color: #7596E4;
+  color: #608ae6;
 }
 .list-wrap{
   width: 90%;
@@ -271,7 +273,7 @@ export default {
   font-size: 40rpx;
 }
 .donw-info{
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #878787;
 }
 .item-middle-line{
@@ -282,7 +284,7 @@ export default {
   height: 20rpx;
 }
 .item-left-bottom{
-  font-size: 24rpx;
+  font-size: 20rpx;
   height: 60rpx;
   line-height: 60rpx;
   color: #878787;
@@ -296,7 +298,7 @@ export default {
   flex-flow: row nowrap;
   justify-content: flex-end;
   align-items: center;
-  font-size: 52rpx;
+  font-size: 40rpx;
 }
 .no-data{
   margin-top: 30rpx;

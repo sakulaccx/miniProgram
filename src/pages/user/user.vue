@@ -248,6 +248,7 @@ export default {
   .code-input{
     width: 80%;
     font-size: 30rpx;
+    color: #99999e;
     margin: 20rpx auto 0 auto;
     border-bottom: 2rpx solid #ccc;
   }
@@ -256,14 +257,14 @@ export default {
     line-height: 70rpx;
   }
   .code-input input{
-    width: 50%;
+    width: 60%;
     display: inline-block;
     vertical-align: middle;
     height: 70rpx;
     line-height: 70rpx;
   }
   .code-input span{
-    width: 49%;
+    width: 39%;
     display: inline-block;
     vertical-align: middle;
     text-align: right;
