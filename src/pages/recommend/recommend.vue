@@ -28,15 +28,10 @@ export default {
   },
   computed: {
     ...mapState([
-      'userInfo',
-      'depart_date'
+      'userInfo'
     ])
   },
   methods: {
-    ...mapMutations({
-      setHistory: 'SET_HISTORY_SEARCH',
-      setDepart: 'SET_DEPART_DATE'
-    }),
     submitRecommend () {
       if (this.recommendVal.length === 0) {
         wx.showToast({
@@ -62,7 +57,7 @@ export default {
             title: '非常感谢您的宝贵意见',
             icon: 'none'
           })
-          // wx.redirectTo({url: ''})
+          wx.redirectTo({url: '/pages/user/main'})
         }).catch(err => {
           console.log(err)
           wx.showToast({

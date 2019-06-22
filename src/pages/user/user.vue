@@ -11,7 +11,11 @@
       </div>
     </div>
     <div class="opt-list-wrap">
-      <van-cell title="通知" is-link arrow-direction="right" url="/pages/flightList/main" link-type="navigateTo" />
+      <van-cell title="通知" is-link arrow-direction="right" url="/pages/notifaction/main" link-type="navigateTo">
+        <template slot v-if="hasNotify">
+          <div class="dot"></div>
+        </template>
+      </van-cell>
       <van-cell title="关于我们" is-link arrow-direction="right" url="/pages/aboutus/main" link-type="navigateTo" />
       <van-cell title="意见反馈" is-link arrow-direction="right" url="/pages/recommend/main" link-type="navigateTo" />
     </div>
@@ -32,8 +36,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
-
+import {mapState, mapMutations} from 'vuex'
 export default {
   data () {
     return {
@@ -43,14 +46,14 @@ export default {
       showLogion: false,
       getCodeTimer: null,
       getCodeDue: 0,
-      resent: true
+      resent: true,
+      hasNotify: false
     }
   },
   computed: {
     ...mapState([
       'loginInfo',
-      'userInfo',
-      'depart_date'
+      'userInfo'
     ]),
     cutPhone () {
       return this.phoneNum.substr(0, 3) + '****' + this.phoneNum.substr(7, 11)
@@ -122,6 +125,7 @@ export default {
             phone: this.phoneNum,
             isRegister: true
           })
+          this.checkNotifaction()
           this.isRegister = true
           this.showLogion = false
         }).catch(err => {
@@ -137,9 +141,22 @@ export default {
       this.isRegister = this.loginInfo.isRegister
       if (this.isRegister) {
         this.phoneNum = this.loginInfo.phone
+        this.checkNotifaction()
       }
     },
-    stopPopup () {}
+    checkNotifaction () {
+      this.$fly.post('/attention/getNotes', {
+        openid: this.userInfo.openid
+      }).then(res => {
+        if (res.code === '0' && res.data && res.data.length > 0) {
+          this.hasNotify = true
+        } else {
+          this.hasNotify = false
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    }
   },
   mounted () {
     this.checkLogined()
@@ -256,5 +273,17 @@ export default {
   }
   .code-input span.sending{
     color: #ccc;
+  }
+  .dot{
+    position: absolute;
+    width: 10rpx;
+    height: 10rpx;
+    left: 80rpx;
+    top: -25rpx;
+  }
+  .dot:after{
+    content: '.';
+    color: red;
+    font-size: 100rpx;
   }
 </style>
