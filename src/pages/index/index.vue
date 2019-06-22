@@ -37,6 +37,9 @@ export default {
               isRegister: 1
             })
           }
+          wx.switchTab({
+            url: '/pages/search/main'
+          })
         }).catch(err => {
           console.log(err)
           this.setUserInfo({
@@ -44,9 +47,9 @@ export default {
             unionid: '',
             isRegister: 1
           })
-        })
-        wx.redirectTo({
-          url: '../search/main'
+          wx.switchTab({
+            url: '/pages/search/main'
+          })
         })
       }
     })

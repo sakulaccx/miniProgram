@@ -55,13 +55,13 @@ export default {
     },
     gotoFavoriteList () {
       if (this.userInfo.isRegister) {
-        wx.navigateTo({url: '../../pages/interest/main'})
+        wx.switchTab({url: '../../pages/interest/main'})
       } else {
         Dialog.alert({
           title: '',
           message: '检测到您尚未登录，如需要查看关注列表，请先登录'
         }).then(() => {
-          wx.navigateTo('../../pages/user/main')
+          wx.switchTab('../../pages/user/main')
         })
       }
     },

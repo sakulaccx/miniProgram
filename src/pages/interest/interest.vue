@@ -159,6 +159,9 @@ export default {
     }
   },
   mounted () {
+    wx.showTabBar({
+      animation: false
+    })
     this.checkUserStatus()
   },
   created () {

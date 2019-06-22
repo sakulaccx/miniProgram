@@ -34,7 +34,8 @@
       <div class="top-search-l2" @click="showCalendar">
         <i class="iconfont icon-shizhong-fill date-select"></i>
         <div class="search-l2-box">
-          <span class="choose-date" :class="searchForm.departureDate.length > 0 ? 'selected' : ''">{{search_data.date_display}}</span>
+          <span class="choose-date selected" v-if="searchForm.departureDate.length > 0">{{search_data.date_display}}</span>
+          <span class="choose-date" v-else>请选择日期</span>
           <span class="weekday">{{showWeek}}</span>
         </div>
         <i class="iconfont icon-rightarrow"></i>
@@ -98,7 +99,7 @@ export default {
         arrival_str: '',
         departureDate: ''
       },
-      weekarr: ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+      weekarr: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
       cityGroup: [
         {
           title: '历史搜索',
@@ -123,11 +124,22 @@ export default {
       'search_data',
       'userInfo'
     ]),
+    newDepartureDate () {
+      return this.depart_date.departureDate
+    },
     showBottomClose () {
       return this.showCityBox || this.showSearchBox
     },
     showWeek () {
-      return this.weekarr[new Date(this.depart_date.departureDate).getDay()]
+      if (this.searchForm.departureDate) {
+        return this.weekarr[new Date(this.searchForm.departureDate).getDay()]
+      }
+      return ''
+    }
+  },
+  watch: {
+    newDepartureDate () {
+      this.searchForm.departureDate = this.depart_date.departureDate
     }
   },
   methods: {
@@ -136,9 +148,14 @@ export default {
       setSearchStr: 'SET_SEARCH_STR'
     }),
     showCity (val) {
+      wx.hideTabBar({
+        animation: false
+      })
+
       this.selectFrom = val
       this.showCityBox = true
       this.showSearchBox = false
+
       if (val === 1) {
         this.fromDisabled = false
       } else {
@@ -149,6 +166,12 @@ export default {
       let _tpl = this.searchForm.departure_str
       this.searchForm.departure_str = this.searchForm.arrival_str
       this.searchForm.arrival_str = _tpl
+
+      let _code = this.searchForm.departureCityCode
+      this.searchForm.departureCityCode = this.searchForm.arrivalCityCode
+      this.searchForm.arrivalCityCode = _code
+
+      this.setStore()
     },
     searchCity (val) {
       let searchStr = val.mp.detail
@@ -188,12 +211,12 @@ export default {
         departureCityCode: this.searchForm.departureCityCode,
         arrivalCityCode: this.searchForm.arrivalCityCode
       }
+      this.setDepart(_dept)
 
       let _search = {
         departure_str: this.searchForm.departure_str,
         arrival_str: this.searchForm.arrival_str
       }
-      this.setDepart(_dept)
       this.setSearchStr(_search)
     },
     searchFly () {
@@ -217,6 +240,7 @@ export default {
             // this.$fly.all([this.getHistoryCity()]).then(this.$fly.spread((records, project) => {
             //   wx.navigateTo({url: '../destination/main'})
             // }))
+            this.resetForm()
             wx.navigateTo({url: '/pages/destination/main'})
           } else {
             wx.showToast({
@@ -244,7 +268,14 @@ export default {
         })
       }
     },
+    resetForm () {
+      this.targetDisabled = true
+      this.closeSearchBox()
+    },
     closeSearchBox () {
+      wx.showTabBar({
+        animation: false
+      })
       this.showCityBox = false
       this.showSearchBox = false
     },
@@ -279,9 +310,9 @@ export default {
     this.getHistoryCity()
 
     // 获取选择的日期
-    if (this.depart_date.departureDate.length > 0) {
-      this.searchForm.departureDate = this.depart_date.departureDate
-    }
+    // if (this.depart_date.departureDate.length > 0) {
+    //   this.searchForm.departureDate = this.depart_date.departureDate
+    // }
   },
   created () {
     // let app = getApp()
@@ -465,5 +496,8 @@ export default {
     content: "关闭";
     line-height: 80rpx;
     text-align: center;
+  }
+  .icon-guanbi{
+    font-size: 56rpx;
   }
 </style>

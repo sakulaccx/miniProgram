@@ -26,7 +26,6 @@ export default {
   data () {
     return {
       currDate: '2019-04-05',
-      weekarr: ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
       monthRange: [],
       rangeMonthFormat: 'yyyy年MM月',
       cevents: {},
@@ -52,15 +51,15 @@ export default {
   methods: {
     ...mapMutations({
       setDate: 'SET_DEPART_DATE',
-      setSearch: 'SET_SEARCH_STR'
+      setSearchStr: 'SET_SEARCH_STR'
     }),
     select (val, val2) {
       const info = this.$refs.calendar.dateInfo(val[0], val[1], val[2])
       let monthDate = info.cMonth > 9 ? info.cMonth : `0${info.cMonth}`
       let dayDate = info.cDay > 9 ? info.cDay : `0${info.cDay}`
       this.setDate({departureDate: `${info.cYear}-${monthDate}-${dayDate}`})
-      this.setSearch({date_display: `${info.cMonth}月${info.cDay}日`})
-      wx.redirectTo({url: '/pages/search/main'})
+      this.setSearchStr({date_display: `${info.cMonth}月${info.cDay}日`})
+      wx.switchTab({url: '/pages/search/main'})
     },
     set90DaysRange () {
       let currDate = new Date(this.currDate)
