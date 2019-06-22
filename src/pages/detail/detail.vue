@@ -109,6 +109,8 @@ export default {
     },
     initChart (canvas, width, height) {
       let _that = this
+      let _endValue = this.dataAxis.length - 1
+      let _startValue = _endValue - 5 > 0 ? (_endValue - 5) : 0
       this.chartOpt = {
         grid: {
           left: '12%',
@@ -166,8 +168,8 @@ export default {
         dataZoom: [{
           type: 'inside',
           xAxisIndex: [0],
-          startValue: 7,
-          endValue: 13
+          startValue: _startValue,
+          endValue: _endValue
         }],
         series: [{
           data: _that.dataVal,

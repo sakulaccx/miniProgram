@@ -55,7 +55,7 @@ export default {
     },
     gotoFavoriteList () {
       if (this.userInfo.isRegister) {
-        wx.switchTab({url: '../../pages/interest/main'})
+        wx.navigateTo({url: '../../pages/interest/main'})
       } else {
         Dialog.alert({
           title: '',

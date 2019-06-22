@@ -4,7 +4,7 @@
     <div class="desc-bar">
       <div class="left-desc">
         {{search_data.departure_str}} - {{search_data.arrival_str}}
-        <span>{{search_data.date_display}}</span>
+        <span>{{showDateStr}}</span>
       </div>
       <div class="right-desc">
         <i class="iconfont icon-jinggao1"></i>
@@ -92,10 +92,12 @@ export default {
   computed: {
     ...mapState([
       'search_data',
-      'depart_date',
-      'detail_date',
-      'userInfo'
-    ])
+      'detail_date'
+    ]),
+    showDateStr () {
+      let _date = new Date(this.detail_date.departureDate)
+      return `${_date.getMonth() + 1}月${_date.getDate()}日`
+    }
   },
   methods: {
     ...mapMutations({

@@ -7,6 +7,7 @@
     
     
     "pages/destination/main",
+    "pages/follow/main",
     "pages/interest/main",
     "pages/detail/main",
     "pages/flightList/main",
@@ -28,7 +29,7 @@
     "backgroundColor": "#fff",
     "list": [
       {
-        "pagePath": "pages/interest/main",
+        "pagePath": "pages/follow/main",
         "iconPath": "static/images/follow.png",
         "selectedIconPath": "static/images/follow_actived.png",
         "text": "关注"

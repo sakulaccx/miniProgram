@@ -138,7 +138,7 @@ export default {
       }
     },
     checkLogined () {
-      this.isRegister = this.loginInfo.isRegister
+      this.isRegister = this.userInfo.isRegister
       if (this.isRegister) {
         this.phoneNum = this.loginInfo.phone
         this.checkNotifaction()
