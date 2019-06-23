@@ -42,7 +42,7 @@ export default {
     return {
       phoneNum: '',
       codeNum: '',
-      isRegister: false,
+      isRegister: 0,
       showLogion: false,
       getCodeTimer: null,
       getCodeDue: 0,
@@ -52,7 +52,6 @@ export default {
   },
   computed: {
     ...mapState([
-      'loginInfo',
       'userInfo'
     ]),
     cutPhone () {
@@ -61,7 +60,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setLoginInfo: 'SET_LOGINED'
+      setUserInfo: 'SET_USERINFO'
     }),
     showLoginForm () {
       this.showLogion = true
@@ -121,7 +120,7 @@ export default {
           code: this.codeNum
         }
         this.$fly.post('/login/userLogin', _obj).then(res => {
-          this.setLoginInfo({
+          this.setUserInfo({
             phone: this.phoneNum,
             isRegister: true
           })
@@ -140,7 +139,7 @@ export default {
     checkLogined () {
       this.isRegister = this.userInfo.isRegister
       if (this.isRegister) {
-        this.phoneNum = this.loginInfo.phone
+        this.phoneNum = this.userInfo.phone
         this.checkNotifaction()
       }
     },

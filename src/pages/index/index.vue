@@ -28,12 +28,28 @@ export default {
           jsCode: res.code
         }).then(res => {
           if (res.code === '0') {
-            this.setUserInfo(res.data)
+            let _obj = {}
+            if (res.data.isRegister === '1') {
+              _obj = {
+                openid: res.data.openid,
+                unionid: res.data.unionid,
+                isRegister: (res.data.isRegister * 1),
+                phone: res.data.phone
+              }
+            } else {
+              _obj = {
+                openid: res.data.openid,
+                unionid: res.data.unionid,
+                isRegister: (res.data.isRegister * 1)
+              }
+            }
+            this.setUserInfo(_obj)
           } else {
             // 测试
             this.setUserInfo({
               openid: '123456',
               unionid: '123456',
+              phone: '18616291931',
               isRegister: 1
             })
           }
@@ -44,7 +60,8 @@ export default {
           console.log(err)
           this.setUserInfo({
             openid: '123456',
-            unionid: '',
+            unionid: '123456',
+            phone: '18616291931',
             isRegister: 1
           })
           wx.switchTab({

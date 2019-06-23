@@ -27,13 +27,10 @@ const state = {
     timeSlotList: [],
     companyList: []
   },
-  loginInfo: {
-    phone: '',
-    isLogined: false
-  },
   userInfo: {
     openid: '',
     unionid: '',
+    phone: '',
     isRegister: 0
   }
 }
