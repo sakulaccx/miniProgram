@@ -22,10 +22,10 @@
     <div class="dialog-wrap" v-if="showLogion" @click="showLogion = false">
       <div class="login-form-wrap" @click.stop="stopPopup">
         <div class="phone-input">
-          <input type="number" placeholder="输入手机号" maxlength="11" v-model="phoneNum" @click.stop="stopPopup">
+          <input type="number" placeholder="输入手机号" maxlength="11" v-model="phoneNum" @click.stop="stopPopup" placeholder-class="input-placeholder">
         </div>
         <div class="code-input">
-          <input type="text" placeholder="输入验证码" maxlength="6" v-model="codeNum" @click.stop="stopPopup">
+          <input type="text" placeholder="输入验证码" maxlength="6" v-model="codeNum" @click.stop="stopPopup" placeholder-class="input-placeholder">
           <span @click.stop="getCode" v-if="resent">获取验证码</span>
           <span v-if="!resent" class="sending">{{getCodeDue}}重新发送</span>
         </div>
@@ -220,7 +220,7 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: rgb(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 500;
     display: flex;
     flex-flow: column nowrap;
@@ -228,9 +228,9 @@ export default {
     align-items: center;
   }
   .login-form-wrap{
-    width: 88%;
+    width: 85%;
     background: #fff;
-    border-radius: 10rpx;
+    border-radius: 15rpx;
     padding-top: 40rpx;
   }
   .submit-btn{
@@ -249,8 +249,11 @@ export default {
     width: 80%;
     font-size: 30rpx;
     color: #99999e;
-    margin: 20rpx auto 0 auto;
+    margin: 30rpx auto 0 auto;
     border-bottom: 2rpx solid #ccc;
+  }
+  .input-placeholder{
+    color: #99999e;
   }
   .phone-input input{
     height: 70rpx;
