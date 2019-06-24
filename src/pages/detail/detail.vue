@@ -453,6 +453,7 @@ export default {
         openid: this.userInfo.openid,
         departureCityCode: this.detail_date.departureCityCode,
         arrivalCityCode: this.detail_date.arrivalCityCode,
+        actionFlag: this.detail_date.actionFlag,
         departureTime: this.flightInfo.departureTime,
         flightNumber: this.flightInfo.flightNumber,
         lowestPrice: this.flightInfo.lowestPrice

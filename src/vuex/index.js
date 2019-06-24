@@ -18,14 +18,16 @@ const state = {
     departureCityCode: '',
     arrivalCityCode: '',
     timeSlotList: [],
-    companyList: []
+    companyList: [],
+    actionFlag: ''
   },
   detail_date: {
     departureCityCode: '',
     arrivalCityCode: '',
     departureDate: '',
     timeSlotList: [],
-    companyList: []
+    companyList: [],
+    actionFlag: ''
   },
   userInfo: {
     openid: '',
