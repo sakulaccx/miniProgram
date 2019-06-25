@@ -35,7 +35,6 @@
       没有查询到数据
     </div>
     <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData" ref="timeBox"/>
-    <van-dialog id="van-dialog" />
   </div>
 </template>
 
@@ -44,7 +43,6 @@ import noticeBar from '@/components/notice-bar'
 import timeDialog from '@/components/time-dialog'
 import * as echarts from '@/../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
-import Dialog from '@/../static/vant/dialog/dialog'
 import {mapState, mapMutations} from 'vuex'
 
 let chart = null
@@ -390,10 +388,6 @@ export default {
         }
       }).catch(err => {
         console.log(err)
-        Dialog.alert({
-          title: '',
-          message: err
-        })
         wx.showToast({
           title: '网络不给力，请稍后再试',
           icon: 'none'
@@ -440,11 +434,18 @@ export default {
       if (this.userInfo.isRegister) {
         wx.navigateTo({url: '/pages/interest/main'})
       } else {
-        Dialog.alert({
-          title: '',
-          message: '检测到您尚未登录，如需要查看关注列表，请先登录'
-        }).then(() => {
-          wx.navigateTo('/pages/user/main')
+        if (!chart._disposed) {
+          chart.clear()
+          chart.dispose()
+        }
+        wx.showModal({
+          title: '提示',
+          content: '检测到您尚未登录，如需要查看关注列表，请先登录',
+          showCancel: false,
+          confirmText: '确定',
+          success: function (res) {
+            wx.switchTab({url: '/pages/user/main'})
+          }
         })
       }
     },

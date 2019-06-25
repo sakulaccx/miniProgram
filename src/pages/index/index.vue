@@ -44,29 +44,54 @@ export default {
               }
             }
             this.setUserInfo(_obj)
+            wx.switchTab({
+              url: '/pages/search/main'
+            })
           } else {
-            // 测试
             this.setUserInfo({
               openid: '123456',
               unionid: '123456',
               phone: '18616291931',
-              isRegister: 1
+              isRegister: 0
             })
+            wx.switchTab({
+              url: '/pages/search/main'
+            })
+            // 测试
+            // wx.showModal({
+            //   title: '提示',
+            //   content: '请求用户数据失败，请稍后再试',
+            //   showCancel: false,
+            //   confirmText: '确定',
+            //   success: function (res) {
+            //     wx.navigateBack({
+            //       delta: -1
+            //     })
+            //   }
+            // })
           }
-          wx.switchTab({
-            url: '/pages/search/main'
-          })
         }).catch(err => {
           console.log(err)
           this.setUserInfo({
             openid: '123456',
             unionid: '123456',
             phone: '18616291931',
-            isRegister: 1
+            isRegister: 0
           })
           wx.switchTab({
             url: '/pages/search/main'
           })
+          // wx.showModal({
+          //   title: '提示',
+          //   content: '请求用户数据失败，请稍后再试',
+          //   showCancel: false,
+          //   confirmText: '确定',
+          //   success: function (res) {
+          //     wx.navigateBack({
+          //       delta: -1
+          //     })
+          //   }
+          // })
         })
       }
     })

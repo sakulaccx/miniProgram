@@ -10,12 +10,10 @@
       <div class="favorite-btn" @click="gotoFavoriteList">关注列表</div>
       <div class="clearfix"></div>
     </div>
-    <van-dialog id="van-dialog" />
   </div>
 </template>
 
 <script>
-import Dialog from '@/../static/vant/dialog/dialog'
 import { mapState } from 'vuex'
 export default {
   props: ['favoriteStatus'],
@@ -37,33 +35,21 @@ export default {
   methods: {
     saveFavorite () {
       if (this.userInfo.unionid.length === 0) {
-        Dialog.alert({
-          title: '',
-          message: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号'
-        }).then(() => {
-          console.log('需要跳转到公众号')
-        })
+        this.showAuthorityDialog(0)
       } else if (!this.userInfo.isRegister) {
-        Dialog.alert({
-          title: '',
-          message: '检测到您尚未登录，如需要查看关注列表，请先登录'
-        }).then(() => {
-          wx.navigateTo('../../pages/user/main')
-        })
+        this.showAuthorityDialog(1)
       } else {
         this.addFavorite()
       }
+    },
+    showAuthorityDialog (level) {
+      this.$emit('parentShowAuthority', level)
     },
     gotoFavoriteList () {
       if (this.userInfo.isRegister) {
         wx.navigateTo({url: '../../pages/interest/main'})
       } else {
-        Dialog.alert({
-          title: '',
-          message: '检测到您尚未登录，如需要查看关注列表，请先登录'
-        }).then(() => {
-          wx.switchTab('../../pages/user/main')
-        })
+        this.showAuthorityDialog(1)
       }
     },
     addFavorite () {

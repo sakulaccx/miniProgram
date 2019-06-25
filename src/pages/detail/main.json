@@ -1,7 +1,4 @@
 {
 	"enablePullDownRefresh": true,
-    "navigationBarTitleText": "",
-    "usingComponents": {
-    	"van-dialog": "../../static/vant/dialog/index"
-    }
+    "navigationBarTitleText": ""
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <notice-bar @showTimeBox="showTimeFilter" />
-    <favorite-bar :status="favoriteStatus" ref='favorite' v-if="hasData"/>
+    <favorite-bar :status="favoriteStatus" @parentShowAuthority="showAuthorityDialog" ref='favorite' v-if="hasData"/>
     <div class="flight-info-wrap">
       <div class="curr-price">
         <div class="price-show">￥{{flightInfo.currPrice}}</div>
@@ -31,7 +31,8 @@ import format from '@/utils/dateFormat'
 import {mapState, mapMutations} from 'vuex'
 
 let chart = null
-let pvalue = ''
+let pname = ''
+let pvalue = 0
 
 export default {
   data () {
@@ -109,7 +110,7 @@ export default {
               var day = date.getDate()
               var weekday = weekdays[date.getDay()]
               var dateStr = month + '月' + day + '日'
-              if (pvalue === value) {
+              if (pname === value) {
                 return [
                   '{a|' + dateStr + '}',
                   '{b|' + weekday + '}'
@@ -160,12 +161,18 @@ export default {
           { // For shadow
             type: 'bar',
             itemStyle: {
-              normal: { color: '#F8F9FC' }
+              normal: {
+                // color: '#000'
+                color: function (param) {
+                  return (param['company'] === _that.dataAxis[param.dataIndex]) ? 'rgb(255, 255, 255, 0)' : 'rgb(248, 249, 252)'
+                }
+              }
             },
             barGap: '-100%',
             barCategoryGap: '40%',
             data: dataShadow,
-            animation: false
+            animation: false,
+            silent: true
           },
           {
             type: 'bar',
@@ -174,7 +181,7 @@ export default {
               position: 'top',
               formatter: function (params) {
                 var key = params.name
-                if (key === pvalue) {
+                if (key === pname) {
                   return '{a|¥' + params.value + '}'
                 } else {
                   return '{b|¥' + params.value + '}'
@@ -193,7 +200,7 @@ export default {
               normal: {
                 color: function (params) {
                   var key = params.name
-                  if (key === pvalue) {
+                  if (key === pname) {
                     return '#2b6cff'
                   } else {
                     return '#e3effc'
@@ -206,7 +213,7 @@ export default {
               symbol: 'none',
               data: [
                 {
-                  yAxis: yMax
+                  yAxis: pvalue
                 }
               ],
               label: {
@@ -233,7 +240,8 @@ export default {
       canvas.setChart(chart)
       chart.setOption(this.chartOpt)
       chart.on('click', function (params) {
-        pvalue = params.name
+        pname = params.name
+        pvalue = params.value
         let _startValue = 0
         let _endValue = 0
         if (params.dataIndex <= parseInt(_that.dataAxis.length / 2)) {
@@ -243,11 +251,12 @@ export default {
           _endValue = params.dataIndex + 3 > (_that.dataAxis.length - 1) ? (_that.dataAxis.length - 1) : params.dataIndex + 3
           _startValue = _endValue - 6
         }
+        _that.chartOpt.series[1].markLine.data[0].yAxis = pvalue
         _that.chartOpt.dataZoom[0].startValue = _startValue
         _that.chartOpt.dataZoom[0].endValue = _endValue
         chart.setOption(_that.chartOpt, true)
 
-        let _date = new Date((pvalue * 1))
+        let _date = new Date((pname * 1))
         let _dateStr = format(_date, 'yyyy-MM-dd')
         _that.changeBar(_dateStr)
       })
@@ -261,10 +270,6 @@ export default {
       }
       this.showTimeDialog = true
     },
-    confirmTime (_obj) {
-      console.log(_obj.startTime)
-      console.log(_obj.endTime)
-    },
     closeTimePopup () {
       this.showTimeDialog = false
       setTimeout(() => {
@@ -272,6 +277,35 @@ export default {
         this.$refs.echarts.init()
       }, 100)
       // chart.setOption(this.chartOpt, true)
+    },
+    showAuthorityDialog (level) {
+      if (!chart._disposed) {
+        chart.clear()
+        chart.dispose()
+      }
+
+      if (level === 0) {
+        wx.showModal({
+          title: '提示',
+          content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',
+          showCancel: false,
+          confirmText: '确定',
+          success: function (res) {
+            // wx.switchTab({url: '/pages/user/main'})
+            console.log('需要跳转到公众号')
+          }
+        })
+      } else {
+        wx.showModal({
+          title: '提示',
+          content: '检测到您尚未登录，如需要查看关注列表，请先登录',
+          showCancel: false,
+          confirmText: '确定',
+          success: function (res) {
+            wx.switchTab({url: '/pages/user/main'})
+          }
+        })
+      }
     },
     updateData () {
       if (!chart._disposed) {
@@ -355,7 +389,8 @@ export default {
             this.flightInfo = {...this.flightInfo, ..._obj}
 
             // 赋值全局当前时间戳
-            pvalue = dateInfo.getTime().toString()
+            pname = dateInfo.getTime().toString()
+            pvalue = _obj.currPrice
 
             // Charts柱状图处理
             if (res.data.list.length > 0) {

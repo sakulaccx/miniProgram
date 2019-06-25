@@ -1,5 +1,6 @@
 {
   "pages": [
+    
     "pages/index/main",
     "pages/search/main",
     "pages/calendar/main",

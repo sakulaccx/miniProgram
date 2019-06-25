@@ -33,12 +33,10 @@
         </div>
       </div>
     </div>
-    <van-dialog id="van-dialog" />
   </div>
 </template>
 
 <script>
-import Dialog from '@/../static/vant/dialog/dialog'
 import {mapState, mapMutations} from 'vuex'
 
 export default {
@@ -121,18 +119,25 @@ export default {
     },
     checkUserStatus () {
       if (this.userInfo.unionid.length === 0) {
-        Dialog.alert({
-          title: '',
-          message: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号'
-        }).then(() => {
-          console.log('需要跳转到公众号')
+        wx.showModal({
+          title: '提示',
+          content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',
+          showCancel: false,
+          confirmText: '确定',
+          success: function (res) {
+            // wx.switchTab({url: '/pages/user/main'})
+            console.log('需要跳转到公众号')
+          }
         })
       } else if (!this.userInfo.isRegister) {
-        Dialog.alert({
-          title: '',
-          message: '检测到您尚未登录，如需要查看关注列表，请先登录'
-        }).then(() => {
-          wx.navigateTo('../../pages/user/main')
+        wx.showModal({
+          title: '提示',
+          content: '检测到您尚未登录，如需要查看关注列表，请先登录',
+          showCancel: false,
+          confirmText: '确定',
+          success: function (res) {
+            wx.switchTab({url: '/pages/user/main'})
+          }
         })
       } else {
         this.getFavoriteData()
