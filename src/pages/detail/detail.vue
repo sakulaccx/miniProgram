@@ -262,7 +262,7 @@ export default {
       return chart
     },
     showTimeFilter () {
-      if (!chart._disposed) {
+      if (chart && !chart._disposed) {
         chart.clear()
         chart.dispose()
       }
@@ -280,7 +280,7 @@ export default {
       }, 100)
     },
     updateData () {
-      if (!chart._disposed) {
+      if (chart && !chart._disposed) {
         chart.clear()
         chart.dispose()
       }
@@ -434,7 +434,7 @@ export default {
       if (this.userInfo.isRegister) {
         wx.navigateTo({url: '/pages/interest/main'})
       } else {
-        if (!chart._disposed) {
+        if (chart && !chart._disposed) {
           chart.clear()
           chart.dispose()
         }
@@ -472,24 +472,20 @@ export default {
   },
   mounted () {
     // 清空filter条件
-    this.setDetailDate({
-      timeSlotList: [],
-      companyList: []
-    })
-
-    this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
-      if (this.hasData) {
-        // 初始化chart控件
-        this.initChart()
-        this.$refs.echarts.init()
-      }
-    }))
+    // this.setDetailDate({
+    //   timeSlotList: [],
+    //   companyList: []
+    // })
   },
   created () {
     // let app = getApp()
   },
   onPullDownRefresh () {
     wx.showNavigationBarLoading()
+    if (chart && !chart._disposed) {
+      chart.clear()
+      chart.dispose()
+    }
     this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {
         this.initChart()
@@ -501,6 +497,19 @@ export default {
   },
   onUnload () {
     this.showTimeDialog = false
+  },
+  onShow () {
+    if (chart && !chart._disposed) {
+      chart.clear()
+      chart.dispose()
+    }
+    this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
+      if (this.hasData) {
+        // 初始化chart控件
+        this.initChart()
+        this.$refs.echarts.init()
+      }
+    }))
   }
 }
 </script>

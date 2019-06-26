@@ -1,7 +1,17 @@
 <template>
   <div class="content">
     <notice-bar @showTimeBox="showTimeFilter" />
-    <favorite-bar :status="favoriteStatus" @parentShowAuthority="showAuthorityDialog" ref='favorite' v-if="hasData"/>
+    <!-- <favorite-bar :status="favoriteStatus" @parentShowAuthority="showAuthorityDialog" ref='favorite' v-if="hasData"/> -->
+    <div class="favorite-bar" v-if="!favoriteStatus">
+      <div class="iconfont icon-jinggao inner-text">当前价格较高，建议您持续关注</div>
+      <div class="iconfont icon-buoumaotubiao44 favorite-btn" @click="saveFavorite">添加关注</div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="favorite-list" v-if="favoriteStatus">
+      <div class="iconfont icon-jinggao inner-text">已关注，进入关注列表查看更多</div>
+      <div class="favorite-btn" @click="gotoFavoriteListOnTop">关注列表</div>
+      <div class="clearfix"></div>
+    </div>
     <div class="flight-info-wrap">
       <div class="curr-price">
         <div class="price-show">￥{{flightInfo.currPrice}}</div>
@@ -44,7 +54,9 @@ export default {
       flightInfo: {
         currPrice: 0,
         expectPrice: 0,
-        date: ''
+        date: '',
+        departureTime: '',
+        flightNumber: ''
       },
       echarts,
       dataAxis: [],
@@ -68,6 +80,7 @@ export default {
     ...mapState([
       'userInfo',
       'depart_date',
+      'detail_date',
       'search_data'
     ])
   },
@@ -262,26 +275,28 @@ export default {
       })
       return chart
     },
-    showTimeFilter () {
+    disposeChart () {
       if (chart && !chart._disposed) {
         chart.clear()
         chart.dispose()
       }
+    },
+    reInitChart () {
+      this.initChart()
+      this.$refs.echarts.init()
+    },
+    showTimeFilter () {
+      this.disposeChart()
       this.showTimeDialog = true
     },
     closeTimePopup () {
       setTimeout(() => {
-        this.initChart()
-        this.$refs.echarts.init()
+        this.reInitChart()
       }, 100)
       this.showTimeDialog = false
     },
     showAuthorityDialog (level) {
-      if (chart && !chart._disposed) {
-        chart.clear()
-        chart.dispose()
-      }
-
+      this.disposeChart()
       if (level === 0) {
         wx.showModal({
           title: '提示',
@@ -306,18 +321,14 @@ export default {
       }
     },
     updateData () {
-      if (chart && !chart._disposed) {
-        chart.clear()
-        chart.dispose()
-      }
+      this.disposeChart()
       this.showTimeDialog = false
       this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
         if (this.hasData) {
           // 请求关注数据
-          this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
+          this.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
 
-          this.initChart()
-          this.$refs.echarts.init()
+          this.reInitChart()
         }
       }))
     },
@@ -342,7 +353,7 @@ export default {
           this.setDetailSearchInfo(currData)
 
           // 同步请求关注数据
-          this.$refs.favorite.getFavorite(currData.departureTime, currData.flightNumber, currData.lowestPrice)
+          this.getFavorite(currData.departureTime, currData.flightNumber, currData.lowestPrice)
         } else {
           this.hasData = false
           let dateInfo = new Date(_dateStr)
@@ -352,7 +363,6 @@ export default {
             date: `${dateInfo.getMonth() + 1}月${dateInfo.getDate()}日`
           }
           this.flightInfo = {...this.flightInfo, ..._obj}
-          chart.clear()
         }
       }).catch(err => {
         console.log(err)
@@ -449,12 +459,81 @@ export default {
         departureCityCode: _obj.departureCityCode,
         arrivalCityCode: _obj.arrivalCityCode,
         departureDate: _obj.departureDate,
-        timeSlotList: [],
-        companyList: [],
         actionFlag: _obj.actionFlag
       }
       this.setDetailSearch(_detail)
       this.$refs.timeBox.getCompanyList()
+    },
+    getFavorite (depTime, flyNum, lowPrice) {
+      // 赋值请求参数
+      this.departureTime = depTime
+      this.flightNumber = flyNum
+      this.lowestPrice = lowPrice
+
+      // 查询是否已关注
+      this.$fly.post('/attention/isAttention', {
+        openid: this.userInfo.openid,
+        departureCityCode: this.detail_date.departureCityCode,
+        arrivalCityCode: this.detail_date.arrivalCityCode,
+        departureTime: depTime,
+        flightNumber: flyNum
+      }).then(res => {
+        if (res.code === '0') {
+          this.favoriteStatus = res.data * 1
+          // this.lowestPrice = lowPrice
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    saveFavorite () {
+      // 正式代码
+      // if (!this.userInfo.unionid) {
+      //   this.showAuthorityDialog(0)
+      // } else if (!this.userInfo.isRegister) {
+      //   this.showAuthorityDialog(1)
+      // } else {
+      //   this.addFavorite()
+      // }
+
+      // 测试代码
+      if (this.userInfo.unionid.length === 0) {
+        this.showAuthorityDialog(0)
+      } else if (!this.userInfo.isRegister) {
+        this.showAuthorityDialog(1)
+      } else {
+        this.addFavorite()
+      }
+    },
+    addFavorite () {
+      this.$fly.post('/attention/add', {
+        openid: this.userInfo.openid,
+        departureCityCode: this.detail_date.departureCityCode,
+        arrivalCityCode: this.detail_date.arrivalCityCode,
+        actionFlag: this.detail_date.actionFlag,
+        departureTime: this.departureTime,
+        flightNumber: this.flightNumber,
+        lowestPrice: this.lowestPrice
+      }).then(res => {
+        if (res.code === '0') {
+          this.favoriteStatus = 1
+          this.runNotifactionTrack()
+        } else {
+          console.log(res.msg)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    gotoFavoriteListOnTop () {
+      if (this.userInfo.isRegister) {
+        wx.navigateTo({url: '../../pages/interest/main'})
+      } else {
+        this.showAuthorityDialog(1)
+      }
+    },
+    runNotifactionTrack () {
+      this.$fly.get('/attention/updateNotes')
     }
   },
   mounted () {
@@ -470,10 +549,9 @@ export default {
     this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {
         // 请求关注数据
-        this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
+        this.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
         // 初始化chart控件
-        this.initChart()
-        this.$refs.echarts.init()
+        this.reInitChart()
       }
     }))
   },
@@ -484,10 +562,9 @@ export default {
     wx.showNavigationBarLoading()
     this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {
-        this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
+        this.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
 
-        this.initChart()
-        this.$refs.echarts.init()
+        this.reInitChart()
       }
       wx.hideNavigationBarLoading()
       wx.stopPullDownRefresh()
@@ -575,5 +652,70 @@ export default {
   color: #ccc;
   font-size: 30rpx;
   text-align: center;
+}
+/* Favorite bar */
+.favorite-list,
+.favorite-bar{
+  width: 100%;
+  height: 54rpx;
+  line-height: 54rpx;
+  background: #fee1cf;
+}
+.favorite-bar .inner-text{
+  float: left;
+  height: 100%;
+  padding-left: 30rpx;
+  color: #ff6500;
+  font-size: 28rpx;
+}
+.favorite-bar .icon-jinggao:before{
+  font-size: 28rpx;
+  margin-right: 10rpx;
+}
+.favorite-bar .favorite-btn{
+  float: right;
+  margin-right: 30rpx;
+  margin-top: 7rpx;
+  width: 180rpx;
+  border-radius: 42rpx;
+  height: 42rpx;
+  line-height: 42rpx;
+  text-align: center;
+  color: #fff;
+  background: #ff6500;
+  font-size: 26rpx;
+}
+.favorite-bar .icon-buoumaotubiao44:before{
+  margin-right: 10rpx;
+}
+.favorite-list{
+  background: #9af3ad;
+}
+.favorite-list .inner-text{
+  float: left;
+  height: 100%;
+  padding-left: 30rpx;
+  color: #1cb152;
+  font-size: 28rpx;
+}
+.favorite-list .icon-jinggao:before{
+  font-size: 28rpx;
+  margin-right: 10rpx;
+}
+.favorite-list .favorite-btn{
+  float: right;
+  margin-right: 30rpx;
+  margin-top: 7rpx;
+  width: 180rpx;
+  border-radius: 42rpx;
+  height: 42rpx;
+  line-height: 42rpx;
+  text-align: center;
+  color: #fff;
+  background: #1cb152;
+  font-size: 26rpx;
+}
+.favorite-list .icon-buoumaotubiao44:before{
+  margin-right: 10rpx;
 }
 </style>
