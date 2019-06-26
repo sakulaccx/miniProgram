@@ -79,19 +79,18 @@ export default {
   components: {},
   computed: {
     ...mapState([
-      'depart_date',
+      'flight_date',
       'isfiltered'
     ])
   },
   methods: {
     ...mapMutations({
-      setDepart: 'SET_DEPART_DATE',
-      setDetailSearch: 'SET_DETAIL_DATE',
+      setFlightDate: 'SET_FLIGHT_DATE',
       setFilter: 'SET_FILTER'
     }),
     getStoreFromBefore () {
-      this.tplTimeSlotList = this.depart_date.timeSlotList
-      this.tplCompanyList = this.depart_date.companyList
+      this.tplTimeSlotList = this.flight_date.timeSlotList
+      this.tplCompanyList = this.flight_date.companyList
     },
     closePopup () {
       if (!this.isfiltered) {
@@ -178,11 +177,6 @@ export default {
     userFilter () {
       this.setFilter(1)
       if (this.timeRage.length === 0 && this.flightCode.length === 0) {
-        let objDep = {
-          timeSlotList: [],
-          companyList: []
-        }
-
         let objDet = {
           timeSlotList: [],
           companyList: []
@@ -190,8 +184,7 @@ export default {
         this.tplTimeSlotList = []
         this.tplCompanyList = []
         this.clearForm()
-        this.setDepart(objDep)
-        this.setDetailSearch(objDet)
+        this.setFlightDate(objDet)
       } else {
         let _tplarr = []
         let _tplarr2 = []
@@ -211,11 +204,6 @@ export default {
           })
         }
 
-        let objDep = {
-          timeSlotList: _tplarr,
-          companyList: _tplarr2
-        }
-
         let objDet = {
           timeSlotList: _tplarr,
           companyList: _tplarr2
@@ -224,17 +212,16 @@ export default {
         this.tplTimeSlotList = _tplarr
         this.tplCompanyList = _tplarr2
 
-        this.setDepart(objDep)
-        this.setDetailSearch(objDet)
+        this.setFlightDate(objDet)
       }
 
       this.updateData()
     },
     getCompanyList () {
       this.$fly.post('/flightData/getCompanies', {
-        departureCityCode: this.depart_date.departureCityCode,
-        arrivalCityCode: this.depart_date.arrivalCityCode,
-        departureDate: this.depart_date.departureDate
+        departureCityCode: this.flight_date.departureCityCode,
+        arrivalCityCode: this.flight_date.arrivalCityCode,
+        departureDate: this.flight_date.departureDate
       }).then(res => {
         if (res.code === '0' && res.data && res.data.length > 0) {
           this.flightList = []

@@ -323,6 +323,7 @@ export default {
     updateData () {
       this.disposeChart()
       this.showTimeDialog = false
+      this.$refs.timeBox.getStoreFromBefore()
       this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
         if (this.hasData) {
           // 请求关注数据
@@ -573,6 +574,8 @@ export default {
   onUnload () {
     this.showTimeDialog = false
     this.$refs.timeBox.clearFormParent()
+  },
+  onShow () {
   }
 }
 </script>

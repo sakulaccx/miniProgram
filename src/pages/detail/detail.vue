@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setDetailDate: 'SET_DETAIL_DATE'
+      setFlightDate: 'SET_FLIGHT_DATE'
     }),
     gotoList () {
       wx.navigateTo({url: '/pages/flightList/main'})
@@ -329,8 +329,8 @@ export default {
             // 匹配关注
             this.checkFavorite()
 
-            // 获取航空公司
-            this.$refs.timeBox.getCompanyList()
+            // 设置下级的参数
+            this.setFlightSearchInfo(currData)
           }
 
           if (res.data && res.data.list && res.data.list.length > 0) {
@@ -412,6 +412,17 @@ export default {
         this.trendText = ''
       }
     },
+    setFlightSearchInfo (_obj) {
+      // 详情页查询数据
+      let _detail = {
+        departureCityCode: _obj.departureCityCode,
+        arrivalCityCode: _obj.arrivalCityCode,
+        departureDate: _obj.departureDate,
+        actionFlag: _obj.actionFlag
+      }
+      this.setFlightDate(_detail)
+      this.$refs.timeBox.getCompanyList()
+    },
     checkFavorite () {
       // 查询是否已关注
       this.$fly.post('/attention/isAttention', {
@@ -466,13 +477,13 @@ export default {
     }
   },
   mounted () {
-    // 清空filter条件
-    // this.setDetailDate({
-    //   timeSlotList: [],
-    //   companyList: []
-    // })
-    this.$refs.timeBox.getStoreFromBefore()
-    this.$refs.timeBox.resetForm()
+    this.disposeChart()
+    this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
+      if (this.hasData) {
+        // 初始化chart控件
+        this.reInitChart()
+      }
+    }))
   },
   created () {
     // let app = getApp()
@@ -490,16 +501,7 @@ export default {
   },
   onUnload () {
     this.showTimeDialog = false
-    // this.$refs.timeBox.clearForm()
-  },
-  onShow () {
-    this.disposeChart()
-    this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
-      if (this.hasData) {
-        // 初始化chart控件
-        this.reInitChart()
-      }
-    }))
+    this.$refs.timeBox.clearFormParent()
   }
 }
 </script>

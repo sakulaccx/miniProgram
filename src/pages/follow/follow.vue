@@ -89,6 +89,7 @@ export default {
             departureCityCode: _obj.departureCityCode,
             arrivalCityCode: _obj.arrivalCityCode,
             departureDate: _obj.departureDate,
+            timeSlotList: [_obj.departureTime + '-' + _obj.arrivalTime],
             companyList: [_obj.company]
           })
           wx.navigateTo({url: '/pages/detail/main'})

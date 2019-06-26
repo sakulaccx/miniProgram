@@ -48,13 +48,13 @@
     <div class="no-data" v-else>
       没有查询到数据
     </div>
-    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData" ref="timeBox"/>
+    <time-dialog :show="showTimeDialog" @closeTimeBox="closeTimePopup" @updateData="updateData" ref="timeBox"/>
   </div>
 </template>
 
 <script>
 import noticeBar from '@/components/notice-bar'
-import timeDialog from '@/components/time-dialog'
+import timeDialog from '@/components/time-dialog-flight'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
@@ -112,10 +112,6 @@ export default {
     closeTimePopup () {
       this.showTimeDialog = false
     },
-    confirmTime (_obj) {
-      console.log(_obj.startTime)
-      console.log(_obj.endTime)
-    },
     checkTab (n) {
       if (this.curractive === n) {
         return false
@@ -152,16 +148,14 @@ export default {
     }
   },
   mounted () {
-    // 清空filter條件
-    this.setDetailDate({
-      timeSlotList: [],
-      companyList: []
-    })
-
     this.getListData()
   },
   created () {
   // let app = getApp()
+  },
+  onUnload () {
+    this.showTimeDialog = false
+    this.$refs.timeBox.clearFormParent()
   }
 }
 </script>

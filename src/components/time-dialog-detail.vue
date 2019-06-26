@@ -85,8 +85,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setDepart: 'SET_DEPART_DATE',
       setDetailSearch: 'SET_DETAIL_DATE',
+      setFlightDate: 'SET_FLIGHT_DATE',
       setFilter: 'SET_FILTER'
     }),
     getStoreFromBefore () {
@@ -144,6 +144,11 @@ export default {
       this.timeRage = []
       this.flightCode = []
     },
+    clearFormParent () {
+      this.tplTimeSlotList = []
+      this.tplCompanyList = []
+      this.clearForm()
+    },
     saveTimeRange (_obj) {
       if (!_obj.iselected) {
         _obj.iselected = true
@@ -173,7 +178,7 @@ export default {
     userFilter () {
       this.setFilter(1)
       if (this.timeRage.length === 0 && this.flightCode.length === 0) {
-        let objDep = {
+        let objFlt = {
           timeSlotList: [],
           companyList: []
         }
@@ -185,7 +190,7 @@ export default {
         this.tplTimeSlotList = []
         this.tplCompanyList = []
         this.clearForm()
-        this.setDepart(objDep)
+        this.setFlightDate(objFlt)
         this.setDetailSearch(objDet)
       } else {
         let _tplarr = []
@@ -206,7 +211,7 @@ export default {
           })
         }
 
-        let objDep = {
+        let objFlt = {
           timeSlotList: _tplarr,
           companyList: _tplarr2
         }
@@ -219,7 +224,7 @@ export default {
         this.tplTimeSlotList = _tplarr
         this.tplCompanyList = _tplarr2
 
-        this.setDepart(objDep)
+        this.setFlightDate(objFlt)
         this.setDetailSearch(objDet)
       }
 
@@ -249,7 +254,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.detail_date)
     this.getStoreFromBefore()
   },
   created () {

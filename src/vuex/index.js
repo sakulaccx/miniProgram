@@ -29,6 +29,14 @@ const state = {
     companyList: [],
     actionFlag: ''
   },
+  flight_date: {
+    departureCityCode: '',
+    arrivalCityCode: '',
+    departureDate: '',
+    timeSlotList: [],
+    companyList: [],
+    actionFlag: ''
+  },
   userInfo: {
     openid: '',
     unionid: '',
