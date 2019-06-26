@@ -43,6 +43,9 @@ export default {
   props: ['show'],
   data () {
     return {
+      isfiltered: 0,
+      tplTimeSlotList: [],
+      tplCompanyList: [],
       timeList: [
         {
           label: '00:00 - 06:00',
@@ -86,12 +89,20 @@ export default {
       setDetailSearch: 'SET_DETAIL_DATE'
     }),
     closePopup () {
+      if (!this.isfiltered) {
+        this.clearForm()
+      } else {
+        this.resetForm()
+      }
       this.$emit('closeTimeBox')
     },
     updateData () {
       this.$emit('updateData')
     },
     resetForm () {
+      return false
+    },
+    clearForm () {
       this.timeList.forEach((v, i) => {
         v.iselected = false
       })
@@ -128,6 +139,7 @@ export default {
       }
     },
     userFilter () {
+      this.isfiltered += 1
       if (this.timeRage.length === 0 && this.flightCode.length === 0) {
         let objDep = {
           timeSlotList: [],
@@ -169,6 +181,9 @@ export default {
           timeSlotList: _tplarr,
           companyList: _tplarr2
         }
+
+        this.tplTimeSlotList = _tplarr
+        this.tplCompanyList = _tplarr2
 
         this.setDepart(objDep)
         this.setDetailSearch(objDet)

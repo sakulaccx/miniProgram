@@ -13,6 +13,7 @@
            :border="false"
            @click="showCity(1)"
            @input="searchCity"
+           @change="changeField"
           />
         </span>
         <i class="iconfont icon-baohudi_zuoyouduitiao- icon-select" @click="exchangeCity"></i>
@@ -27,6 +28,7 @@
            input-align="right"
            @click="showCity(2)"
            @input="searchCity"
+           @change="changeField"
           />
         </span>
       </div>
@@ -173,6 +175,15 @@ export default {
 
       this.setStore()
     },
+    changeField (val) {
+      if (this.selectFrom === 1) {
+        this.searchForm.departure_str = val.mp.detail
+        this.searchForm.departureCityCode = ''
+      } else {
+        this.searchForm.arrival_str = val.mp.detail
+        this.searchForm.arrivalCityCode = ''
+      }
+    },
     searchCity (val) {
       let searchStr = val.mp.detail
       this.showCityBox = false
@@ -196,9 +207,25 @@ export default {
     },
     saveCity (obj) {
       if (this.selectFrom === 1) {
+        if (obj.value === this.searchForm.arrivalCityCode) {
+          wx.showToast({
+            title: '出发地与目的地不能相同',
+            icon: 'none'
+          })
+
+          return false
+        }
         this.searchForm.departure_str = obj.label
         this.searchForm.departureCityCode = obj.value
       } else {
+        if (obj.value === this.searchForm.departureCityCode) {
+          wx.showToast({
+            title: '出发地与目的地不能相同',
+            icon: 'none'
+          })
+
+          return false
+        }
         this.searchForm.arrival_str = obj.label
         this.searchForm.arrivalCityCode = obj.value
       }
@@ -236,10 +263,6 @@ export default {
           ]
         }).then(res => {
           if (res.code === '0') {
-            // 获取历史搜索城市
-            // this.$fly.all([this.getHistoryCity()]).then(this.$fly.spread((records, project) => {
-            //   wx.navigateTo({url: '../destination/main'})
-            // }))
             this.resetForm()
             wx.navigateTo({url: '/pages/destination/main'})
           } else {
@@ -316,6 +339,9 @@ export default {
   },
   created () {
     // let app = getApp()
+  },
+  onShow () {
+    this.getHistoryCity()
   }
 }
 </script>

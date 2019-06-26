@@ -32,14 +32,14 @@ export default {
             if (res.data.isRegister === '1') {
               _obj = {
                 openid: res.data.openid,
-                unionid: res.data.unionid,
+                unionid: res.data.unionid === null ? 0 : 1,
                 isRegister: (res.data.isRegister * 1),
                 phone: res.data.phone
               }
             } else {
               _obj = {
                 openid: res.data.openid,
-                unionid: res.data.unionid,
+                unionid: res.data.unionid === null ? 0 : 1,
                 isRegister: (res.data.isRegister * 1)
               }
             }
@@ -48,50 +48,31 @@ export default {
               url: '/pages/search/main'
             })
           } else {
-            this.setUserInfo({
-              openid: '123456',
-              unionid: '123456',
-              phone: '18616291931',
-              isRegister: 0
+            wx.showModal({
+              title: '提示',
+              content: '请求用户数据失败，请稍后再试',
+              showCancel: false,
+              confirmText: '确定',
+              success: function (res) {
+                // wx.navigateBack({
+                //   delta: -1
+                // })
+              }
             })
-            wx.switchTab({
-              url: '/pages/search/main'
-            })
-            // 测试
-            // wx.showModal({
-            //   title: '提示',
-            //   content: '请求用户数据失败，请稍后再试',
-            //   showCancel: false,
-            //   confirmText: '确定',
-            //   success: function (res) {
-            //     wx.navigateBack({
-            //       delta: -1
-            //     })
-            //   }
-            // })
           }
         }).catch(err => {
           console.log(err)
-          this.setUserInfo({
-            openid: '123456',
-            unionid: '123456',
-            phone: '18616291931',
-            isRegister: 0
+          wx.showModal({
+            title: '提示',
+            content: '请求用户数据失败，请稍后再试',
+            showCancel: false,
+            confirmText: '确定',
+            success: function (res) {
+              // wx.navigateBack({
+              //   delta: -1
+              // })
+            }
           })
-          wx.switchTab({
-            url: '/pages/search/main'
-          })
-          // wx.showModal({
-          //   title: '提示',
-          //   content: '请求用户数据失败，请稍后再试',
-          //   showCancel: false,
-          //   confirmText: '确定',
-          //   success: function (res) {
-          //     wx.navigateBack({
-          //       delta: -1
-          //     })
-          //   }
-          // })
         })
       }
     })

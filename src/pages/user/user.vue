@@ -155,6 +155,9 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    stopPopup () {
+      return false
     }
   },
   mounted () {

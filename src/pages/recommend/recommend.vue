@@ -52,12 +52,12 @@ export default {
           opinion: this.recommendVal
         }
 
-        this.$fly.post('/xiaoJingAdmin/wxApp/feedback/add', submitObj).then(res => {
+        this.$fly.post('/feedback/add', submitObj).then(res => {
           wx.showToast({
             title: '非常感谢您的宝贵意见',
             icon: 'none'
           })
-          wx.redirectTo({url: '/pages/user/main'})
+          wx.switchTab({url: '/pages/user/main'})
         }).catch(err => {
           console.log(err)
           wx.showToast({
@@ -72,6 +72,21 @@ export default {
   },
   created () {
   // let app = getApp()
+  },
+  onShow () {
+    if (!this.userInfo.isRegister) {
+      wx.showModal({
+        title: '提示',
+        content: '您还没有登录，提交宝贵意见',
+        showCancel: false,
+        confirmText: '确定',
+        success: function (res) {
+          wx.navigateBack({
+            delta: 1
+          })
+        }
+      })
+    }
   }
 }
 </script>

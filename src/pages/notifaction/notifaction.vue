@@ -39,52 +39,7 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      notifyList: [
-        {
-          futureLowestPriceDate: 14,
-          futureLowestPrice: 550,
-          departureCity: '上海',
-          actionFlag: 1,
-          currentPrice: 600,
-          company: '东方航空',
-          updateTime: 1561224727,
-          departureDate: '2019-04-05',
-          arrivalCity: '北京'
-        },
-        {
-          futureLowestPriceDate: 0,
-          futureLowestPrice: 610,
-          departureCity: '上海',
-          actionFlag: 0,
-          currentPrice: 610,
-          company: '中国国航',
-          updateTime: 1561224727,
-          departureDate: '2019-04-07',
-          arrivalCity: '北京'
-        },
-        {
-          futureLowestPriceDate: 29,
-          futureLowestPrice: 500,
-          departureCity: '上海',
-          actionFlag: 1,
-          currentPrice: 690,
-          company: '上海航空',
-          updateTime: 1561224727,
-          departureDate: '2019-04-08',
-          arrivalCity: '北京'
-        },
-        {
-          futureLowestPriceDate: 31,
-          futureLowestPrice: 467,
-          departureCity: '上海',
-          actionFlag: 1,
-          currentPrice: 678,
-          company: '中国联航',
-          updateTime: 1561224727,
-          departureDate: '2019-04-12',
-          arrivalCity: '北京'
-        }
-      ]
+      notifyList: []
     }
   },
   computed: {
@@ -155,6 +110,18 @@ export default {
     // this.setNoitfactionList()
     if (this.userInfo.isRegister) {
       this.getNotifactionList()
+    } else {
+      wx.showModal({
+        title: '提示',
+        content: '您还没有登录，无法通知列表',
+        showCancel: false,
+        confirmText: '确定',
+        success: function (res) {
+          wx.navigateBack({
+            delta: 1
+          })
+        }
+      })
     }
   },
   created () {
