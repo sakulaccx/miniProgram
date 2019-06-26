@@ -144,6 +144,11 @@ export default {
       this.timeRage = []
       this.flightCode = []
     },
+    clearFormParent () {
+      this.tplTimeSlotList = []
+      this.tplCompanyList = []
+      this.clearForm()
+    },
     saveTimeRange (_obj) {
       if (!_obj.iselected) {
         _obj.iselected = true

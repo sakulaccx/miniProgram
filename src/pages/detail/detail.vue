@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <div class="bar-chart-wrap" v-if="hasData">
+    <div class="bar-chart-wrap" v-if="!showTimeDialog">
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
     </div>
     <div class="price-trend-wrap" v-if="hasData">

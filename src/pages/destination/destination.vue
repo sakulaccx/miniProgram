@@ -572,7 +572,7 @@ export default {
   },
   onUnload () {
     this.showTimeDialog = false
-    this.$refs.timeBox.clearForm()
+    this.$refs.timeBox.clearFormParent()
   }
 }
 </script>
