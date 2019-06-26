@@ -147,6 +147,7 @@ export default {
   methods: {
     ...mapMutations({
       setDepart: 'SET_DEPART_DATE',
+      setDetailDate: 'SET_DETAIL_DATE',
       setSearchStr: 'SET_SEARCH_STR'
     }),
     showCity (val) {
@@ -329,19 +330,19 @@ export default {
     }
   },
   mounted () {
-    // 获取历史搜索
-    this.getHistoryCity()
-
-    // 获取选择的日期
-    // if (this.depart_date.departureDate.length > 0) {
-    //   this.searchForm.departureDate = this.depart_date.departureDate
-    // }
   },
   created () {
-    // let app = getApp()
   },
   onShow () {
     this.getHistoryCity()
+    this.setDetailDate({
+      departureDate: '',
+      departureCityCode: '',
+      arrivalCityCode: '',
+      timeSlotList: [],
+      companyList: [],
+      actionFlag: ''
+    })
   }
 }
 </script>

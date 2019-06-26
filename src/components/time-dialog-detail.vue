@@ -250,7 +250,7 @@ export default {
   },
   mounted () {
     console.log(this.detail_date)
-    // this.getStoreFromBefore()
+    this.getStoreFromBefore()
   },
   created () {
     // let app = getApp()

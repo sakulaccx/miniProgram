@@ -15,5 +15,8 @@ export default {
   },
   [type.SET_SEARCH_STR] (state, searchStr) {
     state.search_data = {...state.search_data, ...searchStr}
+  },
+  [type.SET_FILTER] (state, val) {
+    state.isfiltered = val
   }
 }

@@ -34,7 +34,8 @@ const state = {
     unionid: '',
     phone: '',
     isRegister: 0
-  }
+  },
+  isfiltered: 0
 }
 
 export default new Vuex.Store({

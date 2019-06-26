@@ -1,7 +1,6 @@
 <template>
   <div class="content">
     <notice-bar @showTimeBox="showTimeFilter" />
-    <!-- <favorite-bar :status="favoriteStatus" @parentShowAuthority="showAuthorityDialog" ref='favorite' v-if="hasData"/> -->
     <div class="favorite-bar" v-if="!favoriteStatus">
       <div class="iconfont icon-jinggao inner-text">当前价格较高，建议您持续关注</div>
       <div class="iconfont icon-buoumaotubiao44 favorite-btn" @click="saveFavorite">添加关注</div>
@@ -33,7 +32,6 @@
 
 <script>
 import noticeBar from '@/components/notice-bar'
-import favoriteBar from '@/components/favorite-bar'
 import timeDialog from '@/components/time-dialog'
 import * as echarts from '@/../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
@@ -69,7 +67,6 @@ export default {
 
   components: {
     noticeBar,
-    favoriteBar,
     timeDialog,
     mpvueEcharts
   },
@@ -271,7 +268,8 @@ export default {
 
         let _date = new Date((pname * 1))
         let _dateStr = format(_date, 'yyyy-MM-dd')
-        _that.changeBar(_dateStr)
+        _that.setDepart({departureDate: _dateStr})
+        _that.changeBar()
       })
       return chart
     },
@@ -291,7 +289,9 @@ export default {
     },
     closeTimePopup () {
       setTimeout(() => {
-        this.reInitChart()
+        if (this.hasData) {
+          this.reInitChart()
+        }
       }, 100)
       this.showTimeDialog = false
     },
@@ -332,11 +332,11 @@ export default {
         }
       }))
     },
-    changeBar (_dateStr) {
+    changeBar () {
       this.$fly.post('/flightData/getAppointDatePrice', {
         departureCityCode: this.depart_date.departureCityCode,
         arrivalCityCode: this.depart_date.arrivalCityCode,
-        departureDate: _dateStr,
+        departureDate: this.depart_date.departureDate,
         timeSlotList: this.depart_date.timeSlotList,
         companyList: this.depart_date.companyList
       }).then(res => {
@@ -356,7 +356,7 @@ export default {
           this.getFavorite(currData.departureTime, currData.flightNumber, currData.lowestPrice)
         } else {
           this.hasData = false
-          let dateInfo = new Date(_dateStr)
+          let dateInfo = new Date(this.depart_date.departureDate)
           let _obj = {
             currPrice: 0,
             expectPrice: 0,
@@ -572,7 +572,7 @@ export default {
   },
   onUnload () {
     this.showTimeDialog = false
-    console.log('despage unload')
+    this.$refs.timeBox.clearForm()
   }
 }
 </script>

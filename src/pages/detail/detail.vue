@@ -34,13 +34,13 @@
     <div class="no-data" v-if="!hasData">
       没有查询到数据
     </div>
-    <time-dialog :show="showTimeDialog" @selectedTime="confirmTime" @closeTimeBox="closeTimePopup" @updateData="updateData" ref="timeBox"/>
+    <time-dialog :show="showTimeDialog" @closeTimeBox="closeTimePopup" @updateData="updateData" ref="timeBox"/>
   </div>
 </template>
 
 <script>
 import noticeBar from '@/components/notice-bar'
-import timeDialog from '@/components/time-dialog'
+import timeDialog from '@/components/time-dialog-detail'
 import * as echarts from '@/../static/lib/echarts.min.js'
 import mpvueEcharts from 'mpvue-echarts'
 import {mapState, mapMutations} from 'vuex'
@@ -261,34 +261,32 @@ export default {
       })
       return chart
     },
-    showTimeFilter () {
+    disposeChart () {
       if (chart && !chart._disposed) {
         chart.clear()
         chart.dispose()
       }
-      this.showTimeDialog = true
     },
-    confirmTime (_obj) {
-      console.log(_obj.startTime)
-      console.log(_obj.endTime)
+    reInitChart () {
+      this.initChart()
+      this.$refs.echarts.init()
+    },
+    showTimeFilter () {
+      this.disposeChart()
+      this.showTimeDialog = true
     },
     closeTimePopup () {
       this.showTimeDialog = false
       setTimeout(() => {
-        this.initChart()
-        this.$refs.echarts.init()
+        this.reInitChart()
       }, 100)
     },
     updateData () {
-      if (chart && !chart._disposed) {
-        chart.clear()
-        chart.dispose()
-      }
+      this.disposeChart()
       this.showTimeDialog = false
       this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
         if (this.hasData) {
-          this.initChart()
-          this.$refs.echarts.init()
+          this.reInitChart()
         }
       }))
     },
@@ -356,35 +354,35 @@ export default {
             this.cvalue = this.dataAxis[(this.dataAxis.length - 1)]
           }
 
-          if (!res.data.currentData || res.data.list.length === 0) {
-            this.hasData = false
-            wx.showToast({
-              title: '没有对应的数据',
-              icon: 'none'
-            })
+          // if (!res.data.currentData || res.data.list.length === 0) {
+          //   this.hasData = false
+          //   wx.showToast({
+          //     title: '没有对应的数据',
+          //     icon: 'none'
+          //   })
 
-            let _obj = {
-              flightNumber: '',
-              departureTime: '',
-              departureCity: '',
-              arrivalCity: '',
-              lowestPrice: 0,
-              futureLowestPrice: 0,
-              actionFlag: 0,
-              dateStr: `--月--日`,
-              departureDate: '',
-              futureLowestPriceDate: 0
-            }
-            this.flightInfo = {...this.flightInfo, ..._obj}
+          //   let _obj = {
+          //     flightNumber: '',
+          //     departureTime: '',
+          //     departureCity: '',
+          //     arrivalCity: '',
+          //     lowestPrice: 0,
+          //     futureLowestPrice: 0,
+          //     actionFlag: 0,
+          //     dateStr: `--月--日`,
+          //     departureDate: '',
+          //     futureLowestPriceDate: 0
+          //   }
+          //   this.flightInfo = {...this.flightInfo, ..._obj}
 
-            // 设置趋势分析
-            this.setTrend()
+          //   // 设置趋势分析
+          //   this.setTrend()
 
-            // 设置title
-            wx.setNavigationBarTitle({
-              title: `${this.flightInfo.departureCity} - ${this.flightInfo.arrivalCity}`
-            })
-          }
+          //   // 设置title
+          //   wx.setNavigationBarTitle({
+          //     title: `${this.flightInfo.departureCity} - ${this.flightInfo.arrivalCity}`
+          //   })
+          // }
         }
       }).catch(err => {
         console.log(err)
@@ -434,10 +432,7 @@ export default {
       if (this.userInfo.isRegister) {
         wx.navigateTo({url: '/pages/interest/main'})
       } else {
-        if (chart && !chart._disposed) {
-          chart.clear()
-          chart.dispose()
-        }
+        this.disposeChart()
         wx.showModal({
           title: '提示',
           content: '检测到您尚未登录，如需要查看关注列表，请先登录',
@@ -476,20 +471,18 @@ export default {
     //   timeSlotList: [],
     //   companyList: []
     // })
+    this.$refs.timeBox.getStoreFromBefore()
+    this.$refs.timeBox.resetForm()
   },
   created () {
     // let app = getApp()
   },
   onPullDownRefresh () {
     wx.showNavigationBarLoading()
-    if (chart && !chart._disposed) {
-      chart.clear()
-      chart.dispose()
-    }
+    this.disposeChart()
     this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {
-        this.initChart()
-        this.$refs.echarts.init()
+        this.reInitChart()
       }
       wx.hideNavigationBarLoading()
       wx.stopPullDownRefresh()
@@ -497,17 +490,14 @@ export default {
   },
   onUnload () {
     this.showTimeDialog = false
+    // this.$refs.timeBox.clearForm()
   },
   onShow () {
-    if (chart && !chart._disposed) {
-      chart.clear()
-      chart.dispose()
-    }
+    this.disposeChart()
     this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {
         // 初始化chart控件
-        this.initChart()
-        this.$refs.echarts.init()
+        this.reInitChart()
       }
     }))
   }

@@ -55,6 +55,5 @@ export default {
   background: #4680f6;
   font-size: 26rpx;
   text-align: center;
-  
 }
 </style>
