@@ -3,7 +3,7 @@
     <div class="time-wrap">
       <div class="top-bar">
         <div class="left-close iconfont icon-guanbi2" @click="closePopup"></div>
-        <div class="right-reset" @click="resetForm">重置</div>
+        <div class="right-reset" @click="clearForm">重置</div>
         <div class="clearfix"></div>
       </div>
       <div class="list-wrap">

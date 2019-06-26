@@ -5,9 +5,9 @@
       <div class="iconfont icon-buoumaotubiao44 favorite-btn" @click="saveFavorite">添加关注</div>
       <div class="clearfix"></div>
     </div>
-    <div class="favorite-list" v-else>
+    <div class="favorite-list" v-if="favoriteStatus">
       <div class="iconfont icon-jinggao inner-text">已关注，进入关注列表查看更多</div>
-      <div class="favorite-btn" @click="gotoFavoriteList">关注列表</div>
+      <div class="favorite-btn" @click="gotoFavoriteListOnTop">关注列表</div>
       <div class="clearfix"></div>
     </div>
   </div>
@@ -55,7 +55,7 @@ export default {
     showAuthorityDialog (level) {
       this.$emit('parentShowAuthority', level)
     },
-    gotoFavoriteList () {
+    gotoFavoriteListOnTop () {
       if (this.userInfo.isRegister) {
         wx.navigateTo({url: '../../pages/interest/main'})
       } else {

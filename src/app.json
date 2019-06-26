@@ -1,10 +1,10 @@
 {
   "pages": [
-    
+    "pages/destination/main",
     "pages/index/main",
     "pages/search/main",
     "pages/calendar/main",
-    "pages/destination/main",
+    
     "pages/follow/main",
     "pages/interest/main",
     "pages/detail/main",

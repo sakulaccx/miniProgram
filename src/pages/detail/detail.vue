@@ -10,7 +10,7 @@
         <div class="favorit-link" v-else @click="gotoFavoriteList">已关注，查看关注列表</div>
       </div>
       <div class="forecast-wrap">
-        <div class="forecast-title">{{flightInfo.dateStr}}机票价格</div>
+        <div class="forecast-title">{{flightInfo.dateStr}}机票价格预测</div>
         <div class="suggest-content" :class="suggestion ? 'green-text' : 'red-text'">{{suggestText[suggestion]}}</div>
         <div class="clearfix"></div>
         <div class="suggest-desc">
@@ -498,6 +498,9 @@ export default {
       wx.hideNavigationBarLoading()
       wx.stopPullDownRefresh()
     }))
+  },
+  onUnload () {
+    this.showTimeDialog = false
   }
 }
 </script>

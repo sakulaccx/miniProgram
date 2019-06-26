@@ -263,26 +263,24 @@ export default {
       return chart
     },
     showTimeFilter () {
-      // chart.clear()
-      // if (chart && !chart._disposed) {
-      //   chart.clear()
-      //   chart.dispose()
-      // }
+      if (chart && !chart._disposed) {
+        chart.clear()
+        chart.dispose()
+      }
       this.showTimeDialog = true
     },
     closeTimePopup () {
+      setTimeout(() => {
+        this.initChart()
+        this.$refs.echarts.init()
+      }, 100)
       this.showTimeDialog = false
-      // setTimeout(() => {
-      //   this.initChart()
-      //   this.$refs.echarts.init()
-      // }, 100)
-      // chart.setOption(this.chartOpt, true)
     },
     showAuthorityDialog (level) {
-      // if (chart && !chart._disposed) {
-      //   chart.clear()
-      //   chart.dispose()
-      // }
+      if (chart && !chart._disposed) {
+        chart.clear()
+        chart.dispose()
+      }
 
       if (level === 0) {
         wx.showModal({
@@ -308,17 +306,18 @@ export default {
       }
     },
     updateData () {
-      // if (chart && !chart._disposed) {
-      //   chart.clear()
-      //   chart.dispose()
-      // }
+      if (chart && !chart._disposed) {
+        chart.clear()
+        chart.dispose()
+      }
       this.showTimeDialog = false
       this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
         if (this.hasData) {
-          // this.initChart()
-          // this.$refs.echarts.init()
           // 请求关注数据
           this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
+
+          this.initChart()
+          this.$refs.echarts.init()
         }
       }))
     },
@@ -470,11 +469,11 @@ export default {
     })
     this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {
+        // 请求关注数据
+        this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
         // 初始化chart控件
         this.initChart()
         this.$refs.echarts.init()
-        // 请求关注数据
-        this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
       }
     }))
   },
@@ -485,9 +484,10 @@ export default {
     wx.showNavigationBarLoading()
     this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {
+        this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
+
         this.initChart()
         this.$refs.echarts.init()
-        this.$refs.favorite.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
       }
       wx.hideNavigationBarLoading()
       wx.stopPullDownRefresh()

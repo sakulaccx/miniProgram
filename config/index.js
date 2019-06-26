@@ -51,7 +51,7 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8331,
+    port: 8330,
     // 在小程序开发者工具中不需要自动打开浏览器
     autoOpenBrowser: false,
     assetsSubDirectory: '',
