@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div class="swiper-wrap">
+    <div class="swiper-wrap" v-if="interestList.length > 0">
       <div :class="['swiper-item', {'un-effective': item.isEffective === '0'}]" v-for="(item, index) in interestList" :key="index">
         <div class="item-box" @touchstart="touchStart($event)" @touchend="touchEnd($event,index)" :data-type="item.type" @click="gotToDetail(index, item)">
           <div class="item-box-left">
@@ -32,6 +32,9 @@
           <div class="clearfix"></div>
         </div>
       </div>
+    </div>
+    <div class="no-data" v-else>
+      没有查询到数据
     </div>
   </div>
 </template>
@@ -118,7 +121,7 @@ export default {
       })
     },
     checkUserStatus () {
-      if (this.userInfo.unionid.length === 0) {
+      if (this.userInfo.unionid.length === 0) { // 测试
         wx.showModal({
           title: '提示',
           content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',
@@ -154,7 +157,7 @@ export default {
           })
         } else {
           wx.showToast({
-            title: '网络不流畅，请稍后再试',
+            title: '赞无关注',
             icon: 'none'
           })
         }
@@ -167,10 +170,12 @@ export default {
     wx.showTabBar({
       animation: false
     })
-    this.checkUserStatus()
   },
   created () {
   // let app = getApp()
+  },
+  onShow () {
+    this.checkUserStatus()
   }
 }
 </script>
@@ -272,5 +277,11 @@ export default {
   }
   .item-box[data-type="1"]{
     transform: translate3d(-135rpx,0,0);
+  }
+  .no-data{
+    margin-top: 30rpx;
+    text-align: center;
+    font-size: 30rpx;
+    color: #ccc;
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div class="swiper-wrap">
+    <div class="swiper-wrap" v-if="interestList.length > 0">
       <div :class="['swiper-item', {'un-effective': item.isEffective === '0'}]" v-for="(item, index) in interestList" :key="index">
         <div class="item-box" @touchstart="touchStart($event)" @touchend="touchEnd($event,index)" :data-type="item.type" @click="gotToDetail(index, item)">
           <div class="item-box-left">
@@ -32,6 +32,9 @@
           <div class="clearfix"></div>
         </div>
       </div>
+    </div>
+    <div class="no-data" v-else>
+      没有查询到数据
     </div>
   </div>
 </template>
@@ -272,5 +275,11 @@ export default {
   }
   .item-box[data-type="1"]{
     transform: translate3d(-135rpx,0,0);
+  }
+  .no-data{
+    margin-top: 30rpx;
+    text-align: center;
+    font-size: 30rpx;
+    color: #ccc;
   }
 </style>
