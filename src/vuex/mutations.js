@@ -13,6 +13,9 @@ export default {
   [type.SET_DETAIL_DATE] (state, searchDetail) {
     state.detail_date = {...state.detail_date, ...searchDetail}
   },
+  [type.SET_FLIGHT_DATE] (state, flightDate) {
+    state.flight_date = {...state.flight_date, ...flightDate}
+  },
   [type.SET_SEARCH_STR] (state, searchStr) {
     state.search_data = {...state.search_data, ...searchStr}
   },

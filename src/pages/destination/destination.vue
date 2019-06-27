@@ -460,7 +460,9 @@ export default {
         departureCityCode: _obj.departureCityCode,
         arrivalCityCode: _obj.arrivalCityCode,
         departureDate: _obj.departureDate,
-        actionFlag: _obj.actionFlag
+        actionFlag: _obj.actionFlag,
+        timeSlotList: this.depart_date.timeSlotList,
+        companyList: this.depart_date.companyList
       }
       this.setDetailSearch(_detail)
       this.$refs.timeBox.getCompanyList()

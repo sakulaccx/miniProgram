@@ -418,9 +418,12 @@ export default {
         departureCityCode: _obj.departureCityCode,
         arrivalCityCode: _obj.arrivalCityCode,
         departureDate: _obj.departureDate,
-        actionFlag: _obj.actionFlag
+        actionFlag: _obj.actionFlag,
+        timeSlotList: this.detail_date.timeSlotList,
+        companyList: this.detail_date.companyList
       }
       this.setFlightDate(_detail)
+      this.$refs.timeBox.getStoreFromBefore()
       this.$refs.timeBox.getCompanyList()
     },
     checkFavorite () {
@@ -477,6 +480,7 @@ export default {
     }
   },
   mounted () {
+    this.$refs.timeBox.getStoreFromBefore()
     this.disposeChart()
     this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {

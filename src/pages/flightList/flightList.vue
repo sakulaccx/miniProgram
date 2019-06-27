@@ -92,16 +92,16 @@ export default {
   computed: {
     ...mapState([
       'search_data',
-      'detail_date'
+      'flight_date'
     ]),
     showDateStr () {
-      let _date = new Date(this.detail_date.departureDate)
+      let _date = new Date(this.flight_date.departureDate)
       return `${_date.getMonth() + 1}月${_date.getDate()}日`
     }
   },
   methods: {
     ...mapMutations({
-      setDetailDate: 'SET_DETAIL_DATE'
+      setFlightDate: 'SET_FLIGHT_DATE'
     }),
     rebindList () {
       this.getListData()
@@ -128,11 +128,11 @@ export default {
     },
     getListData () {
       this.$fly.post('/flightData/getFlightDataByDay', {
-        departureCityCode: this.detail_date.departureCityCode,
-        arrivalCityCode: this.detail_date.arrivalCityCode,
-        departureDate: this.detail_date.departureDate,
-        timeSlotList: this.detail_date.timeSlotList,
-        companyList: this.detail_date.companyList,
+        departureCityCode: this.flight_date.departureCityCode,
+        arrivalCityCode: this.flight_date.arrivalCityCode,
+        departureDate: this.flight_date.departureDate,
+        timeSlotList: this.flight_date.timeSlotList,
+        companyList: this.flight_date.companyList,
         orderBy: this.orderBy
       }).then(res => {
         if (res.code === '0' && res.data && res.data.length > 0) {
@@ -140,6 +140,7 @@ export default {
         } else {
           this.flightList = []
         }
+        this.$refs.timeBox.getStoreFromBefore()
         // 获取航空公司
         this.$refs.timeBox.getCompanyList()
       }).catch(err => {
@@ -155,7 +156,6 @@ export default {
   },
   onUnload () {
     this.showTimeDialog = false
-    this.$refs.timeBox.clearFormParent()
   }
 }
 </script>
