@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './showqecode'
+import App from './showqrcode'
 
 // add this to handle exception
 Vue.config.errorHandler = function (err) {

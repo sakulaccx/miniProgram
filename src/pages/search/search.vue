@@ -266,7 +266,27 @@ export default {
     },
     searchFly () {
       this.checkCity()
-      if (this.searchForm.departureDate.length > 0 && this.searchForm.departureCityCode.length > 0 && this.searchForm.arrivalCityCode.length > 0) {
+      if (this.searchForm.departureDate.length === 0) {
+        wx.showToast({
+          title: '请选择出发日期',
+          icon: 'none'
+        })
+      } else if (this.searchForm.departureCityCode.length === 0) {
+        wx.showToast({
+          title: '请选择出发地',
+          icon: 'none'
+        })
+      } else if (this.searchForm.arrivalCityCode.length === 0) {
+        wx.showToast({
+          title: '请选择目的地',
+          icon: 'none'
+        })
+      } else if (this.searchForm.departureCityCode === this.searchForm.arrivalCityCode) {
+        wx.showToast({
+          title: '出发地与目的地不能相同',
+          icon: 'none'
+        })
+      } else {
         this.setStore()
         this.$fly.post('/record/add', {
           openid: this.userInfo.openid,
@@ -292,21 +312,6 @@ export default {
           }
         }).catch(err => {
           console.log(err)
-        })
-      } else if (this.searchForm.departureDate.length === 0) {
-        wx.showToast({
-          title: '请选择出发日期',
-          icon: 'none'
-        })
-      } else if (this.searchForm.departureCityCode.length === 0) {
-        wx.showToast({
-          title: '请选择出发地',
-          icon: 'none'
-        })
-      } else {
-        wx.showToast({
-          title: '请选择目的地',
-          icon: 'none'
         })
       }
     },
