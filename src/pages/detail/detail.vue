@@ -13,10 +13,10 @@
         <div class="forecast-title">{{flightInfo.dateStr}}机票价格预测</div>
         <div class="suggest-content" :class="suggestion ? 'green-text' : 'red-text'">{{suggestText[suggestion]}}</div>
         <div class="clearfix"></div>
-        <div class="suggest-desc">
+        <!-- <div class="suggest-desc">
           {{suggestionDesc}}
           <span :class="suggestion ? 'green-text' : 'red-text'">¥{{priceRange}}</span>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="bar-chart-wrap" v-if="!showTimeDialog">
@@ -109,7 +109,11 @@ export default {
       let _that = this
       let _endValue = this.dataAxis.length - 1
       let _startValue = _endValue - 5 > 0 ? (_endValue - 5) : 0
+      let _title = `${this.flightInfo.dateStr}出发${this.flightInfo.flightNumber}航班过去14天的价格走势`
       this.chartOpt = {
+        title: {
+          text: _title
+        },
         grid: {
           left: '12%',
           top: '12%',
@@ -561,8 +565,8 @@ export default {
 .forecast-wrap{
   margin-top: 30rpx;
   background: #fff;
-  height: 80rpx;
-  padding: 16rpx 40rpx;
+  height: 40rpx;
+  padding: 30rpx 40rpx;
 }
 .forecast-title{
   position: relative;

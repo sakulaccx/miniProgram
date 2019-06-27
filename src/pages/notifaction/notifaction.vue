@@ -2,7 +2,8 @@
   <div class="content">
     <div class="swiper-wrap" v-if="notifyList.length > 0">
       <div class="swiper-item" v-for="(item, index) in notifyList" :key="index">
-        <div class="item-box" @touchstart="touchStart($event)" @touchend="touchEnd($event,index)" :data-type="item.type" @click="gotToDetail(index, item)">
+        <!-- <div class="item-box" @touchstart="touchStart($event)" @touchend="touchEnd($event,index)" :data-type="item.type" @click="gotToDetail(index, item)"> -->
+        <div class="item-box" @click="gotToDetail(index, item)">
           <div class="item-box-left">
             <div class="item-box-top">
               <div class='dept-info'>
@@ -139,7 +140,6 @@ export default {
       }
     },
     deleteItem (index, nid) {
-      console.log(nid)
       // this.$fly.post('/attention/del', {
       //   id: fid
       // }).then(res => {
@@ -167,8 +167,7 @@ export default {
           showCancel: false,
           confirmText: '确定',
           success: function (res) {
-            // wx.switchTab({url: '/pages/user/main'})
-            console.log('需要跳转到公众号')
+            wx.navigateTo({url: '/pages/showQRCode/main'})
           }
         })
       } else if (!this.userInfo.isRegister) {
@@ -202,7 +201,7 @@ export default {
           })
         } else {
           wx.showToast({
-            title: '赞无关注',
+            title: '暂无通知',
             icon: 'none'
           })
         }

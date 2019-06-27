@@ -57,7 +57,9 @@ export default {
             title: '非常感谢您的宝贵意见',
             icon: 'none'
           })
-          wx.switchTab({url: '/pages/user/main'})
+          setTimeout(() => {
+            wx.switchTab({url: '/pages/user/main'})
+          }, 500)
         }).catch(err => {
           console.log(err)
           wx.showToast({
@@ -77,7 +79,7 @@ export default {
     if (!this.userInfo.isRegister) {
       wx.showModal({
         title: '提示',
-        content: '您还没有登录，提交宝贵意见',
+        content: '登录后可以提交您的宝贵意见',
         showCancel: false,
         confirmText: '确定',
         success: function (res) {

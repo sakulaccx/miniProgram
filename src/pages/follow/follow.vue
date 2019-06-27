@@ -129,8 +129,7 @@ export default {
           showCancel: false,
           confirmText: '确定',
           success: function (res) {
-            // wx.switchTab({url: '/pages/user/main'})
-            console.log('需要跳转到公众号')
+            wx.navigateTo({url: '/pages/showQRCode/main'})
           }
         })
       } else if (!this.userInfo.isRegister) {

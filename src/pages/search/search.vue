@@ -233,6 +233,23 @@ export default {
 
       this.setStore()
     },
+    checkCity () {
+      if (this.searchForm.departure_str.length > 0) {
+        this.cityGroup[2].list.forEach((v, i) => {
+          if (v.label === this.searchForm.departure_str) {
+            this.searchForm.departureCityCode = v.value
+          }
+        })
+      }
+
+      if (this.searchForm.arrival_str.length > 0) {
+        this.cityGroup[2].list.forEach((v, i) => {
+          if (v.label === this.searchForm.arrival_str) {
+            this.searchForm.arrivalCityCode = v.value
+          }
+        })
+      }
+    },
     setStore () {
       let _dept = {
         departureDate: this.searchForm.departureDate,
@@ -248,6 +265,7 @@ export default {
       this.setSearchStr(_search)
     },
     searchFly () {
+      this.checkCity()
       if (this.searchForm.departureDate.length > 0 && this.searchForm.departureCityCode.length > 0 && this.searchForm.arrivalCityCode.length > 0) {
         this.setStore()
         this.$fly.post('/record/add', {

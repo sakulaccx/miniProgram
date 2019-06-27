@@ -1,12 +1,12 @@
 <template>
   <div class="content">
     <notice-bar @showTimeBox="showTimeFilter" />
-    <div class="favorite-bar" v-if="!favoriteStatus">
+    <div class="favorite-bar" v-if="!favoriteStatus && hasData">
       <div class="iconfont icon-jinggao inner-text">当前价格较高，建议您持续关注</div>
       <div class="iconfont icon-buoumaotubiao44 favorite-btn" @click="saveFavorite">添加关注</div>
       <div class="clearfix"></div>
     </div>
-    <div class="favorite-list" v-if="favoriteStatus">
+    <div class="favorite-list" v-if="favoriteStatus  && hasData">
       <div class="iconfont icon-jinggao inner-text">已关注，进入关注列表查看更多</div>
       <div class="favorite-btn" @click="gotoFavoriteListOnTop">关注列表</div>
       <div class="clearfix"></div>
@@ -304,8 +304,7 @@ export default {
           showCancel: false,
           confirmText: '确定',
           success: function (res) {
-            // wx.switchTab({url: '/pages/user/main'})
-            console.log('需要跳转到公众号')
+            wx.navigateTo({url: '/pages/showQRCode/main'})
           }
         })
       } else {
