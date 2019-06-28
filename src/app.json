@@ -11,7 +11,8 @@
     "pages/user/main",
     "pages/notifaction/main",
     "pages/aboutus/main",
-    "pages/recommend/main"
+    "pages/recommend/main",
+    "pages/showQRCode/main"
   ],
   "window": {
     "backgroundTextStyle": "dark",

@@ -159,7 +159,7 @@ export default {
       // })
     },
     checkUserStatus () {
-      if (this.userInfo.unionid.length === 0) { // 测试
+      if (!this.userInfo.unionid.length) { // 测试
         wx.showModal({
           title: '提示',
           content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',

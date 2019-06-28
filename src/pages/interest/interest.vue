@@ -120,7 +120,7 @@ export default {
       })
     },
     checkUserStatus () {
-      if (this.userInfo.unionid.length === 0) {
+      if (!this.userInfo.unionid.length) {
         wx.showModal({
           title: '提示',
           content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',
@@ -168,10 +168,12 @@ export default {
     wx.showTabBar({
       animation: false
     })
-    this.checkUserStatus()
   },
   created () {
   // let app = getApp()
+  },
+  onShow () {
+    this.checkUserStatus()
   }
 }
 </script>

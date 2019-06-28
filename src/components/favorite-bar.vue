@@ -35,16 +35,7 @@ export default {
   methods: {
     saveFavorite () {
       // 正式代码
-      // if (!this.userInfo.unionid) {
-      //   this.showAuthorityDialog(0)
-      // } else if (!this.userInfo.isRegister) {
-      //   this.showAuthorityDialog(1)
-      // } else {
-      //   this.addFavorite()
-      // }
-
-      // 测试代码
-      if (this.userInfo.unionid.length === 0) {
+      if (!this.userInfo.unionid) {
         this.showAuthorityDialog(0)
       } else if (!this.userInfo.isRegister) {
         this.showAuthorityDialog(1)

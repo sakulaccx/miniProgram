@@ -41,6 +41,7 @@ const state = {
     openid: '',
     unionid: '',
     phone: '',
+    jsCode: '',
     isRegister: 0
   },
   isfiltered: 0

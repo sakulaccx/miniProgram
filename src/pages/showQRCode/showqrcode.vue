@@ -1,24 +1,62 @@
 <template>
   <div class="content">
     <div class="img-wrap">
-      <img src="../../../static/images/WechatIMG592.jpeg" alt="">
+      <img src="/static/images/WechatIMG592.jpeg" data-src="/static/images/WechatIMG592.jpeg" alt="" mode="widthFix" show-menu-by-longpress="true">
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
   data () {
     return {
       aaa: ''
     }
   },
+  computed: {
+    ...mapState([
+      'userInfo'
+    ])
+  },
   methods: {
+    ...mapMutations({
+      setUserInfo: 'SET_USERINFO'
+    }),
+    getUserInfo () {
+      wx.login({
+        success: res => {
+          this.$fly.post('/login/getOpenid', {
+            jsCode: res.code
+          }).then(res1 => {
+            let _obj = {}
+            if (res1.data.isRegister === '1') {
+              _obj = {
+                openid: res1.data.openid,
+                unionid: res1.data.unionid === null ? 0 : 1,
+                isRegister: (res1.data.isRegister * 1),
+                phone: res1.data.phone
+              }
+            } else {
+              _obj = {
+                openid: res1.data.openid,
+                unionid: res1.data.unionid === null ? 0 : 1,
+                isRegister: (res1.data.isRegister * 1)
+              }
+            }
+            this.setUserInfo(_obj)
+          })
+        }
+      })
+    }
   },
   mounted () {
   },
   created () {
   // let app = getApp()
+  },
+  onUnload () {
+    // this.getUserInfo()
   }
 }
 </script>
