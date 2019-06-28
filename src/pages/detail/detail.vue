@@ -507,6 +507,9 @@ export default {
       wx.stopPullDownRefresh()
     }))
   },
+  onShow () {
+    this.checkFavorite()
+  },
   onUnload () {
     this.showTimeDialog = false
     this.$refs.timeBox.clearFormParent()

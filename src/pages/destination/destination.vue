@@ -349,7 +349,9 @@ export default {
           let _obj = {
             currPrice: currData.lowestPrice * 1,
             expectPrice: currData.futureLowestPrice * 1,
-            date: `${dateInfo.getMonth() + 1}月${dateInfo.getDate()}日`
+            date: `${dateInfo.getMonth() + 1}月${dateInfo.getDate()}日`,
+            departureTime: currData.departureTime,
+            flightNumber: currData.flightNumber
           }
           this.flightInfo = {...this.flightInfo, ..._obj}
           this.setDetailSearchInfo(currData)
@@ -477,8 +479,8 @@ export default {
       // 查询是否已关注
       this.$fly.post('/attention/isAttention', {
         openid: this.userInfo.openid,
-        departureCityCode: this.detail_date.departureCityCode,
-        arrivalCityCode: this.detail_date.arrivalCityCode,
+        departureCityCode: this.depart_date.departureCityCode,
+        arrivalCityCode: this.depart_date.arrivalCityCode,
         departureTime: depTime,
         flightNumber: flyNum
       }).then(res => {
@@ -492,9 +494,10 @@ export default {
     },
     saveFavorite () {
       // 正式代码
-      if (!this.userInfo.unionid) {
-        this.showAuthorityDialog(0)
-      } else if (!this.userInfo.isRegister) {
+      // if (!this.userInfo.unionid) {
+      //   this.showAuthorityDialog(0)
+      // } else if (!this.userInfo.isRegister) {
+      if (!this.userInfo.isRegister) {
         this.showAuthorityDialog(1)
       } else {
         this.addFavorite()
@@ -543,8 +546,6 @@ export default {
     })
     this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
       if (this.hasData) {
-        // 请求关注数据
-        this.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
         // 初始化chart控件
         this.reInitChart()
       }
@@ -570,6 +571,8 @@ export default {
     this.$refs.timeBox.clearFormParent()
   },
   onShow () {
+    // 请求关注数据
+    this.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
   }
 }
 </script>
