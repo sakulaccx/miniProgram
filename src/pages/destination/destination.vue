@@ -55,7 +55,9 @@ export default {
         expectPrice: 0,
         date: '',
         departureTime: '',
-        flightNumber: ''
+        flightNumber: '',
+        timeSlotList: [],
+        companyList: []
       },
       echarts,
       dataAxis: [],
@@ -571,6 +573,8 @@ export default {
     this.$refs.timeBox.clearFormParent()
   },
   onShow () {
+    // 重置出发时间
+    this.setDetailSearch({departureDate: this.departureDate})
     // 请求关注数据
     this.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
   }
