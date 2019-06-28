@@ -4,7 +4,7 @@
     <div class="detail-wrap" v-if="hasData">
       <div class="info-wrap">
         <div class="price-show">￥{{flightInfo.lowestPrice}}</div>
-        <div class="price-desc">{{flightInfo.dateStr}}机票价格</div>
+        <div class="price-desc">{{flightInfo.flightNumber}} {{flightInfo.dateStr}}机票价格</div>
         <div class="btn buy-btn" @click="gotoList">现在就买</div>
         <div class="favorit-link" v-if="!favoriteStatus" @click="addFavorite">添加关注，提醒我购票</div>
         <div class="favorit-link" v-else @click="gotoFavoriteList">已关注，查看关注列表</div>
@@ -358,35 +358,35 @@ export default {
             this.cvalue = this.dataAxis[(this.dataAxis.length - 1)]
           }
 
-          // if (!res.data.currentData || res.data.list.length === 0) {
-          //   this.hasData = false
-          //   wx.showToast({
-          //     title: '没有对应的数据',
-          //     icon: 'none'
-          //   })
+          if (!res.data.currentData) {
+            this.hasData = false
+            wx.showToast({
+              title: '没有对应的数据',
+              icon: 'none'
+            })
 
-          //   let _obj = {
-          //     flightNumber: '',
-          //     departureTime: '',
-          //     departureCity: '',
-          //     arrivalCity: '',
-          //     lowestPrice: 0,
-          //     futureLowestPrice: 0,
-          //     actionFlag: 0,
-          //     dateStr: `--月--日`,
-          //     departureDate: '',
-          //     futureLowestPriceDate: 0
-          //   }
-          //   this.flightInfo = {...this.flightInfo, ..._obj}
+            let _obj = {
+              flightNumber: '',
+              departureTime: '',
+              departureCity: '',
+              arrivalCity: '',
+              lowestPrice: 0,
+              futureLowestPrice: 0,
+              actionFlag: 0,
+              dateStr: `--月--日`,
+              departureDate: '',
+              futureLowestPriceDate: 0
+            }
+            this.flightInfo = {...this.flightInfo, ..._obj}
 
-          //   // 设置趋势分析
-          //   this.setTrend()
+            // 设置趋势分析
+            this.setTrend()
 
-          //   // 设置title
-          //   wx.setNavigationBarTitle({
-          //     title: `${this.flightInfo.departureCity} - ${this.flightInfo.arrivalCity}`
-          //   })
-          // }
+            // 设置title
+            wx.setNavigationBarTitle({
+              title: `${this.flightInfo.departureCity} - ${this.flightInfo.arrivalCity}`
+            })
+          }
         }
       }).catch(err => {
         console.log(err)

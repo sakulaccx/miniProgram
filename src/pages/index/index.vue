@@ -1,6 +1,6 @@
 <template>
   <div class="index-wrap">
-    <img src="/static/images/launch.jpg" alt="">
+    <img src="/static/images/launch.jpg" alt="" mode="widthFix">
   </div>
 </template>
 
@@ -93,9 +93,9 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  background: #fff;
 }
 .index-wrap img{
   width: 100%;
-  height: 100%;
 }
 </style>

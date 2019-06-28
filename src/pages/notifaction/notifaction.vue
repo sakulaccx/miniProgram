@@ -11,7 +11,7 @@
                   {{item.departureCity}} ― {{item.arrivalCity}}
                 </div>
                 <div class='company-info'>
-                  {{item.company}}
+                  {{item.company}} {{item.flightNumber}}
                 </div>
               </div>
               <div class='date-info'>
@@ -119,8 +119,7 @@ export default {
         this.setDetailSearch({
           departureCityCode: _obj.departureCityCode,
           arrivalCityCode: _obj.arrivalCityCode,
-          departureDate: _obj.departureDate,
-          companyList: [_obj.company]
+          departureDate: _obj.departureDate
         })
         wx.navigateTo({url: '/pages/detail/main'})
         // if (_obj.isEffective === '1') {

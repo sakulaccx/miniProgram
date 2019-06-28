@@ -49,6 +49,7 @@ export default {
       pagename: '搜索页面',
       showTimeDialog: false,
       favoriteStatus: 0,
+      departureDate: '',
       flightInfo: {
         currPrice: 0,
         expectPrice: 0,
@@ -268,7 +269,8 @@ export default {
 
         let _date = new Date((pname * 1))
         let _dateStr = format(_date, 'yyyy-MM-dd')
-        _that.setDepart({departureDate: _dateStr})
+        _that.departureDate = _dateStr
+        // _that.setDepart({departureDate: _dateStr})
         _that.changeBar()
       })
       return chart
@@ -336,7 +338,7 @@ export default {
       this.$fly.post('/flightData/getAppointDatePrice', {
         departureCityCode: this.depart_date.departureCityCode,
         arrivalCityCode: this.depart_date.arrivalCityCode,
-        departureDate: this.depart_date.departureDate,
+        departureDate: this.departureDate,
         timeSlotList: this.depart_date.timeSlotList,
         companyList: this.depart_date.companyList
       }).then(res => {

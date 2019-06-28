@@ -94,6 +94,7 @@ export default {
       showSearchBox: false,
       searchTimer: null,
       searchCityResult: [],
+      oriDepartureDate: '',
       searchForm: {
         departureCityCode: '',
         arrivalCityCode: '',

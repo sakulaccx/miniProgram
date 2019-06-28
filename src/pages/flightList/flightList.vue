@@ -155,6 +155,8 @@ export default {
   // let app = getApp()
   },
   onUnload () {
+    this.orderBy = 2
+    this.checkTab(0)
     this.showTimeDialog = false
   }
 }

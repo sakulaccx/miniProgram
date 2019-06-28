@@ -88,9 +88,7 @@ export default {
           this.setDetailSearch({
             departureCityCode: _obj.departureCityCode,
             arrivalCityCode: _obj.arrivalCityCode,
-            departureDate: _obj.departureDate,
-            timeSlotList: [_obj.departureTime + '-' + _obj.arrivalTime],
-            companyList: [_obj.company]
+            departureDate: _obj.departureDate
           })
           wx.navigateTo({url: '/pages/detail/main'})
         } else {
@@ -157,7 +155,7 @@ export default {
           })
         } else {
           wx.showToast({
-            title: '赞无关注',
+            title: '暂无关注',
             icon: 'none'
           })
         }

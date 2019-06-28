@@ -57,6 +57,8 @@ export default {
             title: '非常感谢您的宝贵意见',
             icon: 'none'
           })
+          this.recommendVal = ''
+          this.contactVal = ''
           setTimeout(() => {
             wx.switchTab({url: '/pages/user/main'})
           }, 500)
