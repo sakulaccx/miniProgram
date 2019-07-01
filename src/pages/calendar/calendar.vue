@@ -110,10 +110,13 @@ export default {
     },
     setPriceDate (priceList) {
       let _tpl = {}
+      let _currdate = new Date(this.currDate)
       priceList.forEach((v, i) => {
         let _date = new Date(v.departureDate)
-        let key = format(_date, 'yyyy-M-d')
-        _tpl[key] = '¥' + v.lowestPrice
+        if (_date >= _currdate) {
+          let key = format(_date, 'yyyy-M-d')
+          _tpl[key] = '¥' + v.lowestPrice
+        }
       })
       this.cevents = _tpl
     }

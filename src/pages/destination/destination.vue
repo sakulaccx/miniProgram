@@ -90,6 +90,10 @@ export default {
       setDetailSearch: 'SET_DETAIL_DATE'
     }),
     gotoDetail () {
+      this.setDetailSearch({
+        timeSlotList: this.depart_date.timeSlotList,
+        companyList: this.depart_date.companyList
+      })
       wx.navigateTo({url: '/pages/detail/main'})
     },
     initChart (canvas, width, height) {
@@ -470,7 +474,9 @@ export default {
         companyList: this.depart_date.companyList
       }
       this.setDetailSearch(_detail)
-      this.$refs.timeBox.getCompanyList()
+      setTimeout(() => {
+        this.$refs.timeBox.getCompanyList()
+      }, 100)
     },
     getFavorite (depTime, flyNum, lowPrice) {
       // 赋值请求参数
@@ -546,12 +552,6 @@ export default {
     wx.setNavigationBarTitle({
       title: `${this.search_data.departure_str} - ${this.search_data.arrival_str}`
     })
-    this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
-      if (this.hasData) {
-        // 初始化chart控件
-        this.reInitChart()
-      }
-    }))
   },
   created () {
     // let app = getApp()
@@ -575,8 +575,17 @@ export default {
   onShow () {
     // 重置出发时间
     this.setDetailSearch({departureDate: this.departureDate})
-    // 请求关注数据
-    this.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
+
+    // 刷新数据
+    this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {
+      if (this.hasData) {
+        this.getFavorite(this.flightInfo.departureTime, this.flightInfo.flightNumber, this.flightInfo.currPrice)
+        setTimeout(() => {
+          // 初始化chart控件
+          this.reInitChart()
+        }, 100)
+      }
+    }))
   }
 }
 </script>

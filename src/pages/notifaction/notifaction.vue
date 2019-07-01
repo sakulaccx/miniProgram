@@ -119,7 +119,9 @@ export default {
         this.setDetailSearch({
           departureCityCode: _obj.departureCityCode,
           arrivalCityCode: _obj.arrivalCityCode,
-          departureDate: _obj.departureDate
+          departureDate: _obj.departureDate,
+          timeSlotList: [],
+          companyList: []
         })
         wx.navigateTo({url: '/pages/detail/main'})
         // if (_obj.isEffective === '1') {

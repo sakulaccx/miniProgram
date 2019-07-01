@@ -103,6 +103,10 @@ export default {
       setFlightDate: 'SET_FLIGHT_DATE'
     }),
     gotoList () {
+      this.setFlightDate({
+        timeSlotList: this.detail_date.timeSlotList,
+        companyList: this.detail_date.companyList
+      })
       wx.navigateTo({url: '/pages/flightList/main'})
     },
     initChart (canvas, width, height) {
@@ -508,7 +512,9 @@ export default {
     }))
   },
   onShow () {
-    this.checkFavorite()
+    setTimeout(() => {
+      this.checkFavorite()
+    }, 100)
   },
   onUnload () {
     this.showTimeDialog = false
