@@ -323,7 +323,9 @@ export default {
               actionFlag: (currData.actionFlag * 1),
               dateStr: `${(_date.getMonth() + 1)}月${_date.getDate()}日`,
               departureDate: currData.departureDate,
-              futureLowestPriceDate: (currData.futureLowestPriceDate * 1)
+              futureLowestPriceDate: (currData.futureLowestPriceDate * 1),
+              departureCityCode: currData.departureCityCode,
+              arrivalCityCode: currData.arrivalCityCode
             }
             this.flightInfo = {...this.flightInfo, ..._obj}
 
@@ -470,9 +472,9 @@ export default {
     addFavorite () {
       this.$fly.post('/attention/add', {
         openid: this.userInfo.openid,
-        departureCityCode: this.detail_date.departureCityCode,
-        arrivalCityCode: this.detail_date.arrivalCityCode,
-        actionFlag: this.detail_date.actionFlag,
+        departureCityCode: this.flightInfo.departureCityCode,
+        arrivalCityCode: this.flightInfo.arrivalCityCode,
+        actionFlag: this.flightInfo.actionFlag,
         departureTime: this.flightInfo.departureTime,
         flightNumber: this.flightInfo.flightNumber,
         lowestPrice: this.flightInfo.lowestPrice
