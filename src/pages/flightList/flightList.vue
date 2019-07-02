@@ -158,6 +158,10 @@ export default {
     this.orderBy = 2
     this.checkTab(0)
     this.showTimeDialog = false
+    this.setFlightDate({
+      timeSlotList: [],
+      companyList: []
+    })
   }
 }
 </script>

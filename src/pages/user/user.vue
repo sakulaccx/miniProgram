@@ -120,17 +120,28 @@ export default {
           code: this.codeNum
         }
         this.$fly.post('/login/userLogin', _obj).then(res => {
-          this.setUserInfo({
-            phone: this.phoneNum,
-            isRegister: true
-          })
-          this.checkNotifaction()
-          this.isRegister = true
-          this.showLogion = false
+          if (res.code === '0') {
+            this.setUserInfo({
+              phone: this.phoneNum,
+              isRegister: true
+            })
+            this.checkNotifaction()
+            this.isRegister = true
+            this.showLogion = false
+          } else {
+            this.isRegister = false
+            this.showLogion = false
+            wx.showToast({
+              title: res.msg,
+              icon: 'none'
+            })
+          }
         }).catch(err => {
           console.log(err)
+          this.isRegister = false
+          this.showLogion = false
           wx.showToast({
-            title: '登录失败',
+            title: err.msg,
             icon: 'none'
           })
         })

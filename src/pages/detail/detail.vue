@@ -100,7 +100,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setFlightDate: 'SET_FLIGHT_DATE'
+      setFlightDate: 'SET_FLIGHT_DATE',
+      setDetailDate: 'SET_DETAIL_DATE'
     }),
     gotoList () {
       this.setFlightDate({
@@ -480,10 +481,17 @@ export default {
           this.favoriteStatus = 1
           this.$fly.get('/attention/updateNotes')
         } else {
-          console.log(res.msg)
+          wx.showToast({
+            title: res.meg,
+            icon: 'none'
+          })
         }
       }).catch(err => {
         console.log(err)
+        wx.showToast({
+          title: err.meg,
+          icon: 'none'
+        })
       })
     }
   },
@@ -518,6 +526,10 @@ export default {
   },
   onUnload () {
     this.showTimeDialog = false
+    this.setDetailDate({
+      timeSlotList: [],
+      companyList: []
+    })
     this.$refs.timeBox.clearFormParent()
   }
 }

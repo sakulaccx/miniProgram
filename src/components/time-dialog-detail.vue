@@ -47,26 +47,26 @@ export default {
       tplCompanyList: [],
       timeList: [
         {
-          label: '00:00 - 06:00',
-          value: '00:00-06:00',
+          label: '00:00 - 05:59',
+          value: '00:00-05:59',
           range: 0,
           iselected: false
         },
         {
-          label: '06:00 - 12:00',
-          value: '06:00-12:00',
+          label: '06:00 - 11:59',
+          value: '06:00-11:59',
           range: 1,
           iselected: false
         },
         {
-          label: '12:00 - 18:00',
-          value: '12:00-18:00',
+          label: '12:00 - 17:59',
+          value: '12:00-17:59',
           range: 2,
           iselected: false
         },
         {
-          label: '18:00 - 00:00',
-          value: '18:00-00:00',
+          label: '18:00 - 23:59',
+          value: '18:00-23:59',
           range: 3,
           iselected: false
         }

@@ -190,17 +190,24 @@ export default {
       this.$fly.post('/attention/getNotes', {
         openid: this.userInfo.openid
       }).then(res => {
-        if (res.code === '0' && res.data && res.data.length > 0) {
+        if (res.code === '0' && res.data) {
           this.notifyList = []
-          res.data.forEach((v, i) => {
-            let _obj = {
-              dateStr: this.getDateStr(v.departureDate),
-              updateStr: this.getUpdateRange(v.updateTime),
-              recommend: this.getRecommend(v),
-              type: 0
-            }
-            this.notifyList.push({...v, ..._obj})
-          })
+          if (res.data.length > 0) {
+            res.data.forEach((v, i) => {
+              let _obj = {
+                dateStr: this.getDateStr(v.departureDate),
+                updateStr: this.getUpdateRange(v.updateTime),
+                recommend: this.getRecommend(v),
+                type: 0
+              }
+              this.notifyList.push({...v, ..._obj})
+            })
+          } else {
+            wx.showToast({
+              title: '暂无通知',
+              icon: 'none'
+            })
+          }
         } else {
           wx.showToast({
             title: '暂无通知',

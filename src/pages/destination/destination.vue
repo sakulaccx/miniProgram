@@ -525,10 +525,17 @@ export default {
           this.favoriteStatus = 1
           this.runNotifactionTrack()
         } else {
-          console.log(res.msg)
+          wx.showToast({
+            title: res.msg,
+            icon: 'none'
+          })
         }
       }).catch(err => {
         console.log(err)
+        wx.showToast({
+          title: err.msg,
+          icon: 'none'
+        })
       })
     },
     gotoFavoriteListOnTop () {
@@ -570,6 +577,10 @@ export default {
   },
   onUnload () {
     this.showTimeDialog = false
+    this.setDepart({
+      timeSlotList: [],
+      companyList: []
+    })
     this.$refs.timeBox.clearFormParent()
   },
   onShow () {
