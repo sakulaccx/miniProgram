@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="opt-list-wrap">
-      <van-cell title="通知" is-link arrow-direction="right" url="/pages/notifaction/main" link-type="navigateTo">
+      <van-cell title="通知" is-link arrow-direction="right" url="/pages/notifaction/main" link-type="navigateTo" @click="visitedNotify">
         <template slot v-if="hasNotify">
           <div class="dot"></div>
         </template>
@@ -155,17 +155,21 @@ export default {
       }
     },
     checkNotifaction () {
-      this.$fly.post('/attention/getNotes', {
+      this.$fly.post('/attention/getNotesCount', {
         openid: this.userInfo.openid
       }).then(res => {
-        if (res.code === '0' && res.data && res.data.length > 0) {
+        if (res.code === '0' && res.data && (res.data * 1) > 0) {
           this.hasNotify = true
         } else {
           this.hasNotify = false
         }
       }).catch(err => {
         console.log(err)
+        this.hasNotify = false
       })
+    },
+    visitedNotify () {
+      this.hasNotify = false
     },
     stopPopup () {
       return false
