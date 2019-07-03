@@ -484,14 +484,14 @@ export default {
           this.$fly.get('/attention/updateNotes')
         } else {
           wx.showToast({
-            title: res.meg,
+            title: res.msg,
             icon: 'none'
           })
         }
       }).catch(err => {
         console.log(err)
         wx.showToast({
-          title: err.meg,
+          title: err.msg,
           icon: 'none'
         })
       })
