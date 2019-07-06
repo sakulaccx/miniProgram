@@ -7,7 +7,7 @@
       <div class="btn login-btn" @click="showLoginForm" v-if="!isRegister">登录</div>
       <div class="user-info" v-if="isRegister">
         <div class="phone-num">{{cutPhone}}</div>
-        <div class="under-text">机务处给你最佳选择</div>
+        <div class="under-text">机票省钱小能手</div>
       </div>
     </div>
     <div class="opt-list-wrap">

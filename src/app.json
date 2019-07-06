@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/index/main",
-    "pages/destination/main",
     "pages/search/main",
+    "pages/destination/main",
     "pages/calendar/main",
     "pages/follow/main",
     "pages/interest/main",

@@ -34,7 +34,8 @@
       </div>
     </div>
     <div class="no-data" v-else>
-      没有查询到数据
+      您还没有关注我们的航班<br />
+      赶紧去关注吧
     </div>
   </div>
 </template>

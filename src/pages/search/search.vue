@@ -3,10 +3,8 @@
     <div class="top-search-wrap">
       <div class="top-search-l1">
         <i class="iconfont icon-feiji800 icon-select"></i>
-        <!-- <span class="choose-city left-city" :class="searchForm.from.length > 0 ? 'selected' : ''" @click="showCity(1)" v-if="!showFromInput">{{from}}</span> -->
         <span class="choose-city left-city">
           <van-field
-           :disabled="fromDisabled"
            :value="searchForm.departure_str"
            placeholder="出发地"
            placeholder-style="color:rgb(153, 153, 157)"
@@ -17,10 +15,8 @@
           />
         </span>
         <i class="iconfont icon-baohudi_zuoyouduitiao- icon-select" @click="exchangeCity"></i>
-        <!-- <span class="choose-city right-city target" :class="searchForm.target.length > 0 ? 'selected' : ''" @click="showCity(2)" v-if="!showTargetInput">{{target}}</span> -->
         <span class="choose-city right-city target">
           <van-field
-           :disabled="targetDisabled"
            :value="searchForm.arrival_str"
            placeholder="目的地"
            placeholder-style="color:rgb(153, 153, 157)"
@@ -29,6 +25,7 @@
            @click="showCity(2)"
            @input="searchCity"
            @change="changeField"
+           ref="targetFields"
           />
         </span>
       </div>
@@ -160,11 +157,14 @@ export default {
       this.showCityBox = true
       this.showSearchBox = false
 
-      if (val === 1) {
-        this.fromDisabled = false
-      } else {
-        this.targetDisabled = false
-      }
+      // if (val === 1) {
+      //   this.fromDisabled = false
+      // } else {
+      //   this.targetDisabled = false
+      // }
+    },
+    moveToNextFields () {
+      console.log(this.$refs)
     },
     exchangeCity () {
       let _tpl = this.searchForm.departure_str
@@ -219,6 +219,7 @@ export default {
         }
         this.searchForm.departure_str = obj.label
         this.searchForm.departureCityCode = obj.value
+        this.selectFrom = 2
       } else {
         if (obj.value === this.searchForm.departureCityCode) {
           wx.showToast({
@@ -373,7 +374,7 @@ export default {
 <style>
   .choose-city .field-index--van-field{
     padding: 0;
-    font-size: 36rpx;
+    font-size: 34rpx;
   }
 </style>
 <style scoped>
@@ -393,7 +394,7 @@ export default {
   .top-search-l2{
     height: 50%;
     line-height: 100rpx;
-    font-size: 32rpx;
+    font-size: 34rpx;
     vertical-align: middle;
   }
   .divider-line{
@@ -429,6 +430,7 @@ export default {
   .search-l2-box{
     display: inline-block;
     min-width: 70%;
+    vertical-align: middle;
   }
   .choose-date{
     color: rgb(153, 153, 157);
@@ -449,7 +451,7 @@ export default {
     font-size: 36rpx;
     color: #fff;
     border-radius: 40rpx;
-    background: rgb(48, 104, 246);
+    background: #4A9FEF;
     border: 0 none;
   }
   .city-box-wrap{

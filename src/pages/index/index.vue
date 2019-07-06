@@ -44,9 +44,11 @@ export default {
               }
             }
             this.setUserInfo(_obj)
-            wx.switchTab({
-              url: '/pages/search/main'
-            })
+            setTimeout(function () {
+              wx.switchTab({
+                url: '/pages/search/main'
+              })
+            }, 3000)
           } else {
             wx.showModal({
               title: '提示',

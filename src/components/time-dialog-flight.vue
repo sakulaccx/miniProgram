@@ -273,13 +273,13 @@ export default {
   float: left;
   margin-left: 30rpx;
   font-size: 48rpx;
-  color: #7796E3;
+  color: #4A9FEF;
 }
 .right-reset{
   float: right;
   margin-right: 32rpx;
   font-size: 28rpx;
-  color: #7096e9;
+  color: #4A9FEF;
 }
 .btn-wrap{
   position: absolute;
@@ -295,7 +295,7 @@ export default {
   color: #fff;
   border-radius: 40rpx;
   border: 0 none;
-  background: #2065ff;
+  background: #4A9FEF;
 }
 .list-wrap{
   height: 100%;
@@ -330,7 +330,7 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  background: #7096e9;
+  background: #4A9FEF;
   border-radius: 5rpx;
 }
 .list-title span:last-child{
@@ -356,7 +356,7 @@ export default {
 }
 .selected-item .left-title,
 .selected-item .right-arrow{
-  color: #7096e9;
+  color: #4A9FEF;
 }
 .flight-box{
   height: 40%;

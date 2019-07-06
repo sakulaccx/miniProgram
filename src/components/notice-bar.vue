@@ -52,7 +52,7 @@ export default {
   height: 42rpx;
   border-radius: 42rpx;
   line-height: 42rpx;
-  background: #4680f6;
+  background: #4A9FEF;
   font-size: 26rpx;
   text-align: center;
 }

@@ -113,7 +113,7 @@ export default {
   width: 100%;
   height: 54rpx;
   line-height: 54rpx;
-  background: #fee1cf;
+  background: #f9e2d1;
 }
 .favorite-bar .inner-text{
   float: left;

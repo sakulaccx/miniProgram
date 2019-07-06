@@ -14,12 +14,12 @@
     <div class="flight-info-wrap">
       <div class="curr-price">
         <div class="price-show">￥{{flightInfo.currPrice}}</div>
-        <div class="date-show">{{flightInfo.date}}机票价格</div>
+        <div class="date-show">{{flightInfo.date}}最低机票价格</div>
       </div>
       <div class="middle-line"></div>
       <div class="expect-price">
         <div :class="['price-show', 'iconfont', {'green-price icon-iconset0413-after': checkPrice < 0, 'red-price icon-iconset0414-after': checkPrice > 0, 'black-price': checkPrice === 0}]">￥{{flightInfo.expectPrice}}</div>
-        <div class="expect-text">预计达到价格</div>
+        <div class="expect-text">预计未来达到价格</div>
       </div>
     </div>
     <div class="bar-chart-wrap" v-if="!showTimeDialog">
@@ -218,7 +218,7 @@ export default {
                 color: function (params) {
                   var key = params.name
                   if (key === pname) {
-                    return '#2b6cff'
+                    return '#4A9FEF'
                   } else {
                     return '#e3effc'
                   }
@@ -523,7 +523,7 @@ export default {
       }).then(res => {
         if (res.code === '0') {
           this.favoriteStatus = 1
-          this.runNotifactionTrack()
+          // this.runNotifactionTrack()
         } else {
           wx.showToast({
             title: res.msg,
@@ -655,7 +655,7 @@ export default {
 }
 .detail-btn{
   margin: 60rpx auto 0 auto;
-  background: #2065ff;
+  background: #4A9FEF;
   width: 90%;
   height: 88rpx;
   line-height: 88rpx;
@@ -684,6 +684,7 @@ export default {
   height: 54rpx;
   line-height: 54rpx;
   background: #fee1cf;
+  /*background: #ffe220;*/
 }
 .favorite-bar .inner-text{
   float: left;
@@ -706,7 +707,7 @@ export default {
   line-height: 42rpx;
   text-align: center;
   color: #fff;
-  background: #ff6500;
+  background: #ffe220;
   font-size: 26rpx;
 }
 .favorite-bar .icon-buoumaotubiao44:before{

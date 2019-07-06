@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "机务处",
+  "navigationBarTitleText": "小鲸旅行",
   "usingComponents": {
     "van-cell": "./../../../static/vant/cell/index"
   }

@@ -4,7 +4,7 @@
     <div class="detail-wrap" v-if="hasData">
       <div class="info-wrap">
         <div class="price-show">￥{{flightInfo.lowestPrice}}</div>
-        <div class="price-desc">{{flightInfo.flightNumber}} {{flightInfo.dateStr}}机票价格</div>
+        <div class="price-desc"><!-- {{flightInfo.flightNumber}}  -->{{flightInfo.dateStr}}最低票价</div>
         <div class="btn buy-btn" @click="gotoList">现在就买</div>
         <div class="favorit-link" v-if="!favoriteStatus" @click="addFavorite">添加关注，提醒我购票</div>
         <div class="favorit-link" v-else @click="gotoFavoriteList">已关注，查看关注列表</div>
@@ -198,7 +198,7 @@ export default {
                 offset: 0, color: 'rgba(115, 165, 248, 0.1)' // 0% 处的颜色
               },
               {
-                offset: 1, color: 'rgba(115, 165, 248, 1)' // 100% 处的颜色
+                offset: 1, color: '#4A9FEF' // 100% 处的颜色
               }],
               global: false // 缺省为 false
             }
@@ -349,7 +349,7 @@ export default {
             this.dataAxis = []
             this.dataVal = []
             res.data.list.forEach((v, i) => {
-              this.dataAxis.push(new Date(v.departureDate).getTime())
+              this.dataAxis.push(new Date(v.crawlDate).getTime())
               if (i < res.data.list.length - 1) {
                 this.dataVal.push({
                   value: v.lowestPrice,
@@ -481,7 +481,7 @@ export default {
       }).then(res => {
         if (res.code === '0') {
           this.favoriteStatus = 1
-          this.$fly.get('/attention/updateNotes')
+          // this.$fly.get('/attention/updateNotes')
         } else {
           wx.showToast({
             title: res.msg,
@@ -571,7 +571,7 @@ export default {
 }
 .buy-btn{
   height: 70rpx;
-  background: #2065ff;
+  background: #4A9FEF;
   color: #fff;
   line-height: 70rpx;
   border-radius: 50rpx;
@@ -581,7 +581,7 @@ export default {
   font-size: 30rpx;
 }
 .favorit-link{
-  color: #4680f6;
+  color: #4A9FEF;
   font-size: 26rpx;
   text-decoration: underline;
 }
@@ -606,7 +606,7 @@ export default {
   position: absolute;
   left: 0;
   top: 5rpx;
-  background: #4680f6;
+  background: #4A9FEF;
 }
 .suggest-content{
   float: right;
@@ -622,7 +622,7 @@ export default {
   color: #ff6500;
 }
 .green-text{
-  color: green;
+  color: #9af3ad;
 }
 .chart-show{
   width: 100%;

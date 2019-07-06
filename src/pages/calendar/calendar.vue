@@ -62,7 +62,8 @@ export default {
       wx.switchTab({url: '/pages/search/main'})
     },
     set90DaysRange () {
-      let currDate = new Date(this.currDate)
+      // let currDate = new Date(this.currDate)
+      let currDate = new Date()
       let currYear = currDate.getFullYear()
       let currMonth = currDate.getMonth() + 1
       this.date90 = new Date(currDate.setMonth(currDate.getMonth() + 2))
@@ -72,7 +73,8 @@ export default {
       this.monthRange = [`${currYear}-${currMonth}`, `${this.date90Year}-${this.date90Month}`]
     },
     setDisableDays () {
-      let currDate = new Date(this.currDate)
+      // let currDate = new Date(this.currDate)
+      let currDate = new Date()
       let _today = currDate.getDate()
       let _targetDate = new Date(this.currDate)
       this.date45 = new Date(_targetDate.setDate(_targetDate.getDate() + 44))
@@ -89,7 +91,8 @@ export default {
 
       // 补足30或31天
       for (var ii = 1; ii < 50; ii++) {
-        var _newdate = new Date(this.currDate)
+        // var _newdate = new Date(this.currDate)
+        let _newdate = new Date()
         var _45date = new Date(_newdate.setDate(_newdate.getDate() + 44))
         var _targetdate = new Date(_45date.setDate(_45date.getDate() + ii))
 
@@ -110,7 +113,8 @@ export default {
     },
     setPriceDate (priceList) {
       let _tpl = {}
-      let _currdate = new Date(this.currDate)
+      // let _currdate = new Date(this.currDate)
+      let _currdate = new Date()
       priceList.forEach((v, i) => {
         let _date = new Date(v.departureDate)
         if (_date >= _currdate) {
