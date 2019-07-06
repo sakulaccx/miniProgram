@@ -39,7 +39,7 @@ export default {
 .inner-text{
   float: left;
   height: 100%;
-  color: #4680f6;
+  color: #4A9FEF;
   font-size: 28rpx;
   padding-left: 30rpx;
 }

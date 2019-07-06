@@ -684,7 +684,6 @@ export default {
   height: 54rpx;
   line-height: 54rpx;
   background: #fee1cf;
-  /*background: #ffe220;*/
 }
 .favorite-bar .inner-text{
   float: left;
@@ -707,7 +706,7 @@ export default {
   line-height: 42rpx;
   text-align: center;
   color: #fff;
-  background: #ffe220;
+  background: #ED6E2D;
   font-size: 26rpx;
 }
 .favorite-bar .icon-buoumaotubiao44:before{
