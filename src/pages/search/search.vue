@@ -8,6 +8,7 @@
            :value="searchForm.departure_str"
            placeholder="出发地"
            placeholder-style="color:rgb(153, 153, 157)"
+           :disabled="fromDisabled"
            :border="false"
            @click="showCity(1)"
            @input="searchCity"
@@ -20,6 +21,7 @@
            :value="searchForm.arrival_str"
            placeholder="目的地"
            placeholder-style="color:rgb(153, 153, 157)"
+           :disabled="targetDisabled"
            :border="false"
            input-align="right"
            @click="showCity(2)"
@@ -157,14 +159,11 @@ export default {
       this.showCityBox = true
       this.showSearchBox = false
 
-      // if (val === 1) {
-      //   this.fromDisabled = false
-      // } else {
-      //   this.targetDisabled = false
-      // }
-    },
-    moveToNextFields () {
-      console.log(this.$refs)
+      if (val === 1) {
+        this.fromDisabled = false
+      } else {
+        this.targetDisabled = false
+      }
     },
     exchangeCity () {
       let _tpl = this.searchForm.departure_str

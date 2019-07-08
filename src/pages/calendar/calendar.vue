@@ -106,6 +106,8 @@ export default {
       }).then(res => {
         if (res.code === '0' && res.data && res.data.length > 0) {
           this.setPriceDate(res.data)
+        } else {
+          this.setPriceDate([])
         }
       }).catch(err => {
         console.log(err)

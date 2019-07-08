@@ -123,7 +123,7 @@ export default {
   .submit-btn{
     width: 70%;
     border-radius: 50rpx;
-    background: #2065ff;
+    background: #4A9FEF;
     color: #fff;
     text-align: center;
     font-size: 28rpx;

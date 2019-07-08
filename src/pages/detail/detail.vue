@@ -20,6 +20,9 @@
       </div>
     </div>
     <div class="bar-chart-wrap" v-if="!showTimeDialog">
+      <div class="chart-title">
+        {{flightInfo.dateStr}}出发{{flightInfo.flightNumber}}航班过去14天的价格走势
+      </div>
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
     </div>
     <div class="price-trend-wrap" v-if="hasData">
@@ -71,6 +74,8 @@ export default {
       suggestText: ['建议购买', '建议等等'],
       cvalue: '',
       dataVal: [],
+      max: '',
+      min: '',
       trendText: ''
     }
   },
@@ -114,16 +119,23 @@ export default {
       let _that = this
       let _endValue = this.dataAxis.length - 1
       let _startValue = _endValue - 5 > 0 ? (_endValue - 5) : 0
-      let _title = `${this.flightInfo.dateStr}出发${this.flightInfo.flightNumber}航班过去14天的价格走势`
       this.chartOpt = {
-        title: {
-          text: _title
-        },
+        // title: {
+        //   show: true,
+        //   text: _title,
+        //   textStyle: {
+        //     color: '#ccc',
+        //     fontSize: 11,
+        //     width: 100,
+        //     height: 30
+        //   }
+        // },
         grid: {
-          left: '12%',
-          top: '12%',
+          left: '5%',
+          top: '15%',
           right: '5%',
-          bottom: '20%'
+          bottom: '10%',
+          containLabel: true
         },
         xAxis: {
           type: 'category',
@@ -161,7 +173,7 @@ export default {
             show: false
           },
           axisLine: {
-            show: false
+            show: true
           }
         },
         yAxis: {
@@ -181,7 +193,7 @@ export default {
         series: [{
           data: _that.dataVal,
           type: 'line',
-          symbolSize: 10,
+          symbolSize: 15,
           itemStyle: {
             normal: {
               color: 'rgb(40, 126, 227)'
@@ -216,7 +228,7 @@ export default {
             backgroundColor: '#fff',
             borderWidth: 1,
             borderColor: '#ccc',
-            padding: 4
+            padding: 2
           }
         }]
       }
@@ -247,7 +259,7 @@ export default {
         if (_that.dataVal.length > 0) {
           let _tpl = []
           _that.dataVal.forEach(function (v, i) {
-            if ((v.value * 1) === (params.value * 1)) {
+            if ((v.value * 1) === (params.value * 1) && params.dataIndex === i) {
               _tpl.push({
                 value: v.value,
                 label: {
@@ -348,8 +360,10 @@ export default {
             // 赋值chart
             this.dataAxis = []
             this.dataVal = []
+            let newArr = []
             res.data.list.forEach((v, i) => {
               this.dataAxis.push(new Date(v.crawlDate).getTime())
+              newArr.push(v.lowestPrice * 1)
               if (i < res.data.list.length - 1) {
                 this.dataVal.push({
                   value: v.lowestPrice,
@@ -622,15 +636,22 @@ export default {
   color: #ff6500;
 }
 .green-text{
-  color: #9af3ad;
+  color: #38ca50;
 }
 .chart-show{
   width: 100%;
   height: 100%;
 }
+.chart-title{
+  padding-top: 10rpx;
+  font-size: 24rpx;
+  color: #33333e;
+  padding-left: 40rpx;
+}
 .bar-chart-wrap{
   width: 100%;
   height: 376rpx;
+  /*height: 600rpx;*/
   background: #fff;
   margin-top: 30rpx;
 }

@@ -212,7 +212,7 @@ export default {
     line-height: 70rpx;
     font-size: 30rpx;
     color: #fff;
-    background: #2065ff;
+    background: #4A9FEF;
     border: 0 none;
     border-radius: 35rpx;
   }
@@ -257,7 +257,7 @@ export default {
     border-radius: 35rpx;
     color: #fff;
     font-size: 30rpx;
-    background: #2065ff;
+    background: #4A9FEF;
     border: 0 none;
     margin-top: 60rpx;
   }
