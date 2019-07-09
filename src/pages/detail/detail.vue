@@ -106,7 +106,8 @@ export default {
   methods: {
     ...mapMutations({
       setFlightDate: 'SET_FLIGHT_DATE',
-      setDetailDate: 'SET_DETAIL_DATE'
+      setDetailDate: 'SET_DETAIL_DATE',
+      setSearchStr: 'SET_SEARCH_STR'
     }),
     gotoList () {
       this.setFlightDate({
@@ -344,6 +345,12 @@ export default {
             // 设置title
             wx.setNavigationBarTitle({
               title: `${this.flightInfo.departureCity} - ${this.flightInfo.arrivalCity}`
+            })
+
+            // 设置search_str
+            this.setSearchStr({
+              departure_str: this.flightInfo.departureCity,
+              arrival_str: this.flightInfo.arrivalCity
             })
 
             // 设置趋势分析
