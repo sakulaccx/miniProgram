@@ -6,18 +6,21 @@
           <div class="item-box-left">
             <div class="item-box-top">
               <div class="item-info info-city">
-                <span>{{item.departureCity}}</span> ― <span>{{item.arrivalCity}}</span>
+                <span>{{item.departureCity}} ― {{item.arrivalCity}}</span>
                 <div class="under-text">
                   {{item.company}}
                 </div>
               </div>
               <div class="item-info info-date">
-                <span>{{item.departureMonth}}月</span> - <span>{{item.departureDay}}日</span>
+                <span>{{item.departureMonth}}月 - {{item.departureDay}}日</span>
                 <div class="under-text">
                   {{item.departureTime}} ― {{item.arrivalTime}}
                 </div>
               </div>
-              <div class="item-info info-price">
+              <div class="item-info info-price" v-if="item.isEffective === '0'">
+                &nbsp;
+              </div>
+              <div class="item-info info-price" v-else>
                 ￥{{item.lowestPrice}}
               </div>
             </div>

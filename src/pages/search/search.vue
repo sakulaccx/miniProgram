@@ -12,7 +12,7 @@
            :border="false"
            @click="showCity(1)"
            @input="searchCity"
-           @change="changeField"
+           @change="searchCity"
           />
         </span>
         <i class="iconfont icon-baohudi_zuoyouduitiao- icon-select" @click="exchangeCity"></i>
@@ -26,7 +26,7 @@
            input-align="right"
            @click="showCity(2)"
            @input="searchCity"
-           @change="changeField"
+           @change="searchCity"
            ref="targetFields"
           />
         </span>
@@ -176,23 +176,33 @@ export default {
 
       this.setStore()
     },
-    changeField (val) {
-      if (this.selectFrom === 1) {
-        this.searchForm.departure_str = val.mp.detail
-        this.searchForm.departureCityCode = ''
-      } else {
-        this.searchForm.arrival_str = val.mp.detail
-        this.searchForm.arrivalCityCode = ''
-      }
-    },
     searchCity (val) {
       let searchStr = val.mp.detail
-      this.showCityBox = false
-      this.showSearchBox = true
-      clearTimeout(this.searchTimer)
-      this.searchTimer = setTimeout(() => {
-        this.getSearchCity(searchStr)
-      }, 100)
+      if (searchStr.length === 0) {
+        this.showCityBox = true
+        this.showSearchBox = false
+        if (this.selectFrom === 1) {
+          this.searchForm.departure_str = ''
+          this.searchForm.departureCityCode = ''
+        } else {
+          this.searchForm.arrival_str = ''
+          this.searchForm.arrivalCityCode = ''
+        }
+        this.setStore()
+      } else {
+        if (this.selectFrom === 1) {
+          this.searchForm.departure_str = val.mp.detail
+        } else {
+          this.searchForm.arrival_str = val.mp.detail
+        }
+        this.showCityBox = false
+        this.showSearchBox = true
+        clearTimeout(this.searchTimer)
+        this.searchTimer = setTimeout(() => {
+          this.getSearchCity(searchStr)
+          this.checkSearchCity()
+        }, 100)
+      }
     },
     getSearchCity (_str) {
       let _tplArr = []
@@ -234,8 +244,9 @@ export default {
 
       this.setStore()
     },
-    checkCity () {
+    checkSearchCity () {
       if (this.searchForm.departure_str.length > 0) {
+        this.searchForm.departureCityCode = ''
         this.cityGroup[2].list.forEach((v, i) => {
           if (v.label === this.searchForm.departure_str) {
             this.searchForm.departureCityCode = v.value
@@ -244,6 +255,37 @@ export default {
       }
 
       if (this.searchForm.arrival_str.length > 0) {
+        this.searchForm.arrivalCityCode = ''
+        this.cityGroup[2].list.forEach((v, i) => {
+          if (v.label === this.searchForm.arrival_str) {
+            this.searchForm.arrivalCityCode = v.value
+          }
+        })
+      }
+
+      if (this.searchForm.departureCityCode.length > 0 && this.searchForm.arrivalCityCode.length > 0) {
+        if (this.searchForm.departureCityCode === this.searchForm.arrivalCityCode) {
+          wx.showToast({
+            title: '出发地与目的地不能相同',
+            icon: 'none'
+          })
+        } else {
+          this.setStore()
+        }
+      }
+    },
+    checkCity () {
+      if (this.searchForm.departure_str.length > 0) {
+        this.searchForm.departureCityCode = ''
+        this.cityGroup[2].list.forEach((v, i) => {
+          if (v.label === this.searchForm.departure_str) {
+            this.searchForm.departureCityCode = v.value
+          }
+        })
+      }
+
+      if (this.searchForm.arrival_str.length > 0) {
+        this.searchForm.arrivalCityCode = ''
         this.cityGroup[2].list.forEach((v, i) => {
           if (v.label === this.searchForm.arrival_str) {
             this.searchForm.arrivalCityCode = v.value

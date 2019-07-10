@@ -116,9 +116,7 @@ export default {
     setPriceDate (priceList) {
       let _tpl = {}
       // let _currdate = new Date(this.currDate)
-      let _now = new Date()
-      let _nowDate = _now.getFullYear() + '-' + (_now.getMonth() + 1) + '-' + _now.getDate()
-      let _currdate = new Date(_nowDate)
+      let _currdate = new Date(format(new Date(), 'yyyy-MM-dd'))
       priceList.forEach((v, i) => {
         let _date = new Date(v.departureDate)
         if (_date >= _currdate) {
@@ -127,7 +125,6 @@ export default {
         }
       })
       this.cevents = _tpl
-      console.log(this.cevents)
     }
   },
   mounted () {
