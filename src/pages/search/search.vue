@@ -12,7 +12,6 @@
            :border="false"
            @click="showCity(1)"
            @input="searchCity"
-           @change="searchCity"
           />
         </span>
         <i class="iconfont icon-baohudi_zuoyouduitiao- icon-select" @click="exchangeCity"></i>
@@ -26,7 +25,6 @@
            input-align="right"
            @click="showCity(2)"
            @input="searchCity"
-           @change="searchCity"
            ref="targetFields"
           />
         </span>
