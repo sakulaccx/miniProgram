@@ -121,16 +121,6 @@ export default {
       let _endValue = this.dataAxis.length - 1
       let _startValue = _endValue - 5 > 0 ? (_endValue - 5) : 0
       this.chartOpt = {
-        // title: {
-        //   show: true,
-        //   text: _title,
-        //   textStyle: {
-        //     color: '#ccc',
-        //     fontSize: 11,
-        //     width: 100,
-        //     height: 30
-        //   }
-        // },
         grid: {
           left: '5%',
           top: '15%',
@@ -249,11 +239,20 @@ export default {
         let _startValue = 0
         let _endValue = 0
         if (params.dataIndex <= parseInt(_that.dataAxis.length / 2)) {
-          _startValue = params.dataIndex - 3 > 0 ? params.dataIndex - 3 : 0
-          _endValue = _startValue + 6
+          if (_that.dataAxis.length >= 6) {
+            _startValue = params.dataIndex - 3 > 0 ? params.dataIndex - 3 : 0
+            _endValue = _startValue + 6
+          } else {
+            _startValue = params.dataIndex
+            _endValue = _startValue
+          }
         } else {
           _endValue = params.dataIndex + 3 > (_that.dataAxis.length - 1) ? (_that.dataAxis.length - 1) : params.dataIndex + 3
-          _startValue = _endValue - 6
+          if (_endValue >= 6) {
+            _startValue = _endValue - 6
+          } else {
+            _startValue = 0
+          }
         }
         _that.chartOpt.dataZoom[0].startValue = _startValue
         _that.chartOpt.dataZoom[0].endValue = _endValue
@@ -384,6 +383,10 @@ export default {
               }
             })
             this.cvalue = this.dataAxis[(this.dataAxis.length - 1)]
+          } else {
+            this.cvalue = 0
+            this.dataAxis = []
+            this.dataVal = []
           }
 
           if (!res.data.currentData) {
