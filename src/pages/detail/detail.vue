@@ -242,6 +242,9 @@ export default {
           if (_that.dataAxis.length >= 6) {
             _startValue = params.dataIndex - 3 > 0 ? params.dataIndex - 3 : 0
             _endValue = _startValue + 6
+          } else if (_that.dataAxis.length > 1) {
+            _startValue = 0
+            _endValue = _that.dataAxis.length
           } else {
             _startValue = params.dataIndex
             _endValue = _startValue

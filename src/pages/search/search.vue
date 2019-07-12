@@ -176,6 +176,7 @@ export default {
     },
     searchCity (val) {
       let searchStr = val.mp.detail
+      console.log(searchStr)
       if (searchStr.length === 0) {
         this.showCityBox = true
         this.showSearchBox = false
@@ -267,10 +268,11 @@ export default {
             title: '出发地与目的地不能相同',
             icon: 'none'
           })
-        } else {
-          this.setStore()
+          this.searchForm.arrivalCityCode = ''
         }
       }
+
+      this.setStore()
     },
     checkCity () {
       if (this.searchForm.departure_str.length > 0) {

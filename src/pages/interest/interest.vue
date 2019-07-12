@@ -18,7 +18,7 @@
                 </div>
               </div>
               <div class="item-info info-price" v-if="item.isEffective === '0'">
-                &nbsp;
+                已失效
               </div>
               <div class="item-info info-price" v-else>
                 ￥{{item.lowestPrice}}
@@ -27,9 +27,9 @@
             <template v-if="item.isEffective === '1'">
               <div :class="['item-box-bottom', {'red-text': item.actionFlag === 0, 'green-text': item.actionFlag === 1}]">{{buyOpt[item.actionFlag]}}</div>
             </template>
-            <template v-else>
+            <!-- <template v-else>
               <div class="item-box-bottom">已失效</div>
-            </template>
+            </template> -->
           </div>
           <div class="item-box-right" @click="deleteItem(index, item.id)">取消关注</div>
           <div class="clearfix"></div>
