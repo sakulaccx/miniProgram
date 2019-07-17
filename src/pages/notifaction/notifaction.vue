@@ -1,9 +1,9 @@
 <template>
   <div class="content">
     <div class="swiper-wrap" v-if="notifyList.length > 0">
-      <div class="swiper-item" v-for="(item, index) in notifyList" :key="index">
-        <!-- <div class="item-box" @touchstart="touchStart($event)" @touchend="touchEnd($event,index)" :data-type="item.type" @click="gotToDetail(index, item)"> -->
-        <div class="item-box" @click="gotToDetail(index, item)">
+      <div :class="['swiper-item', {'un-effective': item.isEffective === '0'}]" v-for="(item, index) in notifyList" :key="index">
+        <div class="item-box" @touchstart="touchStart($event)" @touchend="touchEnd($event,index)" :data-type="item.type" @click="gotToDetail(index, item)">
+        <!-- <div class="item-box" @click="gotToDetail(index, item)"> -->
           <div class="item-box-left">
             <div class="item-box-top">
               <div class='dept-info'>
@@ -141,24 +141,24 @@ export default {
       }
     },
     deleteItem (index, nid) {
-      // this.$fly.post('/attention/del', {
-      //   id: fid
-      // }).then(res => {
-      //   if (res.code === '0') {
-      //     this.interestList.splice(index, 1)
-      //   } else {
-      //     wx.showToast({
-      //       title: '网络不给力，请稍后再试',
-      //       icon: 'none'
-      //     })
-      //   }
-      // }).catch(err => {
-      //   console.log(err)
-      //   wx.showToast({
-      //     title: '网络不给力，请稍后再试',
-      //     icon: 'none'
-      //   })
-      // })
+      this.$fly.post('/attention/del', {
+        id: nid
+      }).then(res => {
+        if (res.code === '0') {
+          this.notifyList.splice(index, 1)
+        } else {
+          wx.showToast({
+            title: '网络不给力，请稍后再试',
+            icon: 'none'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+        wx.showToast({
+          title: '网络不给力，请稍后再试',
+          icon: 'none'
+        })
+      })
     },
     checkUserStatus () {
       // if (!this.userInfo.unionid.length) { // 测试
@@ -267,7 +267,8 @@ export default {
     height: 100%;
   }
   .item-box-right{
-    width: 16.7%;
+    margin-left: 1px;
+    width: 16.4%;
     height: 100%;
     display: flex;
     flex-flow: row nowrap;

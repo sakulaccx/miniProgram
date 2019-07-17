@@ -219,7 +219,8 @@ export default {
     height: 100%;
   }
   .item-box-right{
-    width: 16.7%;
+    margin-left: 1px;
+    width: 16.4%;
     height: 100%;
     display: flex;
     flex-flow: row nowrap;

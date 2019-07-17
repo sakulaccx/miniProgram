@@ -1,8 +1,11 @@
 <template>
   <div class="content">
     <div class="info-wrap">
-      <div class="avator-box">
+      <div class="avator-box" v-if="!isRegister">
         <img src="../../../static/images/my-avator.png" alt="">
+      </div>
+      <div class="avator-box logined-avator" v-else>
+        <img src="../../../static/images/logined-avator.jpg" alt="">
       </div>
       <div class="btn login-btn" @click="showLoginForm" v-if="!isRegister">登录</div>
       <div class="user-info" v-if="isRegister">
@@ -201,6 +204,10 @@ export default {
   .avator-box{
     width: 182rpx;
     height: 182rpx;
+  }
+  .logined-avator{
+    border-radius: 50%;
+    overflow: hidden;
   }
   .avator-box img{
     width: 100%;

@@ -540,6 +540,9 @@ export default {
     },
     gotoFavoriteListOnTop () {
       if (this.userInfo.isRegister) {
+        // wx.switchTab({
+        //   url: '/pages/follow/main'
+        // })
         wx.navigateTo({url: '../../pages/interest/main'})
       } else {
         this.showAuthorityDialog(1)
