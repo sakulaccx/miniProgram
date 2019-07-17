@@ -593,7 +593,11 @@ export default {
   },
   onShow () {
     // 重置出发时间
-    this.setDetailSearch({departureDate: this.departureDate})
+    this.setDetailSearch({
+      departureDate: this.departureDate,
+      departureTime: '',
+      flightNumber: ''
+    })
 
     // 刷新数据
     this.$fly.all([this.getData()]).then(this.$fly.spread((records, project) => {

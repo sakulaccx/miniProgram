@@ -31,7 +31,7 @@
     <div class="price-trend-wrap" v-if="hasData">
       <div class="trend-title">
         价格分析
-        <span>航班起飞{{flightInfo.dateStr}}</span>
+        <span>航班起飞 {{flightInfo.dateStr}}</span>
       </div>
       <div class="trend-list">
         {{trendText}}
@@ -68,6 +68,7 @@ export default {
         actionFlag: 0,
         dateStr: '',
         departureDate: '',
+        crawlTime: '',
         futureLowestPriceDate: 0
       },
       favoriteStatus: 0,
@@ -311,6 +312,15 @@ export default {
     updateData () {
       this.disposeChart()
       this.showTimeDialog = false
+      this.setDetailDate({
+        departureCityCode: this.detail_date.departureCityCode,
+        arrivalCityCode: this.detail_date.arrivalCityCode,
+        departureDate: this.detail_date.departureDate,
+        timeSlotList: this.detail_date.timeSlotList,
+        companyList: this.detail_date.companyList,
+        flightNumber: '',
+        departureTime: ''
+      })
       this.$fly.all([this.getDetailData()]).then(this.$fly.spread((records, project) => {
         if (this.hasData) {
           this.reInitChart()
@@ -318,13 +328,22 @@ export default {
       }))
     },
     getDetailData () {
-      return this.$fly.post('/flightData/getSearchDetailData', {
+      let _obj = {
         departureCityCode: this.detail_date.departureCityCode,
         arrivalCityCode: this.detail_date.arrivalCityCode,
         departureDate: this.detail_date.departureDate,
         timeSlotList: this.detail_date.timeSlotList,
         companyList: this.detail_date.companyList
-      }).then(res => {
+      }
+      let _url = ''
+      if (this.detail_date.flightNumber && this.detail_date.flightNumber.length > 0) {
+        _url = '/flightData/getDataByKey'
+        _obj.flightNumber = this.detail_date.flightNumber
+        _obj.departureTime = this.detail_date.departureTime
+      } else {
+        _url = '/flightData/getSearchDetailData'
+      }
+      return this.$fly.post(_url, _obj).then(res => {
         if (res.code === '0') {
           if (res.data && res.data.currentData) {
             this.hasData = true
@@ -343,7 +362,8 @@ export default {
               departureDate: currData.departureDate,
               futureLowestPriceDate: (currData.futureLowestPriceDate * 1),
               departureCityCode: currData.departureCityCode,
-              arrivalCityCode: currData.arrivalCityCode
+              arrivalCityCode: currData.arrivalCityCode,
+              crawlTime: currData.crawlTime
             }
             this.flightInfo = {...this.flightInfo, ..._obj}
 
@@ -436,7 +456,7 @@ export default {
     setTrend () {
       this.trendText = ''
       if (this.hasData) {
-        let dateVal = this.flightInfo.departureDate
+        let dateVal = this.flightInfo.crawlTime
         let futureDate = this.flightInfo.futureLowestPriceDate
         let _date = new Date(dateVal)
         let _future = new Date(new Date(dateVal).setDate(_date.getDate() + futureDate))

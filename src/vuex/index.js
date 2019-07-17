@@ -27,6 +27,8 @@ const state = {
     departureDate: '',
     timeSlotList: [],
     companyList: [],
+    departureTime: '',
+    flightNumber: '',
     actionFlag: ''
   },
   flight_date: {

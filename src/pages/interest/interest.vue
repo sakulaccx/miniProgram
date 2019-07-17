@@ -89,13 +89,20 @@ export default {
         this.interestList[index].type = 0
       } else {
         if (_obj.isEffective === '1') {
-          this.setDetailSearch({
+          var _subObj = {
             departureCityCode: _obj.departureCityCode,
             arrivalCityCode: _obj.arrivalCityCode,
             departureDate: _obj.departureDate,
+            departureTime: '',
+            flightNumber: '',
             timeSlotList: [],
             companyList: []
-          })
+          }
+          if (_obj.flightNumber && _obj.flightNumber.length > 0) {
+            _subObj.departureTime = _obj.departureTime
+            _subObj.flightNumber = _obj.flightNumber
+          }
+          this.setDetailSearch(_subObj)
           wx.navigateTo({url: '/pages/detail/main'})
         } else {
           wx.showToast({
