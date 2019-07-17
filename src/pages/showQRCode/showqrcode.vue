@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="img-wrap">
-      <img src="/static/images/WechatIMG592.jpeg" data-src="/static/images/WechatIMG592.jpg" alt="" mode="widthFix" show-menu-by-longpress="true">
+      <img src="/static/images/WechatIMG592.jpg" data-src="/static/images/WechatIMG592.jpg" alt="" mode="widthFix" show-menu-by-longpress="true">
     </div>
   </div>
 </template>

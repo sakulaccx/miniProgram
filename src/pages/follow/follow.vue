@@ -126,14 +126,17 @@ export default {
       })
     },
     checkUserStatus () {
-      if (!this.userInfo.unionid.length) { // 测试
+      if (!this.userInfo.unionid) { // 测试
         wx.showModal({
           title: '提示',
           content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',
-          showCancel: false,
+          showCancel: true,
           confirmText: '确定',
+          cancelText: '关闭',
           success: function (res) {
-            wx.navigateTo({url: '/pages/showQRCode/main'})
+            if (res.confirm) {
+              wx.navigateTo({url: '/pages/showQRCode/main'})
+            }
           }
         })
       } else if (!this.userInfo.isRegister) {
@@ -141,10 +144,13 @@ export default {
         wx.showModal({
           title: '提示',
           content: '检测到您尚未登录，如需要查看关注列表，请先登录',
-          showCancel: false,
+          showCancel: true,
           confirmText: '确定',
+          cancelText: '关闭',
           success: function (res) {
-            wx.switchTab({url: '/pages/user/main'})
+            if (res.confirm) {
+              wx.switchTab({url: '/pages/user/main'})
+            }
           }
         })
       } else {
