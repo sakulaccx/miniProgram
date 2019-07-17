@@ -126,18 +126,18 @@ export default {
       })
     },
     checkUserStatus () {
-      // if (!this.userInfo.unionid.length) {
-      //   wx.showModal({
-      //     title: '提示',
-      //     content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',
-      //     showCancel: false,
-      //     confirmText: '确定',
-      //     success: function (res) {
-      //       wx.navigateTo({url: '/pages/showQRCode/main'})
-      //     }
-      //   })
-      // } else if (!this.userInfo.isRegister) {
-      if (!this.userInfo.isRegister) {
+      if (!this.userInfo.unionid.length) {
+        wx.showModal({
+          title: '提示',
+          content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',
+          showCancel: false,
+          confirmText: '确定',
+          success: function (res) {
+            wx.navigateTo({url: '/pages/showQRCode/main'})
+          }
+        })
+      } else if (!this.userInfo.isRegister) {
+      // if (!this.userInfo.isRegister) {
         wx.showModal({
           title: '提示',
           content: '检测到您尚未登录，如需要查看关注列表，请先登录',

@@ -8,7 +8,7 @@
         <!-- <div class="btn buy-btn" @click="gotoList">现在就买</div>
         <div class="favorit-link" v-if="!favoriteStatus" @click="addFavorite">添加关注，提醒我购票</div>
         <div class="favorit-link" v-else @click="gotoFavoriteList">已关注，查看关注列表</div> -->
-        <div class="btn buy-btn" v-if="!favoriteStatus" @click="addFavorite">立即关注</div>
+        <div class="btn buy-btn" v-if="!favoriteStatus" @click="saveFavorite">立即关注</div>
         <div class="btn buy-btn" v-else @click="gotoFavoriteList">已关注，查看关注列表</div>
         <div class="favorit-link" @click="gotoList">查看当日所有航班价格</div>
       </div>
@@ -487,16 +487,18 @@ export default {
       if (this.userInfo.isRegister) {
         wx.navigateTo({url: '/pages/interest/main'})
       } else {
-        this.disposeChart()
-        wx.showModal({
-          title: '提示',
-          content: '检测到您尚未登录，如需要查看关注列表，请先登录',
-          showCancel: false,
-          confirmText: '确定',
-          success: function (res) {
-            wx.switchTab({url: '/pages/user/main'})
-          }
-        })
+        this.showAuthorityDialog(1)
+      }
+    },
+    saveFavorite () {
+      // 正式代码
+      if (!this.userInfo.unionid) {
+        this.showAuthorityDialog(0)
+      } else if (!this.userInfo.isRegister) {
+      // if (!this.userInfo.isRegister) {
+        this.showAuthorityDialog(1)
+      } else {
+        this.addFavorite()
       }
     },
     addFavorite () {
@@ -525,6 +527,30 @@ export default {
           icon: 'none'
         })
       })
+    },
+    showAuthorityDialog (level) {
+      this.disposeChart()
+      if (level === 0) {
+        wx.showModal({
+          title: '提示',
+          content: '检测到您尚未关注公众号，如需要查看关注列表，请先关注公众号',
+          showCancel: false,
+          confirmText: '确定',
+          success: function (res) {
+            wx.navigateTo({url: '/pages/showQRCode/main'})
+          }
+        })
+      } else {
+        wx.showModal({
+          title: '提示',
+          content: '检测到您尚未登录，如需要查看关注列表，请先登录',
+          showCancel: false,
+          confirmText: '确定',
+          success: function (res) {
+            wx.switchTab({url: '/pages/user/main'})
+          }
+        })
+      }
     }
   },
   mounted () {
