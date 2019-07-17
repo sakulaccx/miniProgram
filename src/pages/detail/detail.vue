@@ -5,9 +5,12 @@
       <div class="info-wrap">
         <div class="price-show">￥{{flightInfo.lowestPrice}}</div>
         <div class="price-desc"><!-- {{flightInfo.flightNumber}}  -->{{flightInfo.dateStr}}最低票价</div>
-        <div class="btn buy-btn" @click="gotoList">现在就买</div>
+        <!-- <div class="btn buy-btn" @click="gotoList">现在就买</div>
         <div class="favorit-link" v-if="!favoriteStatus" @click="addFavorite">添加关注，提醒我购票</div>
-        <div class="favorit-link" v-else @click="gotoFavoriteList">已关注，查看关注列表</div>
+        <div class="favorit-link" v-else @click="gotoFavoriteList">已关注，查看关注列表</div> -->
+        <div class="btn buy-btn" v-if="!favoriteStatus" @click="addFavorite">立即关注</div>
+        <div class="btn buy-btn" v-else @click="gotoFavoriteList">已关注，查看关注列表</div>
+        <div class="favorit-link" @click="gotoList">查看当日所有航班价格</div>
       </div>
       <div class="forecast-wrap">
         <div class="forecast-title">{{flightInfo.dateStr}}机票价格预测</div>
