@@ -31,7 +31,7 @@
             </div>
             </div>
           </div>
-          <div class="item-box-right" @click="deleteItem(index, item.id)">取消关注</div>
+          <div class="item-box-right" @click="deleteItem(index, item.id)">删除通知</div>
           <div class="clearfix"></div>
         </div>
       </div>
@@ -120,6 +120,8 @@ export default {
           departureCityCode: _obj.departureCityCode,
           arrivalCityCode: _obj.arrivalCityCode,
           departureDate: _obj.departureDate,
+          departureTime: '',
+          flightNumber: '',
           timeSlotList: [],
           companyList: []
         })
@@ -141,7 +143,7 @@ export default {
       }
     },
     deleteItem (index, nid) {
-      this.$fly.post('/attention/del', {
+      this.$fly.post('/attention/delNote', {
         id: nid
       }).then(res => {
         if (res.code === '0') {
