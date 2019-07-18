@@ -22,6 +22,7 @@
               </div>
               <div class="item-info info-price" v-else>
                 ￥{{item.lowestPrice}}
+                <div :class="['inner-text',{'green-text': item.actionFlag === 0, 'red-text': item.actionFlag === 1}]">{{item.priceRang}}</div>
               </div>
             </div>
             <template v-if="item.isEffective === '1'">
@@ -171,7 +172,13 @@ export default {
         if (res.code === '0' && res.data && res.data.length > 0) {
           this.interestList = []
           res.data.forEach((v, i) => {
-            this.interestList.push({...v, ...{type: 0}})
+            let priceRang = ''
+            if ((v.historyPrice - v.lowestPrice) >= 0) {
+              priceRang = '已降价￥' + Math.abs(v.historyPrice - v.lowestPrice)
+            } else {
+              priceRang = '已涨价￥' + Math.abs(v.historyPrice - v.lowestPrice)
+            }
+            this.interestList.push({...v, ...{type: 0, priceRang: priceRang}})
           })
         } else {
           wx.showToast({
@@ -261,6 +268,11 @@ export default {
   .info-price{
     font-size: 45rpx;
     color: #333333;
+  }
+  .info-price .inner-text{
+    font-size: 20rpx;
+    font-weight: lighter;
+    text-align: center;
   }
   .un-effective .item-info span{
     color: #a9a9a9;

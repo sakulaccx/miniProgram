@@ -1,6 +1,6 @@
 <template>
   <div class="index-wrap">
-    <img src="/static/images/launch.jpg" alt="" mode="widthFix">
+    <img src="/static/images/launch.png" alt="" mode="widthFix">
   </div>
 </template>
 
