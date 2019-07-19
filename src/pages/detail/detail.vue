@@ -456,7 +456,7 @@ export default {
     setTrend () {
       this.trendText = ''
       if (this.hasData) {
-        let dateVal = this.flightInfo.crawlTime
+        let dateVal = this.flightInfo.crawlTime.substr(0, 10)
         let futureDate = this.flightInfo.futureLowestPriceDate
         let _date = new Date(dateVal)
         let _future = new Date(new Date(dateVal).setDate(_date.getDate() + futureDate))
