@@ -183,10 +183,12 @@ export default {
           this.interestList = []
           res.data.forEach((v, i) => {
             let priceRang = ''
-            if ((v.historyPrice - v.lowestPrice) >= 0) {
+            if ((v.historyPrice - v.lowestPrice) > 0) {
               priceRang = '已降价￥' + Math.abs(v.historyPrice - v.lowestPrice)
-            } else {
+            } else if ((v.historyPrice - v.lowestPrice) < 0) {
               priceRang = '已涨价￥' + Math.abs(v.historyPrice - v.lowestPrice)
+            } else {
+              priceRang = ''
             }
             this.interestList.push({...v, ...{type: 0, priceRang: priceRang}})
           })

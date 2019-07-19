@@ -188,7 +188,7 @@ export default {
         series: [{
           data: _that.dataVal,
           type: 'line',
-          symbolSize: 15,
+          symbolSize: 12,
           itemStyle: {
             normal: {
               color: 'rgb(40, 126, 227)'
@@ -463,9 +463,9 @@ export default {
         let _price = this.flightInfo.lowestPrice - this.flightInfo.futureLowestPrice
         let _dateStr = `${_future.getMonth() + 1}月${_future.getDate()}日`
         if (_price < 0) {
-          this.trendText += `今天到${_dateStr}，价格逐步上涨，预计${_dateStr}会上涨到${this.flightInfo.futureLowestPrice}左右，比今天贵${Math.abs(_price)}`
+          this.trendText += `今天到${_dateStr}，价格逐步上涨，预计${_dateStr}会上涨到${this.flightInfo.futureLowestPrice}左右，比今天贵${Math.abs(_price)}元`
         } else if (_price > 0) {
-          this.trendText += `今天到${_dateStr}，价格逐步下跌，预计${_dateStr}会下降至${this.flightInfo.futureLowestPrice}左右，比今天省${Math.abs(_price)}`
+          this.trendText += `今天到${_dateStr}，价格逐步下跌，预计${_dateStr}会下降至${this.flightInfo.futureLowestPrice}左右，比今天省${Math.abs(_price)}元`
         } else {
           this.trendText += `今天到${_dateStr}，价格持平`
         }

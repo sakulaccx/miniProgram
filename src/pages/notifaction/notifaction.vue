@@ -120,8 +120,8 @@ export default {
           departureCityCode: _obj.departureCityCode,
           arrivalCityCode: _obj.arrivalCityCode,
           departureDate: _obj.departureDate,
-          departureTime: '',
-          flightNumber: '',
+          departureTime: _obj.departureTime,
+          flightNumber: _obj.flightNumber,
           timeSlotList: [],
           companyList: []
         })
@@ -206,9 +206,12 @@ export default {
                 dateStr: this.getDateStr(v.departureDate),
                 updateStr: this.getUpdateRange(v.updateTime),
                 recommend: this.getRecommend(v),
+                departureTime: v.departureTime ? v.departureTime : '',
+                flightNumber: v.flightNumber,
                 type: 0
               }
               this.notifyList.push({...v, ..._obj})
+              console.log(this.notifyList)
             })
           } else {
             wx.showToast({

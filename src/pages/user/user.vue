@@ -179,10 +179,12 @@ export default {
     }
   },
   mounted () {
-    this.checkLogined()
   },
   created () {
   // let app = getApp()
+  },
+  onShow () {
+    this.checkLogined()
   }
 }
 </script>
