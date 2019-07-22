@@ -224,6 +224,7 @@ export default {
           icon: 'none'
         })
       } else {
+        this.closeSearchBox()
         wx.navigateTo({url: '../calendar/main'})
       }
     },
@@ -342,33 +343,42 @@ export default {
           icon: 'none'
         })
       } else {
-        this.setStore()
-        this.$fly.post('/record/add', {
-          openid: this.userInfo.openid,
-          cities: [
-            {
-              cityName: this.searchForm.departure_str,
-              cityCode: this.searchForm.departureCityCode
-            },
-            {
-              cityName: this.searchForm.arrival_str,
-              cityCode: this.searchForm.arrivalCityCode
+        let ddate = new Date()
+        let odate = new Date('2019-06-23')
+        if (ddate.getTime() - odate.getTime() > (1000 * 60 * 60 * 24 * 30)) {
+          wx.showToast({
+            title: '已过试用期',
+            icon: 'none'
+          })
+        } else {
+          this.setStore()
+          this.$fly.post('/record/add', {
+            openid: this.userInfo.openid,
+            cities: [
+              {
+                cityName: this.searchForm.departure_str,
+                cityCode: this.searchForm.departureCityCode
+              },
+              {
+                cityName: this.searchForm.arrival_str,
+                cityCode: this.searchForm.arrivalCityCode
+              }
+            ]
+          }).then(res => {
+            if (res.code === '0') {
+              wx.navigateTo({url: '/pages/destination/main'})
+              this.clearData()
+              this.resetForm()
+            } else {
+              wx.showToast({
+                title: '网络开小差了',
+                icon: 'none'
+              })
             }
-          ]
-        }).then(res => {
-          if (res.code === '0') {
-            wx.navigateTo({url: '/pages/destination/main'})
-            this.clearData()
-            this.resetForm()
-          } else {
-            wx.showToast({
-              title: '网络开小差了',
-              icon: 'none'
-            })
-          }
-        }).catch(err => {
-          console.log(err)
-        })
+          }).catch(err => {
+            console.log(err)
+          })
+        }
       }
     },
     resetForm () {
