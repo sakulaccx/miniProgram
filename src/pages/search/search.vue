@@ -213,7 +213,19 @@ export default {
       this.searchCityResult = _tplArr
     },
     showCalendar () {
-      wx.navigateTo({url: '../calendar/main'})
+      if (this.searchForm.departure_str.length === 0) {
+        wx.showToast({
+          title: '请选择出发地',
+          icon: 'none'
+        })
+      } else if (this.searchForm.arrival_str.length === 0) {
+        wx.showToast({
+          title: '请选择目的地',
+          icon: 'none'
+        })
+      } else {
+        wx.navigateTo({url: '../calendar/main'})
+      }
     },
     saveCity (obj) {
       if (this.selectFrom === 1) {
@@ -345,8 +357,9 @@ export default {
           ]
         }).then(res => {
           if (res.code === '0') {
-            this.resetForm()
             wx.navigateTo({url: '/pages/destination/main'})
+            this.clearData()
+            this.resetForm()
           } else {
             wx.showToast({
               title: '网络开小差了',
@@ -393,6 +406,21 @@ export default {
           icon: 'none'
         })
       })
+    },
+    clearData () {
+      this.selectFrom = 1
+      this.showCityBox = false
+      this.fromDisabled = true
+      this.targetDisabled = true
+      this.showSearchBox = false
+      this.searchTimer = null
+      this.searchForm = {
+        departureCityCode: '',
+        arrivalCityCode: '',
+        departure_str: '',
+        arrival_str: '',
+        departureDate: ''
+      }
     }
   },
   mounted () {

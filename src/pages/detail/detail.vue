@@ -456,16 +456,16 @@ export default {
     setTrend () {
       this.trendText = ''
       if (this.hasData) {
-        let dateVal = this.flightInfo.crawlTime
+        let dateVal = this.flightInfo.crawlTime.substr(0, 10)
         let futureDate = this.flightInfo.futureLowestPriceDate
         let _date = new Date(dateVal)
         let _future = new Date(new Date(dateVal).setDate(_date.getDate() + futureDate))
         let _price = this.flightInfo.lowestPrice - this.flightInfo.futureLowestPrice
         let _dateStr = `${_future.getMonth() + 1}月${_future.getDate()}日`
         if (_price < 0) {
-          this.trendText += `今天到${_dateStr}，价格逐步上涨，预计${_dateStr}会上涨到${this.flightInfo.futureLowestPrice}左右，比今天贵${Math.abs(_price)}元`
+          this.trendText += `今天到${_dateStr}，价格逐步上涨，预计${_dateStr}会上涨到${this.flightInfo.futureLowestPrice}元左右，比今天贵${Math.abs(_price)}元`
         } else if (_price > 0) {
-          this.trendText += `今天到${_dateStr}，价格逐步下跌，预计${_dateStr}会下降至${this.flightInfo.futureLowestPrice}左右，比今天省${Math.abs(_price)}元`
+          this.trendText += `今天到${_dateStr}，价格逐步下跌，预计${_dateStr}会下降至${this.flightInfo.futureLowestPrice}元左右，比今天省${Math.abs(_price)}元`
         } else {
           this.trendText += `今天到${_dateStr}，价格持平`
         }
