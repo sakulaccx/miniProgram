@@ -60,7 +60,7 @@ export default {
     // this.getUserInfo()
   },
   onShow () {
-    this.getUserInfo()
+    // this.getUserInfo()
   }
 }
 </script>

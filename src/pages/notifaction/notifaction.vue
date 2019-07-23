@@ -94,7 +94,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setDetailSearch: 'SET_DETAIL_DATE'
+      setDetailSearch: 'SET_DETAIL_DATE',
+      setUserInfo: 'SET_USERINFO'
     }),
     touchStart (e) {
       this.startX = e.mp.changedTouches[0].clientX
@@ -228,6 +229,33 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    getUserInfo () {
+      wx.login({
+        success: res => {
+          this.$fly.post('/login/getOpenid', {
+            jsCode: res.code
+          }).then(res1 => {
+            let _obj = {}
+            if (res1.data.isRegister === '1') {
+              _obj = {
+                openid: res1.data.openid,
+                unionid: res1.data.unionid === null ? 0 : 1,
+                isRegister: (res1.data.isRegister * 1),
+                phone: res1.data.phone
+              }
+            } else {
+              _obj = {
+                openid: res1.data.openid,
+                unionid: res1.data.unionid === null ? 0 : 1,
+                isRegister: (res1.data.isRegister * 1)
+              }
+            }
+            this.setUserInfo(_obj)
+            this.checkUserStatus()
+          })
+        }
+      })
     }
   },
   mounted () {
@@ -239,7 +267,7 @@ export default {
   // let app = getApp()
   },
   onShow () {
-    this.checkUserStatus()
+    this.getUserInfo()
   }
 }
 </script>
