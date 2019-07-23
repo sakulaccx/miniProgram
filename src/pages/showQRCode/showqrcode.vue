@@ -2,7 +2,7 @@
   <div class="content">
     <div class="img-wrap">
       <img src="/static/images/Wechat_focus.jpg" data-src="/static/images/Wechat_focus.jpg" alt="" mode="widthFix" show-menu-by-longpress="true">
-      <official-account style="position: absolute; bottom: 20rpx; width: 96%; left: 2%; height: 160rpx; border-radius: 20rpx; border: 1px solid #ccc;"></official-account>
+      <official-account style="position: absolute; bottom: 20rpx; width: 96%; left: 2%; height: 168rpx;"></official-account>
     </div>
   </div>
 </template>
