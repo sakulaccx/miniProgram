@@ -2,7 +2,7 @@
   <div class="content">
     <div class="img-wrap">
       <img src="/static/images/Wechat_focus.jpg" data-src="/static/images/Wechat_focus.jpg" alt="" mode="widthFix" show-menu-by-longpress="true">
-      <official-account style="position: absolute; bottom: 20rpx; width: 96%; left: 2%; height: 168rpx;"></official-account>
+      <official-account style="position: absolute; bottom: 20rpx; width: 96%; left: 2%;"></official-account>
     </div>
   </div>
 </template>
@@ -58,6 +58,9 @@ export default {
   },
   onUnload () {
     // this.getUserInfo()
+  },
+  onShow () {
+    this.getUserInfo()
   }
 }
 </script>
@@ -67,7 +70,7 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background: #fff;
 }
