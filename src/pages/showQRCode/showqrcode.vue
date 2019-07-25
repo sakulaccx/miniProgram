@@ -1,8 +1,12 @@
 <template>
   <div class="content">
     <div class="img-wrap">
-      <img src="/static/images/Wechat_focus.jpg" data-src="/static/images/Wechat_focus.jpg" alt="" mode="widthFix" show-menu-by-longpress="true">
-      <official-account style="position: absolute; bottom: 20rpx; width: 96%; left: 2%;"></official-account>
+      <img src="/static/images/WechatIMG592.jpg" data-src="/static/images/WechatIMG592.jpg" alt="" mode="widthFix" show-menu-by-longpress="true">
+      <!-- <official-account style="position: absolute; bottom: 20rpx; width: 96%; left: 2%;"></official-account> -->
+      <div class="bottom-wrap">
+        <button class="gotoService" open-type="contact">获取二维码，完成关注</button>
+        <div class="bottom-text">关注后获得提醒，将不会错过低价</div>
+      </div>
     </div>
   </div>
 </template>
@@ -60,7 +64,7 @@ export default {
     // this.getUserInfo()
   },
   onShow () {
-    // this.getUserInfo()
+    this.getUserInfo()
   }
 }
 </script>
@@ -75,6 +79,31 @@ export default {
   background: #fff;
 }
 .img-wrap img{
+  width: 90%;
+}
+.bottom-wrap{
+  position: absolute;
   width: 100%;
+  bottom: 100rpx;
+  display: flex-start;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+.gotoService{
+  width: 80%;
+  background: #4a9fef;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 50px;
+  height: 72rpx;
+  line-height: 72rpx;
+  letter-spacing: 10rpx;
+}
+.bottom-text{
+  margin-top: 30rpx;
+  font-size: 12px;
+  color: #bbb9ba;
+  text-align: center;
 }
 </style>

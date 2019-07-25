@@ -234,7 +234,8 @@ export default {
   // let app = getApp()
   },
   onShow () {
-    this.getUserInfo()
+    this.checkUserStatus()
+    // this.getUserInfo()
   }
 }
 </script>
