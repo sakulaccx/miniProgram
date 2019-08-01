@@ -176,7 +176,6 @@ export default {
     },
     searchCity (val) {
       let searchStr = val.mp.detail
-      console.log(searchStr)
       if (searchStr.length === 0) {
         this.showCityBox = true
         this.showSearchBox = false
@@ -320,6 +319,16 @@ export default {
       }
       this.setSearchStr(_search)
     },
+    processLimit () {
+      let ddate = new Date()
+      let odate = new Date('2019-06-23')
+      if (ddate.getTime() - odate.getTime() > (1000 * 60 * 60 * 24 * 30)) {
+        wx.showToast({
+          title: '已过试用期',
+          icon: 'none'
+        })
+      }
+    },
     searchFly () {
       this.checkCity()
       if (this.searchForm.departureDate.length === 0) {
@@ -343,42 +352,33 @@ export default {
           icon: 'none'
         })
       } else {
-        let ddate = new Date()
-        let odate = new Date('2019-06-23')
-        if (ddate.getTime() - odate.getTime() > (1000 * 60 * 60 * 24 * 30)) {
-          wx.showToast({
-            title: '已过试用期',
-            icon: 'none'
-          })
-        } else {
-          this.setStore()
-          this.$fly.post('/record/add', {
-            openid: this.userInfo.openid,
-            cities: [
-              {
-                cityName: this.searchForm.departure_str,
-                cityCode: this.searchForm.departureCityCode
-              },
-              {
-                cityName: this.searchForm.arrival_str,
-                cityCode: this.searchForm.arrivalCityCode
-              }
-            ]
-          }).then(res => {
-            if (res.code === '0') {
-              wx.navigateTo({url: '/pages/destination/main'})
-              this.clearData()
-              this.resetForm()
-            } else {
-              wx.showToast({
-                title: '网络开小差了',
-                icon: 'none'
-              })
+        this.setStore()
+        this.$fly.post('/record/add', {
+          openid: this.userInfo.openid,
+          cities: [
+            {
+              cityName: this.searchForm.departure_str,
+              cityCode: this.searchForm.departureCityCode
+            },
+            {
+              cityName: this.searchForm.arrival_str,
+              cityCode: this.searchForm.arrivalCityCode
             }
-          }).catch(err => {
-            console.log(err)
-          })
-        }
+          ]
+        }).then(res => {
+          if (res.code === '0') {
+            wx.navigateTo({url: '/pages/destination/main'})
+            this.clearData()
+            this.resetForm()
+          } else {
+            wx.showToast({
+              title: '网络开小差了',
+              icon: 'none'
+            })
+          }
+        }).catch(err => {
+          console.log(err)
+        })
       }
     },
     resetForm () {
